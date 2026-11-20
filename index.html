@@ -3957,9 +3957,9 @@ async function fetchJson(url) {
   if (!res.ok) throw new Error('HTTP ' + res.status);
   return await res.json();
 }
-async function openRemoteProject(remote) {
+async function openRemoteProject(remote, preloaded, quiet) {
   try {
-    const data = await fetchJson(remote);
+    const data = preloaded || await fetchJson(remote);
     if (data && Array.isArray(data.cards)) {           // 单个项目文件，直接载入
       if (loadProject(data)) { renderAll(); triggerAutoSave(true); return true; }
       return false;
@@ -4003,7 +4003,29 @@ async function openRemoteProject(remote) {
       }
     });
     return true;
-  } catch (err) { console.warn('远程项目加载失败', err); return false; }
+  } catch (err) {
+    console.warn('远程项目加载失败', err);
+    if (!quiet) toast('远程题库读取失败：' + err.message + '（请检查文件名/路径，或改用 raw 地址）');
+    return false;
+  }
+}
+
+// 自动发现同目录下的项目清单（配合 GitHub Pages 仓库使用）
+async function autoLoadManifest() {
+  if (!/^https?:/i.test(location.protocol)) return false;   // file:// 无法 fetch
+  for (const name of ['projects.json', 'manifest.json']) {
+    let url;
+    try { url = new URL(name, location.href).href; } catch (e) { continue; }
+    try {
+      const res = await fetch(url, { cache: 'no-store', referrerPolicy: 'no-referrer' });
+      if (!res.ok) continue;                                  // 没有清单就继续本地存档
+      const data = await res.json();
+      if (!data) continue;
+      const handled = await openRemoteProject(url, data, true);
+      if (handled) return true;
+    } catch (e) { console.warn('清单读取失败', url, e); }
+  }
+  return false;
 }
 
 /* =========================================================
@@ -4766,8 +4788,11 @@ async function initApp() {
   const params = new URLSearchParams(location.search);
   const remote = params.get('project');
   if (remote) {
-    const handled = await openRemoteProject(remote);
+    const handled = await openRemoteProject(remote, null, false);
     if (handled) return;
+  } else if (await autoLoadManifest()) {
+    // 同目录存在 projects.json / manifest.json：已载入或已弹出项目选择
+    return;
   }
 
   // 2. IndexedDB 自动存档恢复
