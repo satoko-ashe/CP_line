@@ -169,6 +169,7 @@ main{
   display:flex;align-items:center;justify-content:center;line-height:1;
 }
 /* 锁链按钮（严格居中） */
+.lock-btn:disabled{opacity:.3;cursor:not-allowed;filter:grayscale(.5)}
 .lock-btn{
   position:absolute;top:5px;right:5px;z-index:6;
   width:22px;height:22px;padding:0;border-radius:50%;
@@ -811,7 +812,7 @@ body[data-role="grade"] #globalView .card{height:calc(100% - 54px)}
     <div class="modes">
       <button class="mode-btn active" data-role="author" id="btnAuthorRole">👑 出题模式</button>
       <button class="mode-btn" data-role="player" id="btnPlayerRole">🎮 玩家模式</button>
-      <button class="mode-btn" data-role="grade" id="btnGradeRole">🧑‍🏫 批改模式</button>
+      <button class="mode-btn" data-role="grade" id="btnGradeRole">🖊 批改模式</button>
     </div>
 
     <!-- 视图切换 -->
@@ -901,7 +902,7 @@ body[data-role="grade"] #globalView .card{height:calc(100% - 54px)}
     <h2>📁 当前项目：<span id="psCurName">未命名项目</span></h2>
     <h3>点选其他项目即切换，各自数据独立保存，互不混淆</h3>
     <div class="ps-list" id="psList"></div>
-    <div class="ps-note">📌  可到「设置」面板导出 题库项目/玩家答题 文件；改名请点「重命名」。</div>
+    <div class="ps-note">📌 可到「设置」面板导出 题库项目/玩家答题 文件；改名请点「重命名」。</div>
     <div class="ps-actions">
       <button class="btn-ghost" id="psNew">＋ 新建项目</button>
       <button class="btn-ghost" id="psImport">📥 导入本地项目</button>
@@ -1832,6 +1833,10 @@ function makeLockBtn(card) {
   btn.className = 'lock-btn' + (isPaired ? ' paired' : '') + (selecting ? ' selecting' : '');
   btn.title = isPaired ? '点击解绑这对 CP' : (selecting ? '请再点一张卡片完成配对' : '建立 CP 配对');
   btn.innerHTML = isPaired ? ICON_HEART : (selecting ? ICON_TARGET : ICON_LINK);
+  if (state.role === 'author' && state.locked) {
+    btn.disabled = true;
+    btn.title = '项目已加密：解锁后才能配对';
+  }
   btn.addEventListener('click', e => { e.stopPropagation(); toggleGlobalPair(card.id); });
   return btn;
 }
@@ -2000,6 +2005,11 @@ function makeCard(card, opts) {
       const b = slotOf(attrVal) === 1 ? b1 : b0;
       b.dataset.a = String(attrVal); b.textContent = lab(attrVal); b.classList.add('active');
     }
+    if (state.role === 'author' && state.locked) {
+      b1.disabled = true; b0.disabled = true;
+      b1.style.cursor = 'default'; b0.style.cursor = 'default';
+      b1.title = b0.title = '项目已加密：解锁后才能修改';
+    }
     b1.addEventListener('click', e => { e.stopPropagation(); setAttr(card.id, 1); });
     b0.addEventListener('click', e => {
       e.stopPropagation();
@@ -2076,7 +2086,7 @@ function applyHeaderCompact() {
   const set = (sel, txt) => { const el = document.querySelector(sel); if (el) el.textContent = txt; };
   set('#btnAuthorRole', compact ? '👑 出题' : '👑 出题模式');
   set('#btnPlayerRole', compact ? '🎮 玩家' : '🎮 玩家模式');
-  set('#btnGradeRole', compact ? '🧑‍🏫 批改' : '🧑‍🏫 批改模式');
+  set('#btnGradeRole', compact ? '🧑‍🏫 批改' : '🖊 批改模式');
   const viewIcon = compact && isTabletUI();
   set('.mode-btn[data-mode="global"]', viewIcon ? '🌐 全局' : (compact ? '全局' : '全局视角'));
   set('.mode-btn[data-mode="match"]', viewIcon ? '💞 匹配' : (compact ? '匹配' : '匹配视角'));
@@ -3039,7 +3049,7 @@ function stepOrigIdx(d) {
   triggerAutoSave();
 }
 function openCardInfoModal(card, readonly) {
-  readonly = readonly === undefined ? !canEdit() : !!readonly;
+  readonly = !!readonly || !canEdit();   // 非出题可编辑状态一律强制只读
   if (readonly && !card) return;
   editingCard = card;
   ciOrigIdx = Math.max(0, Math.min(3, card.photoIdx || 0));
@@ -3324,13 +3334,14 @@ function renderMatch() {
   } else {
     const hasPair = (matchSlotA !== null && matchSlotB !== null) &&
       pairs.some(pr => (pr[0] === matchSlotA && pr[1] === matchSlotB) || (pr[0] === matchSlotB && pr[1] === matchSlotA));
+    const roAuthor = state.role === 'author' && state.locked;
     const lockBtn = document.createElement('button');
     lockBtn.className = 'btn-lock-big';
     lockBtn.textContent = hasPair ? '🔒 更新 CP 图' : '🔒 锁死 CP';
-    lockBtn.disabled = state.locked || !(matchSlotA !== null && matchSlotB !== null);
-    lockBtn.title = state.locked ? '项目已加密：解锁后才能编辑' : '';
+    lockBtn.disabled = roAuthor || !(matchSlotA !== null && matchSlotB !== null);
+    lockBtn.title = roAuthor ? '项目已加密：解锁后才能编辑' : '';
     lockBtn.addEventListener('click', () => {
-      if (!requireEdit()) return;
+      if (state.role === 'author' && !requireEdit()) return;
       if (matchSlotA === null || matchSlotB === null) return;
       const a = matchSlotA, b = matchSlotB;
       const stillPaired = pairs.some(pr => (pr[0] === a && pr[1] === b) || (pr[0] === b && pr[1] === a));
@@ -3381,10 +3392,10 @@ function renderMatch() {
     const unlockBtn = document.createElement('button');
     unlockBtn.className = 'btn-unlock-big';
     unlockBtn.textContent = '🔓 解绑 CP';
-    unlockBtn.disabled = state.locked || !hasPair;
-    unlockBtn.title = state.locked ? '项目已加密：解锁后才能编辑' : '';
+    unlockBtn.disabled = roAuthor || !hasPair;
+    unlockBtn.title = roAuthor ? '项目已加密：解锁后才能编辑' : '';
     unlockBtn.addEventListener('click', () => {
-      if (!requireEdit()) return;
+      if (state.role === 'author' && !requireEdit()) return;
       if (matchSlotA === null || matchSlotB === null) return;
       for (let i = pairs.length - 1; i >= 0; i--) {
         const pr = pairs[i];
@@ -3408,10 +3419,10 @@ function renderMatch() {
     clearSlotBtn.className = 'btn-clear-slot';
     clearSlotBtn.textContent = '✕ 清空展示';
     clearSlotBtn.title = '只清空下方两个展示框，不影响已锁死的 CP';
-    clearSlotBtn.disabled = state.locked || (matchSlotA === null && matchSlotB === null);
-    clearSlotBtn.title = state.locked ? '项目已加密：解锁后才能编辑' : '只清空下方两个展示框，不影响已锁死的 CP';
+    clearSlotBtn.disabled = roAuthor || (matchSlotA === null && matchSlotB === null);
+    clearSlotBtn.title = roAuthor ? '项目已加密：解锁后才能编辑' : '只清空下方两个展示框，不影响已锁死的 CP';
     clearSlotBtn.addEventListener('click', () => {
-      if (!requireEdit()) return;
+      if (state.role === 'author' && !requireEdit()) return;
       matchSlotA = null; matchSlotB = null;
       matchSlotA_photoIdx = 0; matchSlotB_photoIdx = 0;
       matchSlotA_mode = 'single'; matchSlotB_mode = 'single';
