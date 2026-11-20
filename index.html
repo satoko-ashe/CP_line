@@ -341,12 +341,14 @@ main{
 .ci-name::placeholder{color:#475569;font-weight:600}
 .ci-figures{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
 .ci-figures label{display:flex;align-items:center;gap:4px;background:#101b2d;border:1px solid #1e293b;
-  border-radius:11px;padding:5px 10px;font-size:11.5px;font-weight:700;color:#94a3b8}
+  border-radius:11px;padding:5px 10px;font-size:11.5px;font-weight:700;color:#94a3b8;
+  max-width:100%;min-width:0;white-space:nowrap}
+.ci-figures label.birth{flex:0 1 auto;min-width:0}
 .ci-figures input{width:62px;background:transparent;border:none;color:#ffffff;font-size:15.5px;font-weight:800;text-align:center;outline:none;letter-spacing:.3px}
 .ci-figures input[type=number]{-moz-appearance:textfield}
 .ci-figures input[type=number]::-webkit-outer-spin-button,
 .ci-figures input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
-.ci-figures input[type=date]{width:116px;color-scheme:dark}
+.ci-figures input[type=date]{width:136px;max-width:100%;min-width:0;color-scheme:dark}
 .ci-unit{color:#7dd3fc;font-size:12.5px;font-weight:800;opacity:1}
 .ci-block{background:#101b2d;border:1px solid #1e293b;border-radius:14px;padding:9px 10px;display:flex;flex-direction:column;gap:7px}
 /* 矮屏：右栏再压缩一点，尽量避免出现滚动条 */
@@ -565,6 +567,7 @@ main{
   padding:10px 26px;border-radius:12px;font-size:14px;font-weight:800;color:#fff;
   background:linear-gradient(135deg,#475569,#334155);border:1px solid #64748b;
 }
+.btn-unlock-big:disabled{opacity:.35;box-shadow:none;cursor:not-allowed}
 .lock-hint{animation:lhin .28s ease-out both;}
 @keyframes lhin{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
 .lock-hint{
@@ -746,6 +749,12 @@ body[data-role="grade"] #globalView .card{height:calc(100% - 54px)}
   #annotBar button{padding:5px 8px;font-size:11px}
   .heart-connector{transform:none;margin:0;font-size:18px}
 }
+@media (max-width:700px){
+  /* 小屏：生日单独一行，日期不被截断 */
+  .ci-figures label{flex:1 1 calc(50% - 6px);justify-content:center;min-width:0}
+  .ci-figures label.birth{flex:1 1 100%}
+  .ci-figures label.birth input{width:auto;flex:1 1 auto;min-width:0;text-align:center}
+}
 @media (max-width:640px){
   /* 小屏：标注栏压成一行，避免挤占展示区 */
   #annotBar{left:6px;right:6px;transform:none;justify-content:center;flex-wrap:nowrap;overflow-x:auto;padding:5px 6px;gap:6px}
@@ -867,7 +876,7 @@ body[data-role="grade"] #globalView .card{height:calc(100% - 54px)}
         <button class="btn-ghost" id="btnExportR">📊 导出答题记录(含评分)</button>
         <button class="btn-ghost" id="btnPrint">🖨 导出 PDF</button>
       </div>
-      <div class="ps-note" style="margin-top:8px">📌 导入以「文件名」为项目名，改文件名再导入即可；时间版本后缀不影响项目名判断。</div>
+      <div class="ps-note" style="margin-top:8px">📌 导入以「文件名」为项目名，改文件名再导入即可。</div>
     </section>
     <section>
       <h3>清空</h3>
@@ -892,7 +901,7 @@ body[data-role="grade"] #globalView .card{height:calc(100% - 54px)}
     <h2>📁 当前项目：<span id="psCurName">未命名项目</span></h2>
     <h3>点选其他项目即切换，各自数据独立保存，互不混淆</h3>
     <div class="ps-list" id="psList"></div>
-    <div class="ps-note">📌 可到「设置」面板导出 题库项目/玩家答题 文件；改名请点「重命名」。</div>
+    <div class="ps-note">📌  可到「设置」面板导出 题库项目/玩家答题 文件；改名请点「重命名」。</div>
     <div class="ps-actions">
       <button class="btn-ghost" id="psNew">＋ 新建项目</button>
       <button class="btn-ghost" id="psImport">📥 导入本地项目</button>
@@ -988,7 +997,7 @@ body[data-role="grade"] #globalView .card{height:calc(100% - 54px)}
           <div class="ci-figures">
             <label>身高<input type="number" id="info_height" min="0" max="300" step="1" placeholder="163"><span class="ci-unit">cm</span></label>
             <label>体重<input type="number" id="info_weight" min="0" max="300" step="1" placeholder="48"><span class="ci-unit">kg</span></label>
-            <label>生日<input type="date" id="info_birthday"></label>
+            <label class="birth">生日<input type="date" id="info_birthday"></label>
           </div>
         </div>
       </section>
@@ -1661,7 +1670,7 @@ function renderScores() {
     panel.appendChild(card);
   });
   panel.style.display = state.role === 'author' ? 'none' : '';
-  $('#btnToggleStats').textContent = innerWidth <= 480
+  $('#btnToggleStats').textContent = innerWidth <= 1100
     ? (statsVisible ? '🙈' : '👁️')
     : (statsVisible ? '🙈 隐藏统计' : '👁️ 显示统计');
 }
@@ -2068,10 +2077,11 @@ function applyHeaderCompact() {
   set('#btnAuthorRole', compact ? '👑 出题' : '👑 出题模式');
   set('#btnPlayerRole', compact ? '🎮 玩家' : '🎮 玩家模式');
   set('#btnGradeRole', compact ? '🧑‍🏫 批改' : '🧑‍🏫 批改模式');
-  set('.mode-btn[data-mode="global"]', compact ? '全局' : '全局视角');
-  set('.mode-btn[data-mode="match"]', compact ? '匹配' : '匹配视角');
+  const viewIcon = compact && isTabletUI();
+  set('.mode-btn[data-mode="global"]', viewIcon ? '🌐 全局' : (compact ? '全局' : '全局视角'));
+  set('.mode-btn[data-mode="match"]', viewIcon ? '💞 匹配' : (compact ? '匹配' : '匹配视角'));
   const brand = document.querySelector('.brand');
-  if (brand) brand.textContent = tiny ? '💞 CP连线' : '💞 趣味CP连线游戏';
+  if (brand) brand.textContent = innerWidth <= 900 ? '💞 CP连线' : '💞 趣味CP连线游戏';
   // 手机：右上工具只留图标，避免导航折成三行
   const recOn = document.querySelector('#btnRec') && document.querySelector('#btnRec').classList.contains('on');
   const tools = [
@@ -2083,11 +2093,11 @@ function applyHeaderCompact() {
   tools.forEach(([sel, full, icon, tip]) => {
     const el = document.querySelector(sel);
     if (!el) return;
-    el.textContent = tiny ? icon : full;
+    el.textContent = compact ? icon : full;
     el.title = tip;
   });
   const rec = document.querySelector('#btnRec');
-  if (rec && !recOn) { rec.textContent = tiny ? '🎬' : '🎬 录屏'; rec.title = '录屏'; }
+  if (rec && !recOn) { rec.textContent = compact ? '🎬' : '🎬 录屏'; rec.title = '录屏'; }
 }
 
 function syncCardMax() {
@@ -3177,7 +3187,9 @@ function renderMatch() {
   const head = document.createElement('div');
   head.className = 'm-head';
   if (state.role === 'author') {
-    head.innerHTML = '<span>👑 出题模式 · 标准答案配对</span><span class="ref">已设 ' + pairs.length + ' 对</span>';
+    head.innerHTML = '<span>👑 出题模式 · 标准答案配对</span>' +
+      (state.locked ? '<span class="ref">🔐 已加密 · 只读</span>' : '') +
+      '<span class="ref">已设 ' + pairs.length + ' 对</span>';
   } else if (state.role === 'player') {
     head.innerHTML = '<span>🎮 ' + esc(p ? p.name : '') + '</span><span class="ref">已连 ' + pairs.length + ' 对</span>';
   } else {
@@ -3315,8 +3327,10 @@ function renderMatch() {
     const lockBtn = document.createElement('button');
     lockBtn.className = 'btn-lock-big';
     lockBtn.textContent = hasPair ? '🔒 更新 CP 图' : '🔒 锁死 CP';
-    lockBtn.disabled = !(matchSlotA !== null && matchSlotB !== null);
+    lockBtn.disabled = state.locked || !(matchSlotA !== null && matchSlotB !== null);
+    lockBtn.title = state.locked ? '项目已加密：解锁后才能编辑' : '';
     lockBtn.addEventListener('click', () => {
+      if (!requireEdit()) return;
       if (matchSlotA === null || matchSlotB === null) return;
       const a = matchSlotA, b = matchSlotB;
       const stillPaired = pairs.some(pr => (pr[0] === a && pr[1] === b) || (pr[0] === b && pr[1] === a));
@@ -3367,8 +3381,10 @@ function renderMatch() {
     const unlockBtn = document.createElement('button');
     unlockBtn.className = 'btn-unlock-big';
     unlockBtn.textContent = '🔓 解绑 CP';
-    unlockBtn.disabled = !hasPair;
+    unlockBtn.disabled = state.locked || !hasPair;
+    unlockBtn.title = state.locked ? '项目已加密：解锁后才能编辑' : '';
     unlockBtn.addEventListener('click', () => {
+      if (!requireEdit()) return;
       if (matchSlotA === null || matchSlotB === null) return;
       for (let i = pairs.length - 1; i >= 0; i--) {
         const pr = pairs[i];
@@ -3392,8 +3408,10 @@ function renderMatch() {
     clearSlotBtn.className = 'btn-clear-slot';
     clearSlotBtn.textContent = '✕ 清空展示';
     clearSlotBtn.title = '只清空下方两个展示框，不影响已锁死的 CP';
-    clearSlotBtn.disabled = (matchSlotA === null && matchSlotB === null);
+    clearSlotBtn.disabled = state.locked || (matchSlotA === null && matchSlotB === null);
+    clearSlotBtn.title = state.locked ? '项目已加密：解锁后才能编辑' : '只清空下方两个展示框，不影响已锁死的 CP';
     clearSlotBtn.addEventListener('click', () => {
+      if (!requireEdit()) return;
       matchSlotA = null; matchSlotB = null;
       matchSlotA_photoIdx = 0; matchSlotB_photoIdx = 0;
       matchSlotA_mode = 'single'; matchSlotB_mode = 'single';
@@ -4433,35 +4451,37 @@ function exportImage() {
 }
 
 let rotateDismissed = false;
-function isCoarseUI() {
-  return ((navigator.maxTouchPoints || 0) > 0 || matchMedia('(pointer: coarse)').matches) && innerWidth <= 1180;
+// 平板：短边 >= 600，建议横屏；手机竖屏更顺手，不弹提示
+function isTabletUI() {
+  return ((navigator.maxTouchPoints || 0) > 0 || matchMedia('(pointer: coarse)').matches)
+    && Math.min(innerWidth, innerHeight) >= 600;
 }
 function checkOrientation() {
   const el = $('#rotateHint');
   if (!el) return;
   const portrait = innerHeight > innerWidth;
-  el.classList.toggle('show', isCoarseUI() && portrait && !rotateDismissed);
-}
-async function lockLandscape() {
-  // 仅在支持 Screen Orientation API 的浏览器上生效（Chrome/Android）；iOS 会走到横屏提示
-  if (!isCoarseUI()) return;   // 桌面全屏不强行锁方向
-  try {
-    if (screen.orientation && screen.orientation.lock) await screen.orientation.lock('landscape');
-  } catch (e) { /* 不支持则交给旋转提示 */ }
-  setTimeout(checkOrientation, 350);
+  el.classList.toggle('show', isTabletUI() && portrait && !rotateDismissed);
 }
 function toggleFullscreen() {
-  if (!document.fullscreenElement) {
-    document.documentElement.requestFullscreen()
-      .then(() => lockLandscape())
-      .catch(() => toast('全屏不可用'));
+  // 只做全屏（隐藏浏览器地址栏/标签栏），不锁定方向：平板横屏进横屏，手机竖屏进竖屏
+  const root = document.documentElement;
+  const inFs = document.fullscreenElement || document.webkitFullscreenElement;
+  if (!inFs) {
+    const req = root.requestFullscreen || root.webkitRequestFullscreen;
+    if (!req) { toast('当前浏览器不支持网页全屏；iPad 可先「添加到主屏幕」再打开'); return; }
+    try {
+      const p = req.call(root);
+      if (p && p.catch) p.catch(() => toast('全屏不可用'));
+    } catch (e) { toast('全屏不可用'); }
   } else {
-    document.exitFullscreen()
-      .then(() => {
-        if (screen.orientation && screen.orientation.unlock) screen.orientation.unlock();
-        checkOrientation();
-      })
-      .catch(() => {});
+    const exit = document.exitFullscreen || document.webkitExitFullscreen;
+    if (exit) {
+      try {
+        const p = exit.call(document);
+        if (p && p.then) p.then(() => checkOrientation()).catch(() => {});
+        else checkOrientation();
+      } catch (e) { /* ignore */ }
+    }
   }
 }
 
