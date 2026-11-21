@@ -84,9 +84,11 @@ input,select{font-family:inherit}
 .mode-btn{
   padding:5px 11px;border-radius:8px;font-size:12px;color:#94a3b8;white-space:nowrap;transition:.15s;
 }
+/* 模式（出题 / 玩家 / 批改）选中：紫色；视角（全局 / 匹配）选中：蓝色 */
 .mode-btn.active{background:linear-gradient(135deg,#7c3aed,#db2777);color:#fff;font-weight:700;
   box-shadow:0 6px 16px -8px #db2777}
-.mode-btn[data-role="grade"].active{background:linear-gradient(135deg,#0ea5e9,#2563eb);box-shadow:0 6px 16px -8px #2563eb}
+.mode-btn[data-mode].active{background:linear-gradient(135deg,#0ea5e9,#38bdf8);color:#fff;font-weight:700;
+  box-shadow:0 6px 16px -8px #38bdf8}
 
 /* 计分面板 */
 .score-panel{
@@ -102,6 +104,11 @@ input,select{font-family:inherit}
 .score-card .pname{font-weight:600;max-width:80px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .score-card b{color:#f1f5f9}
 .score-card .pct{color:var(--c);font-weight:700}
+.score-card .sitem{display:inline-flex;align-items:baseline;gap:3px;white-space:nowrap}
+.score-card .sitem em{font-style:normal;font-size:10px;color:#64748b}
+.score-card .sitem b{font-size:11.5px;font-weight:800}
+.score-card .sitem + .sitem{border-left:1px solid #334155;padding-left:8px;margin-left:1px}
+.score-card .sitem .pct{font-size:11px}
 
 /* =========================================================
    主区域
@@ -191,6 +198,7 @@ main{
 }
 .grade-mark.ok{background:#16a34a;border:1.5px solid #4ade80;box-shadow:0 0 10px #16a34a99}
 .grade-mark.bad{background:#dc2626;border:1.5px solid #f87171;box-shadow:0 0 10px #dc262699}
+.grade-mark.half{background:rgba(239,68,68,.10);border:2px solid #ef4444;box-shadow:0 0 10px #ef444488}
 .grade-mark.none{background:#334155;border:1.5px solid #64748b;color:#cbd5e1;box-shadow:none}
 
 /* 照片 */
@@ -374,6 +382,7 @@ main{
   padding:3px 6px 3px 7px;font-size:11.5px;color:#e0f2fe;line-height:1.2;max-width:100%}
 .tag .f{font-size:13px;line-height:1;display:inline-flex;align-items:center}
 .tag .f .geo-flag{width:17px;height:12px;border-radius:2px;object-fit:cover;box-shadow:0 1px 3px rgba(0,0,0,.45);display:block}
+.tag .f .geo-code{font-size:9.5px;font-weight:800;color:#7dd3fc;letter-spacing:.4px;line-height:1}
 .tag .x{width:14px;height:14px;border-radius:50%;background:#1e3a52;color:#94a3b8;font-size:10px;line-height:1;flex:none}
 .tag .x:hover{background:#dc2626;color:#fff}
 .tag-empty{font-size:11px;color:#475569}
@@ -525,6 +534,7 @@ main{
 .match-mini .stat{flex:none;font-size:12px;font-weight:800;width:14px;text-align:center}
 .match-mini .stat.ok{color:#22c55e}
 .match-mini .stat.bad{color:#ef4444}
+.match-mini .stat.half{width:13px;height:13px;box-sizing:border-box;border:2px solid #ef4444;border-radius:50%;align-self:center}
 
 .match-workspace{flex:1;min-width:0;min-height:0;display:flex;flex-direction:column;gap:12px;align-self:stretch}
 .match-board{
@@ -627,6 +637,22 @@ main{
   border:1px solid #334155;border-radius:18px;padding:18px;
   box-shadow:0 30px 80px rgba(0,0,0,.7);display:flex;flex-direction:column;gap:14px;
 }
+/* 设置弹窗：宽度适中，高度随内容，尽量不出现纵向滚动条 */
+#settingsModal .modal{width:min(920px,96vw);height:auto;max-height:94vh;padding:16px;gap:10px}
+#settingsModal .modal section{gap:6px;padding-top:9px}
+@media (max-width:1100px){
+  #settingsModal .modal{width:min(920px,96vw);height:auto;max-height:94vh;border-radius:18px;padding:14px;gap:9px}
+  #settingsModal .modal section{gap:5px;padding-top:8px}
+}
+@media (max-width:760px){
+  #settingsModal .modal{width:96vw;padding:11px 12px;gap:7px;border-radius:16px}
+  #settingsModal .modal section{gap:5px;padding-top:7px}
+  #settingsModal .file-line{gap:6px}
+  #settingsModal .btn-ghost{padding:6px 11px;font-size:12px}
+}
+.file-line{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.file-line-tag{flex:none;font-size:10.5px;font-weight:800;color:#7dd3fc;border:1px solid #164e63;
+  background:#083344;border-radius:7px;padding:3px 7px;letter-spacing:.5px}
 .modal h2{margin:0;font-size:16px;display:flex;align-items:center;gap:8px}
 .modal section{display:flex;flex-direction:column;gap:8px;border-top:1px solid #1e293b;padding-top:12px}
 .modal h3{margin:0;font-size:11px;color:#64748b;font-weight:700;letter-spacing:.5px}
@@ -639,6 +665,17 @@ main{
 .pp-item b{font-size:13px;color:#e2e8f0;font-weight:800}
 .pp-item .pp-sub{display:block;font-size:11px;color:#64748b;margin-top:2px}
 .pp-item .pp-meta{margin-left:auto;font-size:11px;color:#7dd3fc;white-space:nowrap;text-align:right;line-height:1.5}
+/* 远程题库拉取进度 */
+.modal-mask.mask-top{z-index:260}
+.remote-loading{width:min(430px,100%);gap:10px}
+.remote-loading .rl-file{font-size:12px;color:#7dd3fc;word-break:break-all;line-height:1.5}
+.rl-bar{height:9px;border-radius:999px;background:#1e293b;overflow:hidden;position:relative}
+.rl-bar i{display:block;height:100%;width:0;border-radius:999px;background:linear-gradient(90deg,#38bdf8,#a855f7,#f472b6);transition:width .18s ease}
+.rl-bar.indet i{width:34%;animation:rlSweep 1.15s ease-in-out infinite}
+@keyframes rlSweep{0%{transform:translateX(-110%)}100%{transform:translateX(330%)}}
+.rl-info{display:flex;justify-content:space-between;align-items:center;gap:10px;font-size:12px;color:#94a3b8}
+.rl-info b{color:#f9a8d4;font-weight:800}
+.rl-tip{font-size:11px;color:#64748b;line-height:1.65}
 .modal input[type=text],.modal input[type=number],.modal input[type=date],.modal select{
   background:#1e293b;border:1px solid #334155;color:#e2e8f0;border-radius:9px;
   padding:6px 9px;font-size:12.5px;outline:none;min-width:0;
@@ -812,13 +849,13 @@ body[data-role="grade"] #globalView .card{height:calc(100% - 54px)}
     <div class="modes">
       <button class="mode-btn active" data-role="author" id="btnAuthorRole">👑 出题模式</button>
       <button class="mode-btn" data-role="player" id="btnPlayerRole">🎮 玩家模式</button>
-      <button class="mode-btn" data-role="grade" id="btnGradeRole">🖊 批改模式</button>
+      <button class="mode-btn" data-role="grade" id="btnGradeRole">🖋 批改模式</button>
     </div>
 
     <!-- 视图切换 -->
     <div class="modes">
-      <button class="mode-btn active" data-mode="global">全局视角</button>
-      <button class="mode-btn" data-mode="match">匹配视角</button>
+      <button class="mode-btn active" data-mode="global">🌐 全局视角</button>
+      <button class="mode-btn" data-mode="match">💞 匹配视角</button>
     </div>
 
     <div class="grow"></div>
@@ -863,21 +900,28 @@ body[data-role="grade"] #globalView .card{height:calc(100% - 54px)}
     </section>
     <section>
       <h3>原图加载</h3>
-      <label class="chk"><input type="checkbox" id="autoOrigChk"> 一键拉取所有原图（写入本地缓存、所有视图同步）</label>
+      <label class="chk"><input type="checkbox" id="autoOrigChk"> 一键预加载原图（写入缓存，不覆盖本地照片）</label>
       <div class="row" style="margin-top:8px">
         <button class="btn-ghost" id="btnPullOrig">⬇ 立即拉取原图</button>
         <button class="btn-ghost" id="btnClearOrig">🗑 清除原图缓存</button>
       </div>
+      <div class="ps-note">📶 WiFi / 电脑优先原图 URL；手机流量优先本地图，点「查看原图」按张加载。</div>
     </section>
     <section>
       <h3>文件 & 导出</h3>
-      <div class="row">
+      <div class="file-line">
+        <span class="file-line-tag">导入</span>
         <button class="btn-ghost" id="btnImport">📂 导入项目</button>
+        <button class="btn-ghost" id="btnImportResult">📥 导入答题记录</button>
+      </div>
+      <div class="file-line">
+        <span class="file-line-tag">导出</span>
         <button class="btn-ghost" id="btnExportQ">💾 导出题库(含答案)</button>
         <button class="btn-ghost" id="btnExportR">📊 导出答题记录(含评分)</button>
         <button class="btn-ghost" id="btnPrint">🖨 导出 PDF</button>
       </div>
       <div class="ps-note" style="margin-top:8px">📌 导入以「文件名」为项目名，改文件名再导入即可。</div>
+      <div class="ps-note">📌 答题记录不含卡片：请先打开对应题库，再用「导入答题记录」；按玩家名合并，不会覆盖题库。</div>
     </section>
     <section>
       <h3>清空</h3>
@@ -895,6 +939,7 @@ body[data-role="grade"] #globalView .card{height:calc(100% - 54px)}
 
 <!-- ================= 输入弹窗 ================= -->
 <input type="file" id="importFile" accept=".json,application/json" multiple hidden>
+<input type="file" id="importResultFile" accept=".json,application/json" multiple hidden>
 
 <!-- ================= 项目切换 ================= -->
 <div class="modal-mask" id="projSwitch">
@@ -923,6 +968,16 @@ body[data-role="grade"] #globalView .card{height:calc(100% - 54px)}
       <button class="btn-ghost" data-close="confirmModal">取消</button>
       <button class="btn-primary" id="cfOk">确定</button>
     </div>
+  </div>
+</div>
+
+<div class="modal-mask mask-top" id="remoteLoading">
+  <div class="modal remote-loading">
+    <h2 id="rlTitle">📥 正在拉取远程题库</h2>
+    <div class="rl-file" id="rlFile"></div>
+    <div class="rl-bar indet" id="rlBarWrap"><i id="rlBar"></i></div>
+    <div class="rl-info"><span id="rlText">正在连接…</span><b id="rlPct"></b></div>
+    <div class="rl-tip">文件较大时可能需要几秒，请稍候；下载完成后会缓存到本地，仓库文件未改动时不会重复下载。</div>
   </div>
 </div>
 
@@ -1241,6 +1296,34 @@ function getPairKey(a, b) { return a < b ? a + '-' + b : b + '-' + a; }
 function isCorrectPair(a, b) {
   return state.answers.pairs.some(pr => (pr[0] === a && pr[1] === b) || (pr[0] === b && pr[1] === a));
 }
+function pairPartnerOf(pairs, id) {
+  const pr = (pairs || []).find(x => x[0] === id || x[1] === id);
+  if (!pr) return null;
+  return pr[0] === id ? pr[1] : pr[0];
+}
+// 批改：单张卡同时看「属性」与「这张卡的 CP 连线」，全对 / 全错 / 一对一错
+function gradeCardStatus(card) {
+  const p = currentPlayer();
+  if (!p || !card) return 'none';
+  const key = state.answers.attrs[card.id];
+  const picked = p.attrs ? p.attrs[card.id] : undefined;
+  let attr = null;
+  if (key !== undefined) attr = (picked !== undefined && Number(picked) === Number(key));   // 有答案但未选 = 属性错
+  const ansPartner = pairPartnerOf(state.answers.pairs || [], card.id);
+  const playerPartner = pairPartnerOf(p.pairs || [], card.id);
+  let cp = null;
+  if (ansPartner !== null || playerPartner !== null) cp = (ansPartner !== null && playerPartner === ansPartner);
+  if (attr === null && cp === null) return 'none';
+  if (attr === null) return cp ? 'ok' : 'bad';
+  if (cp === null) return attr ? 'ok' : 'bad';
+  return attr === cp ? (attr ? 'ok' : 'bad') : 'half';
+}
+function gradeStatusTitle(status) {
+  if (status === 'ok') return '属性与连线全对';
+  if (status === 'bad') return '属性与连线全错';
+  if (status === 'half') return '半对：属性与连线一对一错';
+  return '未判定：属性或连线未作答';
+}
 function pairStore() {
   if (state.role === 'author') return { pairs: state.answers.pairs, offsets: state.answers.pairOffsets, photos: state.answers.pairPhotos, owner: 'answer' };
   const p = currentPlayer();
@@ -1469,8 +1552,49 @@ function restoreSnapshot(saved) {
 /* =========================================================
    数据模型
    ========================================================= */
+function isHttpUrl(v) {
+  return typeof v === 'string' && /^(https?:)?\/\//i.test(v.trim());
+}
+// 显示用：按网络策略选图（WiFi/电脑优先 originals URL，流量优先本地 base64），绝不回写 photos
+function photoSrcAt(card, idx) {
+  if (!card) return '';
+  const local = card.photos && card.photos[idx];
+  const orig = originalOf(card, idx) || '';
+  if (!NET_METERED) {
+    // WiFi / 电脑：优先原图 URL；有本地缓存 blob 时直接复用
+    if (orig && IMG_OBJ_URLS[orig]) return IMG_OBJ_URLS[orig];
+    if (orig) return orig;
+    return local || '';
+  }
+  // 流量 / 手机：优先本地 base64；没有本地图时才降级到原图
+  if (local) return local;
+  if (orig && IMG_OBJ_URLS[orig]) return IMG_OBJ_URLS[orig];
+  return orig || '';
+}
+function photoSlots(card) {
+  const slots = [];
+  for (let i = 0; i < 4; i++) {
+    const src = photoSrcAt(card, i);
+    if (src) slots.push({ src: src, idx: i });
+  }
+  return slots;
+}
+function setPhotoImgSrc(img, src) {
+  const shouldWarm = !NET_METERED && isHttpUrl(src) && !IMG_OBJ_URLS[src];
+  if (shouldWarm) img.addEventListener('load', () => warmOriginalSrc(src), { once: true });
+  img.src = src;
+}
 function normalizeCard(c, i) {
   c = c || {};
+  // photos 只存本地 base64；originals 只存在线 URL。旧数据里混进 photos 的 URL 自动挪回 originals
+  const photos = Array.isArray(c.photos) ? c.photos.slice(0, 4) : [];
+  const originals = Array.isArray(c.originals) ? c.originals.slice(0, 4) : [];
+  for (let k = 0; k < 4; k++) {
+    if (isHttpUrl(photos[k])) {
+      if (!originals[k]) originals[k] = photos[k].trim();
+      photos[k] = '';
+    }
+  }
   const card = {
     id: i,
     name: c.name || '',
@@ -1483,8 +1607,8 @@ function normalizeCard(c, i) {
     zodiacThai: c.zodiacThai || '',
     school: c.school || '',
     company: c.company || '',
-    photos: Array.isArray(c.photos) ? c.photos.slice(0, 4) : [],
-    originals: Array.isArray(c.originals) ? c.originals.slice(0, 4) : [],
+    photos: photos,
+    originals: originals,
     photoMode: c.photoMode === 'single' ? 'single' : 'grid',
     photoIdx: typeof c.photoIdx === 'number' ? c.photoIdx : 0,
     videoUrl: c.videoUrl || '',
@@ -1499,15 +1623,6 @@ function normalizeCard(c, i) {
     showCompany: !!c.showCompany,
     showVideo: c.showVideo !== false
   };
-  // 降级：JSON 里没解析出图片（无 base64）但有原图直链时，直接用直链显示
-  const isUrl = v => typeof v === 'string' && /^(https?:)?\/\//i.test(v.trim());
-  for (let k = 0; k < 4; k++) {
-    const p = card.photos[k];
-    if (!p && isUrl(card.originals[k])) {
-      while (card.photos.length < k) card.photos.push('');
-      card.photos[k] = card.originals[k].trim();
-    }
-  }
   compactCardPhotos(card);
   return card;
 }
@@ -1650,18 +1765,19 @@ function renderScores() {
   panel.innerHTML = '';
   state.players.forEach(p => {
     const sc = computeScore(p);
+    const attrPct = sc.attrTotal ? Math.round(sc.attrCorrect / sc.attrTotal * 100) : 0;
+    const pairPct = sc.pairTotal ? Math.round(sc.pairCorrect / sc.pairTotal * 100) : 0;
     const card = document.createElement('div');
     card.className = 'score-card' + (p.id === state.currentPlayerId ? ' active' : '');
     card.style.setProperty('--c', p.color);
-    const ready = statsReady(p);
-    card.innerHTML = ready
-      ? '<span class="dot"></span><span class="pname">' + esc(p.name) + '</span>' +
-        '<b>' + sc.attrCorrect + '/' + sc.attrTotal + '</b>' +
-        '<b>' + sc.pairCorrect + '/' + sc.pairTotal + '</b>' +
-        '<span class="pct">' + scorePct(sc) + '%</span>' +
-        (statsVisible ? '<span style="font-size:10px;color:#64748b">属性/CP</span>' : '')
-      : '<span class="dot"></span><span class="pname">' + esc(p.name) + '</span>' +
-        '<span class="pct" style="color:#64748b;font-weight:600">作答中…</span>';
+    // 隐藏统计时只显示昵称；显示统计时按当前作答实时计算，不等全部答完
+    card.innerHTML = '<span class="dot"></span><span class="pname">' + esc(p.name) + '</span>' +
+      (statsVisible
+        ? '<span class="sitem"><em>属性</em><b>' + sc.attrCorrect + '/' + sc.attrTotal + '</b>' +
+          '<span class="pct">' + attrPct + '%</span></span>' +
+          '<span class="sitem"><em>CP</em><b>' + sc.pairCorrect + '/' + sc.pairTotal + '</b>' +
+          '<span class="pct">' + pairPct + '%</span></span>'
+        : '');
     card.addEventListener('click', () => {
       state.currentPlayerId = p.id;
       refreshFilterSelects();
@@ -1682,7 +1798,8 @@ function makePhotoBox(card, override) {
   override = override || {};
   const box = document.createElement('div');
   box.className = 'photo-box';
-  const photos = card.photos || [];
+  const slots = photoSlots(card);
+  const photos = slots.map(s => s.src);   // 仅用于显示，本地 base64 或 originals URL
   const mode = override.mode || (photos.length <= 1 ? 'single' : (card.photoMode || 'grid'));
   let idx = typeof override.idx === 'number' ? override.idx : (card.photoIdx || 0);
   if (idx >= photos.length) idx = 0;
@@ -1700,7 +1817,7 @@ function makePhotoBox(card, override) {
   if (mode === 'single') {
     box.classList.add('single');
     const img = noRefImg(document.createElement('img'));
-    img.src = photos[idx];
+    setPhotoImgSrc(img, photos[idx]);
     img.alt = card.name || '';
     box.appendChild(img);
     if (photos.length > 1) {
@@ -1718,17 +1835,18 @@ function makePhotoBox(card, override) {
     const n = Math.min(photos.length, 4);
     box.style.gridTemplateColumns = (n === 2 ? 'minmax(0,1fr)' : 'repeat(' + Math.min(n, 2) + ',minmax(0,1fr))');
     box.style.gridTemplateRows = (n === 1 ? 'minmax(0,1fr)' : 'repeat(2,minmax(0,1fr))');
-    for (let i = 0; i < Math.min(photos.length, 4); i++) {
-      const src = photos[i];
+    for (let i = 0; i < Math.min(slots.length, 4); i++) {
+      const slot = slots[i];
+      const src = slot.src;
       if (src) {
         const im = noRefImg(document.createElement('img'));
-        im.src = src;
+        setPhotoImgSrc(im, src);
         im.alt = '';
-        if (photos.length === 3 && i === 2) im.style.gridColumn = 'span 2';
+        if (slots.length === 3 && i === 2) im.style.gridColumn = 'span 2';
         im.addEventListener('click', e => {
           e.stopPropagation();
-          if (override.onIdx) { override.onIdx(i); return; }
-          if (canEdit() && !readonly) replacePhoto(card.id, i);
+          if (override.onIdx) { override.onIdx(slot.idx); return; }
+          if (canEdit() && !readonly) replacePhoto(card.id, slot.idx);
           else showPreview(src);
         });
         im.title = override.onIdx ? '选这张作为 CP 图' : '';
@@ -1761,7 +1879,7 @@ function makePhotoBox(card, override) {
       const oBtn = document.createElement('button');
       oBtn.textContent = '⤢';
       oBtn.title = '查看原图（点击才拉取）';
-      oBtn.addEventListener('click', e => { e.stopPropagation(); viewOriginal(card, idx); });
+      oBtn.addEventListener('click', e => { e.stopPropagation(); viewOriginal(card, slots[idx] ? slots[idx].idx : idx); });
       tools.appendChild(oBtn);
     }
     if (canEdit() && !readonly && !override.slot) {
@@ -1770,7 +1888,7 @@ function makePhotoBox(card, override) {
         dBtn.className = 'del';
         dBtn.textContent = '✕';
         dBtn.title = '删除当前这张（' + (idx + 1) + '/' + photos.length + '）';
-        dBtn.addEventListener('click', e => { e.stopPropagation(); removePhotoAt(card.id, idx); });
+        dBtn.addEventListener('click', e => { e.stopPropagation(); removePhotoAt(card.id, slots[idx] ? slots[idx].idx : idx); });
         tools.appendChild(dBtn);
       }
       const aBtn = document.createElement('button');
@@ -1787,19 +1905,23 @@ function makePhotoBox(card, override) {
 function compactCardPhotos(card) {
   const photos = Array.isArray(card.photos) ? card.photos : [];
   const originals = Array.isArray(card.originals) ? card.originals : [];
-  const n = Math.max(photos.length, originals.length);
-  const np = [], no = [];
-  for (let i = 0; i < n; i++) {
-    const p = photos[i] || '';
-    const o = originals[i] || '';
-    if (!p && !o) continue;
-    np.push(p || o);            // 只有直链时就先用直链占位显示
-    no.push(o);
+  let last = -1;
+  for (let i = 0; i < Math.max(photos.length, originals.length, 4); i++) {
+    if (photos[i] || originals[i]) last = i;
   }
-  card.photos = np.slice(0, 4);
+  const np = [], no = [];
+  for (let i = 0; i <= last; i++) {
+    np.push(photos[i] || '');    // 本地 base64 原样保留，空槽最多留空字符串
+    no.push(originals[i] || '');
+  }
+  card.photos = np.some(Boolean) ? np.slice(0, 4) : [];
   card.originals = no.some(Boolean) ? no.slice(0, 4) : [];
-  if ((card.photoIdx || 0) >= card.photos.length) card.photoIdx = 0;
-  if (!card.photos.length) card.photoMode = 'single';
+  const slots = [];
+  for (let i = 0; i < Math.max(card.photos.length, card.originals.length, 4); i++) {
+    if ((card.photos[i]) || (card.originals[i])) slots.push(i);
+  }
+  if ((card.photoIdx || 0) >= slots.length) card.photoIdx = 0;
+  if (!slots.length) card.photoMode = 'single';
 }
 
 function removePhotoAt(cardId, idx) {
@@ -1808,13 +1930,16 @@ function removePhotoAt(cardId, idx) {
   if (!canEdit()) { toast('出题模式（且项目已命名）才能修改照片'); return; }
   card.photos = (card.photos || []).slice();
   card.originals = (card.originals || []).slice();
+  delete ORIG_CACHE[origCacheKey(card, idx)];
+  saveOrigCache();
   card.photos.splice(idx, 1);
   if (card.originals.length) card.originals.splice(idx, 1);
   compactCardPhotos(card);
   card.photoIdx = 0;
   rerenderCard(card.id);
   triggerAutoSave();
-  toast(card.photos.length ? ('已删除该照片，剩 ' + card.photos.length + ' 张') : '已删除最后一张照片');
+  const left = photoSlots(card).length;
+  toast(left ? ('已删除该照片，剩 ' + left + ' 张') : '已删除最后一张照片');
 }
 
 function setPhotoIdx(card, newIdx, override) {
@@ -1863,22 +1988,11 @@ function makeCard(card, opts) {
 
   // 批改角标
   if (state.role === 'grade' && !opts.slot) {
-    const picked = p ? p.attrs[card.id] : undefined;
-    const keyVal = state.answers.attrs[card.id];
+    const st = gradeCardStatus(card);
     const m = document.createElement('div');
-    if (picked === undefined || keyVal === undefined) {
-      m.className = 'grade-mark none';
-      m.textContent = '–';
-      m.title = picked === undefined ? '未作答' : '未设置答案';
-    } else if (Number(picked) === Number(keyVal)) {
-      m.className = 'grade-mark ok';
-      m.textContent = '✓';
-      m.title = '属性判断正确';
-    } else {
-      m.className = 'grade-mark bad';
-      m.textContent = '✗';
-      m.title = '属性判断错误';
-    }
+    m.className = 'grade-mark ' + (st === 'ok' ? 'ok' : st === 'bad' ? 'bad' : st === 'half' ? 'half' : 'none');
+    m.textContent = st === 'ok' ? '✓' : st === 'bad' ? '✗' : st === 'half' ? '' : '–';
+    m.title = gradeStatusTitle(st);
     el.appendChild(m);
   }
 
@@ -2086,10 +2200,11 @@ function applyHeaderCompact() {
   const set = (sel, txt) => { const el = document.querySelector(sel); if (el) el.textContent = txt; };
   set('#btnAuthorRole', compact ? '👑 出题' : '👑 出题模式');
   set('#btnPlayerRole', compact ? '🎮 玩家' : '🎮 玩家模式');
-  set('#btnGradeRole', compact ? '🧑‍🏫 批改' : '🖊 批改模式');
-  const viewIcon = compact && isTabletUI();
-  set('.mode-btn[data-mode="global"]', viewIcon ? '🌐 全局' : (compact ? '全局' : '全局视角'));
-  set('.mode-btn[data-mode="match"]', viewIcon ? '💞 匹配' : (compact ? '匹配' : '匹配视角'));
+  set('#btnGradeRole', compact ? '🖋 批改' : '🖋 批改模式');
+  // 平板 / 手机统一短标签 + 图标；电脑始终显示完整视角名 + 图标
+  const touchView = isTabletUI() || innerWidth <= 840;   // 窄屏电脑也缩短，避免顶栏换行
+  set('.mode-btn[data-mode="global"]', touchView ? '🌐 全局' : '🌐 全局视角');
+  set('.mode-btn[data-mode="match"]', touchView ? '💞 匹配' : '💞 匹配视角');
   const brand = document.querySelector('.brand');
   if (brand) brand.textContent = innerWidth <= 900 ? '💞 CP连线' : '💞 趣味CP连线游戏';
   // 手机：右上工具只留图标，避免导航折成三行
@@ -2587,11 +2702,17 @@ function renderTags(kind) {
         si++;
         if (si < srcs.length) { img.src = srcs[si]; return; }
         img.remove();
-        f.textContent = flagEmoji(code) || code;   // 图片都取不到时退回 emoji / 国家代码
+        const fallback = document.createElement('span');
+        fallback.className = 'geo-code';
+        fallback.textContent = String(code || '').toUpperCase() || '??';
+        f.appendChild(fallback);
       };
       f.appendChild(img);
     } else {
-      f.textContent = flagOf(name);
+      const fallback = document.createElement('span');
+      fallback.className = 'geo-code';
+      fallback.textContent = String((geoCode(name) || geoName(name) || '??')).slice(0, 2).toUpperCase();
+      f.appendChild(fallback);
     }
     const t = document.createElement('span');
     t.className = 't';
@@ -2650,10 +2771,10 @@ function zodiacGlyph(name) {
    写法：{"1":["1号卡第1张的原图直链","第2张的直链", …], "2":[…]}
    —— 键是卡号（从 1 开始），值是按照片顺序排列的直链数组。
    出题模式在个人信息面板右栏「原图直链」里逐张填写，随项目 JSON 一起导出；
-   拉取过的原图会缓存到本地，设置里可一键拉取全部。 */
+   原图加载后会写入 Cache API，后续直接复用，避免重复消耗流量。 */
 let ORIGINALS = {};
 let ciViewGrid = false;   // 个人信息面板当前视图：false=单图，true=四宫格
-/* 已拉取过的原图缓存在本地，避免重复拉取 */
+/* 已拉取过的原图 URL 记录在本地，避免重复拉取 */
 const ORIG_CACHE_KEY = 'cp.origCache';
 let ORIG_CACHE = {};
 (function () {
@@ -2667,13 +2788,106 @@ const AUTO_ORIG_KEY = 'cp.autoOrig';
 let AUTO_ORIG = (function () {
   try { return localStorage.getItem(AUTO_ORIG_KEY) === '1'; } catch (e) { return false; }
 })();
-/* 一键拉取：把填了「原图直链」但还没拉过的图下载下来，写入缓存并同步所有视图 */
+
+/* =========================================================
+   网络策略 + 原图缓存
+   WiFi 优先 URL 原图；流量优先本地 base64；原图加载后进 Cache API
+   ========================================================= */
+const IMG_CACHE_NAME = 'cpOrigImagesV1';
+let IMG_OBJ_URLS = {};       // 原图 URL -> 本地 blob URL（本次会话）
+let ORIG_HYDRATING = null;
+function isMobileLike() {
+  const ua = navigator.userAgent || '';
+  if (/Android|iPhone|iPad|iPod|Mobile/i.test(ua)) return true;
+  if (innerWidth <= 760) return true;
+  return !!(window.matchMedia && matchMedia('(pointer:coarse)').matches && innerWidth <= 1180);
+}
+function detectMeteredNetwork() {
+  const c = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+  if (c) {
+    if (c.saveData) return true;
+    if (c.type) return String(c.type).toLowerCase() === 'cellular';
+    if (c.effectiveType && /^(slow-2g|2g|3g)$/.test(String(c.effectiveType))) return true;
+  }
+  // 识别不到 WiFi/流量类型时，手机默认按流量省流；电脑默认按 WiFi
+  return isMobileLike();
+}
+let NET_METERED = detectMeteredNetwork();
+function refreshNetworkMode() {
+  const next = detectMeteredNetwork();
+  if (next === NET_METERED) return;
+  NET_METERED = next;
+  renderAll();
+}
+function absoluteHttpUrl(url) {
+  if (!isHttpUrl(url)) return '';
+  try { return new URL(url, location.href).href; } catch (e) { return ''; }
+}
+async function cachedOriginalObjectUrl(url) {
+  if (IMG_OBJ_URLS[url]) return IMG_OBJ_URLS[url];
+  const abs = absoluteHttpUrl(url);
+  if (!abs || !('caches' in window)) return '';
+  try {
+    const cache = await caches.open(IMG_CACHE_NAME);
+    const resp = await cache.match(abs);
+    if (!resp || !resp.ok) return '';
+    const blob = await resp.blob();
+    if (!blob || !blob.size) return '';
+    const obj = URL.createObjectURL(blob);
+    IMG_OBJ_URLS[url] = obj;
+    return obj;
+  } catch (e) { return ''; }
+}
+async function fetchOriginalToCache(url) {
+  if (IMG_OBJ_URLS[url]) return IMG_OBJ_URLS[url];
+  const abs = absoluteHttpUrl(url);
+  if (!abs || !('caches' in window)) return '';
+  try {
+    const cache = await caches.open(IMG_CACHE_NAME);
+    let resp = await cache.match(abs);
+    if (!resp) {
+      resp = await fetch(abs, { mode: 'cors', cache: 'force-cache', referrerPolicy: 'no-referrer' });
+      if (!resp || !resp.ok) return '';
+      await cache.put(abs, resp.clone());
+    }
+    const blob = await resp.blob();
+    if (!blob || !blob.size) return '';
+    const obj = URL.createObjectURL(blob);
+    IMG_OBJ_URLS[url] = obj;
+    return obj;
+  } catch (e) { return ''; }
+}
+let ORIG_WARMING = {};
+function warmOriginalSrc(url) {
+  if (!isHttpUrl(url) || IMG_OBJ_URLS[url] || ORIG_WARMING[url] || !('caches' in window)) return;
+  ORIG_WARMING[url] = true;
+  fetchOriginalToCache(url).finally(() => { ORIG_WARMING[url] = false; });
+}
+function hydrateOriginalCache() {
+  if (!('caches' in window) || !state || !Array.isArray(state.cards)) return Promise.resolve();
+  if (ORIG_HYDRATING) return ORIG_HYDRATING;
+  const urls = [];
+  state.cards.forEach(c => (c.originals || []).forEach(u => {
+    if (isHttpUrl(u) && urls.indexOf(u) < 0) urls.push(u);
+  }));
+  if (!urls.length) return Promise.resolve();
+  ORIG_HYDRATING = Promise.all(urls.map(u => cachedOriginalObjectUrl(u))).then(list => {
+    if (list.some(Boolean)) renderAll();
+  }).finally(() => { ORIG_HYDRATING = null; });
+  return ORIG_HYDRATING;
+}
+if (navigator.connection && navigator.connection.addEventListener) {
+  navigator.connection.addEventListener('change', refreshNetworkMode);
+}
+window.addEventListener('online', refreshNetworkMode);
+window.addEventListener('offline', refreshNetworkMode);
+
+/* 一键拉取：把填了「原图直链」但还没拉过的图下载下来，写入 Cache API */
 function pullAllOriginals(quiet) {
   const jobs = [];
   state.cards.forEach(c => {
     (c.originals || []).forEach((u, i) => {
-      if (!u || !c.photos[i]) return;
-      if (c.photos[i] === u) return;
+      if (!u) return;
       if (ORIG_CACHE[origCacheKey(c, i)]) return;
       jobs.push({ card: c, idx: i, url: u });
     });
@@ -2682,13 +2896,19 @@ function pullAllOriginals(quiet) {
   toast('开始拉取 ' + jobs.length + ' 张原图…');
   let done = 0, fail = 0, cursor = 0;
   const worker = () => new Promise(resolve => {
-    const step = () => {
+    const step = async () => {
       if (cursor >= jobs.length) return resolve();
       const job = jobs[cursor++];
+      const obj = await fetchOriginalToCache(job.url);
+      if (obj) {
+        ORIG_CACHE[origCacheKey(job.card, job.idx)] = job.url;
+        done++;
+        step();
+        return;
+      }
       const probe = new Image();
       probe.onload = () => {
-        ORIG_CACHE[origCacheKey(job.card, job.idx)] = job.url;
-        job.card.photos[job.idx] = job.url;
+        ORIG_CACHE[origCacheKey(job.card, job.idx)] = job.url;   // 只缓存地址，不写 photos
         done++;
         step();
       };
@@ -2708,12 +2928,7 @@ function pullAllOriginals(quiet) {
   });
 }
 function applyOrigCache() {
-  state.cards.forEach(c => {
-    (c.photos || []).forEach((src, i) => {
-      const hit = ORIG_CACHE[origCacheKey(c, i)];
-      if (hit && src !== hit) c.photos[i] = hit;
-    });
-  });
+  // 原图缓存只用于「查看原图」加速；显示降级走 photoSrcAt，绝不把 URL 写回 photos
 }
 function originalOf(card, idx) {
   if (!card || !card.photos) return '';
@@ -2733,7 +2948,7 @@ function closeOriginal() {
   const img = $('#origImg');
   if (img) { img.removeAttribute('src'); img.style.display = 'none'; }
 }
-function viewOriginal(card, idx) {
+async function viewOriginal(card, idx) {
   const v = $('#origView'), img = $('#origImg'), msg = $('#origMsg');
   if (!v || !img || !msg) return;
   const url = originalOf(card, idx);
@@ -2746,9 +2961,9 @@ function viewOriginal(card, idx) {
       '<span style="font-size:11px;color:#64748b">在 originals.json 里加一条：{"' + (card.id + 1) + '":["原图直链1","原图直链2"]}</span>';
     return;
   }
-  const cached = ORIG_CACHE[origCacheKey(card, idx)];
-  if (cached && cached === url) {
-    img.src = url; img.style.display = 'block'; msg.style.display = 'none';
+  const cachedObj = await cachedOriginalObjectUrl(url);
+  if (cachedObj) {
+    img.src = cachedObj; img.style.display = 'block'; msg.style.display = 'none';
     return;
   }
   msg.innerHTML = '<span>正在拉取原图…</span>';
@@ -2757,13 +2972,9 @@ function viewOriginal(card, idx) {
     img.src = url; img.style.display = 'block'; msg.style.display = 'none';
     ORIG_CACHE[origCacheKey(card, idx)] = url;
     saveOrigCache();
-    if (card.photos[idx] !== url) {
-      card.photos[idx] = url;          // 同步到所有模式，下次不再重复拉取
-      renderAll();
-      if (editingCard && $('#cardInfoModal').classList.contains('show')) renderCiPhoto(editingCard);
-      triggerAutoSave();
-      toast('已更新为原图，其它视图同步生效');
-    }
+    fetchOriginalToCache(url).then(obj => {
+      if (obj && v.classList.contains('show')) img.src = obj;
+    });
   };
   probe.onerror = () => {
     msg.innerHTML = '<span>原图加载失败，链接可能已失效</span>' +
@@ -2893,12 +3104,12 @@ function renderCiPhoto(card) {
   box.style.backgroundImage = '';
   box.style.gridTemplateColumns = '';
   box.style.gridTemplateRows = '';
-  const photos = card.photos || [];
+  const slots = photoSlots(card);
   let idx = card.photoIdx || 0;
-  if (idx >= photos.length) idx = 0;
-  const grid = photos.length > 1 && ciViewGrid;
+  if (idx >= slots.length) idx = 0;
+  const grid = slots.length > 1 && ciViewGrid;
 
-  if (!photos.length) {
+  if (!slots.length) {
     const ph = document.createElement('div');
     ph.className = 'ph-empty';
     ph.innerHTML = '<span class="big">📷</span><span>' + (canEdit() ? '点击添加照片' : '暂无照片') + '</span>';
@@ -2909,19 +3120,19 @@ function renderCiPhoto(card) {
 
   if (grid) {
     box.classList.add('grid2');
-    box.style.gridTemplateColumns = 'repeat(' + Math.min(photos.length, 2) + ',minmax(0,1fr))';
-    box.style.gridTemplateRows = photos.length <= 2 ? 'minmax(0,1fr)' : 'repeat(2,minmax(0,1fr))';
-    photos.slice(0, 4).forEach((src, i) => {
+    box.style.gridTemplateColumns = 'repeat(' + Math.min(slots.length, 2) + ',minmax(0,1fr))';
+    box.style.gridTemplateRows = slots.length <= 2 ? 'minmax(0,1fr)' : 'repeat(2,minmax(0,1fr))';
+    slots.slice(0, 4).forEach((slot, i) => {
       const im = noRefImg(document.createElement('img'));
-      im.src = src;
+      setPhotoImgSrc(im, slot.src);
       im.alt = card.name || '';
       im.title = '点击查看大图';
-      if (photos.length === 3 && i === 2) im.style.gridColumn = 'span 2';
+      if (slots.length === 3 && i === 2) im.style.gridColumn = 'span 2';
       im.addEventListener('click', e => {
         e.stopPropagation();
         commitOrigDraft(card, false);
         card.photoIdx = i;
-        ciOrigIdx = i;
+        ciOrigIdx = slot.idx;
         ciViewGrid = false;
         renderCiPhoto(card);
         triggerAutoSave();
@@ -2929,23 +3140,24 @@ function renderCiPhoto(card) {
       box.appendChild(im);
     });
   } else {
+    const cur = slots[idx];
     const img = noRefImg(document.createElement('img'));
-    img.src = photos[idx];
+    setPhotoImgSrc(img, cur.src);
     img.alt = card.name || '';
     box.appendChild(img);
-    box.style.backgroundImage = 'linear-gradient(rgba(10,20,36,.55),rgba(10,20,36,.62)),url("' + photos[idx] + '")';
+    box.style.backgroundImage = 'linear-gradient(rgba(10,20,36,.55),rgba(10,20,36,.62)),url("' + cur.src + '")';
     box.style.backgroundSize = 'cover,cover';
     box.style.backgroundPosition = 'center,center';
     box.style.backgroundRepeat = 'no-repeat,no-repeat';
 
     const go = d => {
       commitOrigDraft(card, false);
-      card.photoIdx = (idx + d + photos.length) % photos.length;
-      ciOrigIdx = card.photoIdx;
+      card.photoIdx = (idx + d + slots.length) % slots.length;
+      ciOrigIdx = slots[card.photoIdx].idx;
       renderCiPhoto(card);
       triggerAutoSave();
     };
-    if (photos.length > 1) {
+    if (slots.length > 1) {
       const prev = document.createElement('button');
       prev.className = 'ci-nav prev'; prev.textContent = '‹';
       const next = document.createElement('button');
@@ -2955,7 +3167,7 @@ function renderCiPhoto(card) {
       box.appendChild(prev); box.appendChild(next);
       const dots = document.createElement('div');
       dots.className = 'ci-dots';
-      photos.forEach((_, i) => {
+      slots.forEach((_, i) => {
         const d = document.createElement('i');
         if (i === idx) d.className = 'on';
         dots.appendChild(d);
@@ -2964,7 +3176,7 @@ function renderCiPhoto(card) {
     }
   }
 
-  if (photos.length > 1) {
+  if (slots.length > 1) {
     const mBtn = document.createElement('button');
     mBtn.className = 'ci-mode';
     mBtn.textContent = grid ? '▣' : '⊞';
@@ -2982,7 +3194,7 @@ function renderCiPhoto(card) {
   oBtn.className = 'ci-orig';
   oBtn.textContent = '⤢ 查看原图';
   oBtn.title = '按需拉取原图直链';
-  oBtn.addEventListener('click', e => { e.stopPropagation(); viewOriginal(card, grid ? 0 : idx); });
+  oBtn.addEventListener('click', e => { e.stopPropagation(); viewOriginal(card, grid ? slots[0].idx : slots[idx].idx); });
   box.appendChild(oBtn);
 
   if (editingCard === card) syncOrigInput(card);
@@ -3015,17 +3227,17 @@ function loadOrigDraft(card) {
 // 把草稿写回卡片；compact 仅在保存/关闭时做，避免编辑中途位次错位
 function commitOrigDraft(card, compact) {
   if (!card) return;
-  card.originals = card.originals || [];
-  if (!card.photos) card.photos = [];
+  // 原图直链只写 originals；photos 中的本地 base64 一律保持原样
+  card.originals = Array.isArray(card.originals) ? card.originals.slice(0, 4) : [];
   for (let i = 0; i < 4; i++) {
     const v = (ciOrigDraft[i] || '').trim();
     const oldOrig = ciOrigBase[i] || '';
     if (v) {
-      card.originals[i] = v;
-      if (/^(https?:)?\/\//i.test(v) && (!card.photos[i] || card.photos[i] === oldOrig)) card.photos[i] = v;
+      card.originals[i] = v;          // 只更新原图地址，绝不替换 photos 里的本地图片
+      if (oldOrig && oldOrig !== v) delete ORIG_CACHE[origCacheKey(card, i)];
     } else {
-      delete card.originals[i];
-      if (oldOrig && card.photos[i] === oldOrig) delete card.photos[i];
+      card.originals[i] = '';         // 清空直链也只清 originals，不删本地照片
+      delete ORIG_CACHE[origCacheKey(card, i)];
     }
   }
   if (compact) compactCardPhotos(card);
@@ -3042,7 +3254,8 @@ function stepOrigIdx(d) {
   if (!editingCard) return;
   commitOrigDraft(editingCard, false);
   ciOrigIdx = Math.max(0, Math.min(3, ciOrigIdx + d));
-  if (editingCard.photos && editingCard.photos[ciOrigIdx]) editingCard.photoIdx = ciOrigIdx;
+  const pos = photoSlots(editingCard).findIndex(s => s.idx === ciOrigIdx);
+  if (pos >= 0) editingCard.photoIdx = pos;
   ciViewGrid = false;
   renderCiPhoto(editingCard);
   syncOrigInput(editingCard);
@@ -3052,7 +3265,9 @@ function openCardInfoModal(card, readonly) {
   readonly = !!readonly || !canEdit();   // 非出题可编辑状态一律强制只读
   if (readonly && !card) return;
   editingCard = card;
-  ciOrigIdx = Math.max(0, Math.min(3, card.photoIdx || 0));
+  const slots0 = photoSlots(card);
+  const pos0 = Math.min(Math.max(0, card.photoIdx || 0), Math.max(0, slots0.length - 1));
+  ciOrigIdx = slots0[pos0] ? slots0[pos0].idx : 0;
   loadOrigDraft(card);
   buildFlagPickers();
   const mask = $('#cardInfoModal');
@@ -3115,7 +3330,7 @@ function saveCardInfo() {
   renderAll();
   triggerAutoSave(true);
   toast('个人信息已保存');
-  if (AUTO_ORIG) setTimeout(() => pullAllOriginals(true), 300);
+  if (AUTO_ORIG && !NET_METERED) setTimeout(() => pullAllOriginals(true), 300);
 }
 
 /* =========================================================
@@ -3146,11 +3361,12 @@ function renderMatchSlot(which) {
       box.classList.add('filled');
       const mode = which === 'A' ? matchSlotA_mode : matchSlotB_mode;
       const pIdx = which === 'A' ? matchSlotA_photoIdx : matchSlotB_photoIdx;
-      if (card.photos.length > 1) {
+      const pSlots = photoSlots(card);
+      if (pSlots.length > 1) {
         const shortMob = window.matchMedia('(max-width:760px)').matches;
         const baseName = which === 'A' ? '参照对象' : '预想 CP';
         const shortName = which === 'A' ? '参照' : '预想';
-        title.textContent = (shortMob ? shortName : baseName) + '·第' + (Math.min(pIdx, card.photos.length - 1) + 1) + '张';
+        title.textContent = (shortMob ? shortName : baseName) + '·第' + (Math.min(pIdx, pSlots.length - 1) + 1) + '张';
       }
       const cardEl = makeCard(card, {
         slot: true,
@@ -3234,9 +3450,10 @@ function renderMatch() {
     for (let i = 0; i < 4; i++) {
       const cell = document.createElement('div');
       cell.className = 'thumb-cell';
-      if (card.photos && card.photos[i]) {
+      const thumbSrc = photoSrcAt(card, i);
+      if (thumbSrc) {
         const im = noRefImg(document.createElement('img'));
-        im.src = card.photos[i];
+        setPhotoImgSrc(im, thumbSrc);
         im.alt = '';
         im.loading = 'lazy';
         cell.appendChild(im);
@@ -3250,13 +3467,15 @@ function renderMatch() {
     nm.textContent = card.name || ('NO.' + (card.id + 1));
     item.appendChild(nm);
 
-    if (state.role === 'grade' && pairedId !== null) {
-      const ok = isCorrectPair(card.id, pairedId);
-      const st = document.createElement('div');
-      st.className = 'stat ' + (ok ? 'ok' : 'bad');
-      st.textContent = ok ? '✓' : '✗';
-      st.title = ok ? '配对正确' : '配对错误';
-      item.appendChild(st);
+    if (state.role === 'grade') {
+      const gs = gradeCardStatus(card);
+      if (gs !== 'none') {
+        const st = document.createElement('div');
+        st.className = 'stat ' + gs;
+        st.textContent = gs === 'ok' ? '✓' : gs === 'bad' ? '✗' : '';
+        st.title = gradeStatusTitle(gs);
+        item.appendChild(st);
+      }
     }
 
     item.addEventListener('click', () => {
@@ -3321,7 +3540,7 @@ function renderMatch() {
   if (state.role === 'grade') {
     const lg = document.createElement('div');
     lg.className = 'grade-chip ro-chip';
-    lg.textContent = '红底=正确答案 · 绿底=答对 · 蓝虚框=玩家所选';
+    lg.textContent = '红底=正确答案 · 绿底=答对 · 红圈=半对 · 蓝虚框=玩家所选';
     lg.style.marginLeft = 'auto';
     head.appendChild(lg);
     if (matchSlotA !== null && matchSlotB !== null) {
@@ -3379,8 +3598,8 @@ function renderMatch() {
       renderAll();
       triggerAutoSave();
       const ca = state.cards.find(c => c.id === a), cb = state.cards.find(c => c.id === b);
-      const nA = (ca && ca.photos.length > 1) ? '第' + (sIdxA + 1) + '张' : '单图';
-      const nB = (cb && cb.photos.length > 1) ? '第' + (sIdxB + 1) + '张' : '单图';
+      const nA = (ca && photoSlots(ca).length > 1) ? '第' + (sIdxA + 1) + '张' : '单图';
+      const nB = (cb && photoSlots(cb).length > 1) ? '第' + (sIdxB + 1) + '张' : '单图';
       lockTip = {
         t: stillPaired ? '✅ 已更新该组 CP 合照' : '✅ 已锁死保存该组新人 CP',
         full: '（第 ' + (a + 1) + ' 号 · ' + nA + ' × 第 ' + (b + 1) + ' 号 · ' + nB + '）' +
@@ -3517,19 +3736,22 @@ function ensurePhotoInput() {
         card.photos[photoTarget.idx] = url;
         delete ORIG_CACHE[origCacheKey(card, photoTarget.idx)];
         saveOrigCache();
-        if (card.originals) delete card.originals[photoTarget.idx];
+        if (card.originals) card.originals[photoTarget.idx] = '';
       }
     } else {
       for (const f of files) {
-        if (card.photos.length >= 4) break;
+        let free = -1;
+        for (let i = 0; i < 4; i++) { if (!card.photos[i]) { free = i; break; } }
+        if (free < 0) break;
         const url = await readImage(f);
         if (url) {
-          card.photos.push(url);
-          delete ORIG_CACHE[origCacheKey(card, card.photos.length - 1)];
+          card.photos[free] = url;
+          card.originals[free] = '';            // 本地照片顶替该位，原图地址不再混进 photos
+          delete ORIG_CACHE[origCacheKey(card, free)];
           saveOrigCache();
         }
       }
-      if (card.photos.length > 1) card.photoMode = 'grid';
+      if (photoSlots(card).length > 1) card.photoMode = 'grid';
     }
     photoTarget = null;
     renderAll();
@@ -3660,20 +3882,33 @@ function projectData() {
     projectId: state.projectId,
     projectName: state.projectName,
     pairCount: state.pairCount,
-    cards: state.cards.map(c => ({
+    cards: state.cards.map(c => {
+      // 导出前再兜底一次：photos 只放本地 base64，originals 只放在线 URL
+      const photos = (c.photos || []).slice(0, 4);
+      const originals = (c.originals || []).map(v => typeof v === 'string' ? v : '').slice(0, 4);
+      for (let i = 0; i < 4; i++) {
+        if (isHttpUrl(photos[i])) {
+          if (!originals[i]) originals[i] = photos[i].trim();
+          photos[i] = '';
+        }
+      }
+      if (!photos.some(Boolean)) photos.length = 0;
+      if (!originals.some(Boolean)) originals.length = 0;
+      return {
       id: c.id, name: c.name,
       height: c.height, weight: c.weight,
       lineage: c.lineage, nationality: c.nationality, birthday: c.birthday,
       zodiac: c.zodiac, zodiacThai: c.zodiacThai,
       school: c.school, company: c.company,
-      photos: c.photos, photoMode: c.photoMode, photoIdx: c.photoIdx, originals: c.originals,
+      photos: photos, photoMode: c.photoMode, photoIdx: c.photoIdx, originals: originals,
       videoUrl: c.videoUrl,
       showName: c.showName, showNationality: c.showNationality,
       showHeight: c.showHeight, showWeight: c.showWeight,
       showBirthday: c.showBirthday, showZodiac: c.showZodiac,
       showZodiacThai: c.showZodiacThai, showSchool: c.showSchool,
       showCompany: c.showCompany, showVideo: c.showVideo
-    })),
+      };
+    }),
     answers: {
       attrs: state.answers.attrs,
       pairs: state.answers.pairs,
@@ -3810,6 +4045,7 @@ function loadProject(data) {
   }
   matchSlotA = null; matchSlotB = null; globalPairingRef = null;
   applyOrigCache();
+  hydrateOriginalCache();
   return true;
 }
 
@@ -4048,9 +4284,184 @@ async function fetchJson(url) {
   if (!res.ok) throw new Error('HTTP ' + res.status);
   return await res.json();
 }
+
+/* =========================================================
+   远程题库：下载进度条 + 本地缓存（仓库未改动不重复下载）
+   ========================================================= */
+const REMOTE_CACHE_PREFIX = 'remote:';
+let remoteBusy = false;
+
+function fmtSize(n) {
+  n = Number(n) || 0;
+  if (n >= 1048576) return (n / 1048576).toFixed(1) + ' MB';
+  if (n >= 1024) return Math.round(n / 1024) + ' KB';
+  return n + ' B';
+}
+function showRemoteLoading(title, file) {
+  const mask = $('#remoteLoading');
+  if (!mask) return;
+  $('#rlTitle').textContent = title || '📥 正在拉取远程题库';
+  $('#rlFile').textContent = file || '';
+  $('#rlBarWrap').classList.add('indet');
+  $('#rlBar').style.width = '0%';
+  $('#rlText').textContent = '正在连接…';
+  $('#rlPct').textContent = '';
+  mask.classList.add('show');
+}
+function setRemoteLoading(pct, text) {
+  const wrap = $('#rlBarWrap');
+  if (!wrap) return;
+  if (typeof pct === 'number') {
+    wrap.classList.remove('indet');
+    $('#rlBar').style.width = Math.max(0, Math.min(100, pct)) + '%';
+    $('#rlPct').textContent = Math.round(pct) + '%';
+  } else {
+    wrap.classList.add('indet');
+    $('#rlPct').textContent = '';
+  }
+  if (text !== undefined) $('#rlText').textContent = text;
+}
+function hideRemoteLoading(delay) {
+  const mask = $('#remoteLoading');
+  if (!mask) return;
+  setTimeout(() => mask.classList.remove('show'), delay == null ? 450 : delay);
+}
+function mergeChunks(chunks) {
+  const total = chunks.reduce((n, c) => n + c.length, 0);
+  const out = new Uint8Array(total);
+  let off = 0;
+  chunks.forEach(c => { out.set(c, off); off += c.length; });
+  return out;
+}
+async function fetchJsonProgress(url, onProgress) {
+  const res = await fetch(url, { cache: 'no-store', referrerPolicy: 'no-referrer' });
+  if (!res.ok) throw new Error('HTTP ' + res.status);
+  const meta = {
+    etag: res.headers.get('etag') || '',
+    lastModified: res.headers.get('last-modified') || '',
+    length: Number(res.headers.get('content-length') || 0)
+  };
+  if (!res.body || typeof res.body.getReader !== 'function') {
+    setRemoteLoading(null, '正在解析数据…');
+    return { data: await res.json(), meta: meta };
+  }
+  const reader = res.body.getReader();
+  const chunks = [];
+  let loaded = 0;
+  while (true) {
+    const step = await reader.read();
+    if (step.done) break;
+    if (step.value) {
+      chunks.push(step.value);
+      loaded += step.value.length;
+      if (onProgress) onProgress(loaded, meta.length);
+    }
+  }
+  setRemoteLoading(100, '已接收 ' + fmtSize(loaded) + '，正在解析…');
+  await new Promise(r => setTimeout(r, 20));
+  let data;
+  try { data = JSON.parse(new TextDecoder('utf-8').decode(mergeChunks(chunks))); }
+  catch (e) { throw new Error('JSON 格式错误'); }
+  return { data: data, meta: Object.assign({}, meta, { length: meta.length || loaded }) };
+}
+async function fetchRemoteData(url, label) {
+  showRemoteLoading('📥 正在拉取远程题库', '正在读取：' + (label || url));
+  try {
+    const r = await fetchJsonProgress(url, (loaded, total) => {
+      if (total && loaded <= total * 1.05) setRemoteLoading(Math.min(99, loaded / total * 100), '已接收 ' + fmtSize(loaded));
+      else setRemoteLoading(null, '已接收 ' + fmtSize(loaded));
+    });
+    setRemoteLoading(100, '下载完成，正在解析…');
+    return r;
+  } catch (err) {
+    setRemoteLoading(null, '读取失败：' + err.message);
+    hideRemoteLoading(900);
+    throw err;
+  }
+}
+async function cacheRemote(url, r) {
+  await saveToDB(REMOTE_CACHE_PREFIX + url, {
+    data: r.data,
+    etag: r.meta.etag || '',
+    lastModified: r.meta.lastModified || '',
+    length: r.meta.length || 0,
+    savedAt: new Date().toISOString()
+  });
+}
+async function remoteHead(url) {
+  const ctrl = new AbortController();
+  const timer = setTimeout(() => ctrl.abort(), 6000);
+  try {
+    const res = await fetch(url, { method: 'HEAD', cache: 'no-store', referrerPolicy: 'no-referrer', signal: ctrl.signal });
+    if (!res.ok) return null;
+    return {
+      etag: res.headers.get('etag') || '',
+      lastModified: res.headers.get('last-modified') || '',
+      length: Number(res.headers.get('content-length') || 0)
+    };
+  } catch (err) { return null; }
+  finally { clearTimeout(timer); }
+}
+function remoteMetaChanged(oldMeta, newMeta) {
+  if (!oldMeta || !newMeta) return false;
+  if (oldMeta.etag && newMeta.etag) return oldMeta.etag !== newMeta.etag;
+  if (oldMeta.lastModified && newMeta.lastModified) return oldMeta.lastModified !== newMeta.lastModified;
+  if (oldMeta.length && newMeta.length) return oldMeta.length !== newMeta.length;
+  return false;
+}
+function checkRemoteFreshness(e, cache) {
+  setTimeout(async () => {
+    try {
+      const head = await remoteHead(e.url);
+      if (!head || !remoteMetaChanged(cache, head)) return;
+      askConfirm('远程题库有更新',
+        '检测到「' + (e.sub || e.name || '远程文件') + '」在仓库里有改动，是否重新下载最新版本？' +
+        '重新下载会覆盖当前打开的项目，未导出的改动请先导出。',
+        '重新拉取', async () => { await loadRemoteEntry(e, { force: true }); });
+    } catch (err) {}
+  }, 450);
+}
+async function loadRemoteEntry(e, opts) {
+  opts = opts || {};
+  if (remoteBusy) return false;
+  remoteBusy = true;
+  try {
+    if (!opts.force) {
+      const cache = await loadFromDB(REMOTE_CACHE_PREFIX + e.url);
+      if (cache && cache.data && loadProject(cache.data)) {
+        renderAll(); triggerAutoSave(true);
+        $('#projPicker').classList.remove('show');
+        toast('⚡ 已从本地缓存载入：' + state.projectName + '（无需重复下载）');
+        remoteBusy = false;
+        checkRemoteFreshness(e, cache);
+        return true;
+      }
+    }
+    const r = await fetchRemoteData(e.url, e.sub || e.name);
+    await cacheRemote(e.url, r);
+    if (!loadProject(r.data)) { toast('该项目读取失败'); return false; }
+    renderAll(); triggerAutoSave(true);
+    $('#projPicker').classList.remove('show');
+    toast((opts.force ? '✅ 已更新：' : '已载入：') + state.projectName);
+    setRemoteLoading(100, '完成');
+    hideRemoteLoading(350);
+    return true;
+  } catch (err) {
+    toast('读取失败：' + err.message);
+    return false;
+  } finally {
+    remoteBusy = false;
+  }
+}
 async function openRemoteProject(remote, preloaded, quiet) {
   try {
-    const data = preloaded || await fetchJson(remote);
+    let data = preloaded;
+    if (!data) {
+      const r = await fetchRemoteData(remote, '远程清单');
+      data = r.data;
+      setRemoteLoading(100, '完成');
+      hideRemoteLoading(300);
+    }
     if (data && Array.isArray(data.cards)) {           // 单个项目文件，直接载入
       if (loadProject(data)) { renderAll(); triggerAutoSave(true); return true; }
       return false;
@@ -4074,26 +4485,21 @@ async function openRemoteProject(remote, preloaded, quiet) {
                sub: fn, url: file ? new URL(file, base).href : '', pairs: x.pairs };
     }).filter(e => e.url);
     if (!entries.length) return false;
+    for (const e of entries) {
+      const cached = await loadFromDB(REMOTE_CACHE_PREFIX + e.url);
+      e.cached = !!(cached && cached.data);
+    }
     if (entries.length === 1) {                         // 清单里只有一个，直接开
-      const d = await fetchJson(entries[0].url);
-      if (d && loadProject(d)) { renderAll(); triggerAutoSave(true); toast('已载入：' + state.projectName); return true; }
-      return false;
+      return await loadRemoteEntry(entries[0]);
     }
     if (!state.cards.length) { initDefault(); renderAll(); }
     showPicker({
       title: '📂 选择要打开的项目',
-      hint: '远程清单里有 ' + entries.length + ' 个项目，点选一个打开；不选则进入空白界面自己出题',
+      hint: '远程清单里有 ' + entries.length + ' 个项目，点选一个打开；⚡ 已缓存的项目会秒开，不重复下载；不选则自己出题',
       items: entries.map(e => ({
-        title: e.name, sub: e.sub || fileNameOf(e.url), meta: e.pairs ? (e.pairs + ' 对') : '',
-        action: async () => {
-          try {
-            const d = await fetchJson(e.url);
-            if (!d || !loadProject(d)) { toast('该项目读取失败'); return; }
-            renderAll(); triggerAutoSave(true);
-            $('#projPicker').classList.remove('show');
-            toast('已载入：' + state.projectName);
-          } catch (err) { toast('读取失败：' + err.message); }
-        }
+        title: e.name, sub: e.sub || fileNameOf(e.url),
+        meta: (e.pairs ? (e.pairs + ' 对') : '') + (e.cached ? ((e.pairs ? ' · ' : '') + '⚡ 已缓存') : ''),
+        action: async () => { await loadRemoteEntry(e); }
       })),
       skipText: '不选，自己出题',
       onSkip: () => {
@@ -4602,6 +5008,7 @@ function bindEvents() {
   });
   $$('.modal-mask').forEach(mask => {
     mask.addEventListener('click', e => {
+      if (mask.id === 'remoteLoading') return;   // 下载进度不可点遮罩关闭
       if (e.target === mask) {
         mask.classList.remove('show');
         if (mask.id === 'cardInfoModal') editingCard = null;
@@ -4639,7 +5046,9 @@ function bindEvents() {
       const c = editingCard;
       ciOrigDraft[Math.max(0, Math.min(3, ciOrigIdx))] = cui.value;
       commitOrigDraft(c, false);
-      if (c.photos && c.photos[ciOrigIdx]) { c.photoIdx = ciOrigIdx; ciViewGrid = false; }
+      const oSlots = photoSlots(c);
+      const oPos = oSlots.findIndex(s => s.idx === ciOrigIdx);
+      if (oPos >= 0) { c.photoIdx = oPos; ciViewGrid = false; }
       renderCiPhoto(c);
       renderAll();
       triggerAutoSave();
@@ -4775,6 +5184,73 @@ function bindEvents() {
       });
     }
   });
+  // 导入答题记录：只合并 players，不动当前题库卡片 / 标准答案
+  $('#btnImportResult').addEventListener('click', () => {
+    const input = $('#importResultFile');
+    input.value = '';
+    input.click();
+  });
+  $('#importResultFile').addEventListener('change', () => {
+    const input = $('#importResultFile');
+    const files = Array.from(input.files || []);
+    if (!files.length) return;
+    if (!state.cards.length || !state.named) { toast('请先打开对应题库项目，再导入答题记录'); return; }
+    const readOne = f => new Promise(res => {
+      const r = new FileReader();
+      r.onload = () => res({ name: f.name, text: String(r.result || '') });
+      r.onerror = () => res(null);
+      r.readAsText(f);
+    });
+    Promise.all(files.map(readOne)).then(items => {
+      const valid = [], invalid = [];
+      items.filter(Boolean).forEach(it => {
+        let data = null, err = '';
+        try { data = JSON.parse(it.text); } catch (e) { err = e.message; }
+        if (!err && data && Array.isArray(data.players) && !Array.isArray(data.cards)) {
+          valid.push({ name: it.name, data: data });
+        } else if (!err && data && Array.isArray(data.cards)) {
+          invalid.push({ name: it.name, err: '这是题库项目文件，请用「导入项目」' });
+        } else {
+          invalid.push({ name: it.name, err: err || '缺少 players 数据' });
+        }
+      });
+      if (!valid.length) { toast('导入失败：没有可识别的答题记录'); return; }
+      const doMerge = () => {
+        let added = 0, updated = 0, skipped = 0, lastId = '';
+        valid.forEach(v => {
+          (v.data.players || []).forEach((rec, idx) => {
+            const name = String((rec && rec.name) || '').trim();
+            if (!name) { skipped++; return; }
+            let p = state.players.find(x => x.name === name);
+            if (!p) { p = newPlayer(name, state.players.length + idx); state.players.push(p); added++; }
+            else updated++;
+            if (rec.attrs !== undefined) p.attrs = normalizeAttrs(rec.attrs);
+            if (rec.pairs !== undefined) p.pairs = normalizePairs(rec.pairs);
+            if (rec.pairOffsets !== undefined) p.pairOffsets = normalizeOffsets(rec.pairOffsets);
+            if (rec.pairPhotos !== undefined) p.pairPhotos = normalizePairPhotos(rec.pairPhotos);
+            lastId = p.id;
+          });
+        });
+        if (lastId) state.currentPlayerId = lastId;
+        renderAll();
+        triggerAutoSave(true);
+        $('#settingsModal').classList.remove('show');
+        toast('已合并 ' + valid.length + ' 份答题记录：新增 ' + added + ' 位、更新 ' + updated + ' 位玩家' +
+          (skipped ? ('；跳过 ' + skipped + ' 条无姓名记录') : '') +
+          (invalid.length ? ('；' + invalid.length + ' 个文件无法识别') : ''));
+      };
+      const names = Array.from(new Set(valid.map(v => String(v.data.projectName || '').trim()).filter(Boolean)));
+      const mismatch = names.filter(n => n !== state.projectName);
+      if (mismatch.length) {
+        askConfirm('答题记录项目名不一致',
+          '记录属于「' + mismatch.join('、') + '」，当前项目是「' + state.projectName + '」。仍要合并到当前项目吗？',
+          '仍然合并', doMerge);
+      } else {
+        doMerge();
+      }
+    });
+  });
+
   const chkAuto = $('#autoOrigChk');
   if (chkAuto) chkAuto.addEventListener('change', () => {
     AUTO_ORIG = chkAuto.checked;
@@ -4889,7 +5365,7 @@ function bindEvents() {
       const vv = $('#videoView'), ov = $('#origView');
       if (vv && vv.classList.contains('show')) { closeVideoView(); return; }
       if (ov && ov.classList.contains('show')) { closeOriginal(); return; }
-      $$('.modal-mask').forEach(m => m.classList.remove('show'));
+      $$('.modal-mask').forEach(m => { if (m.id !== 'remoteLoading') m.classList.remove('show'); });
       editingCard = null;
       inputCallback = null;
       if (annot.tool) { annot.tool = null; updateAnnotUI(); }
@@ -4943,6 +5419,7 @@ async function initApp() {
   if (!restoreSnapshot(saved)) initDefault();
 
   renderAll();
+  hydrateOriginalCache();
   updateRoleButtons();
   document.body.dataset.role = state.role;
 }
