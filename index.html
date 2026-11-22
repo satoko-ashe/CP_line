@@ -528,6 +528,9 @@ main{
 .empty-hint{flex:1;display:flex;align-items:center;justify-content:center;color:#475569;font-size:14px}
 .m-head{display:flex;align-items:center;gap:10px;font-size:12px;color:#94a3b8;flex:none}
 .m-head .ref{color:#f472b6;font-weight:700}
+.match-guide{flex:none;font-size:11px;line-height:1.5;color:#7dd3fc;text-align:center;padding:0 2px;
+  text-shadow:0 0 12px #0ea5e933}
+.match-guide b{color:#f9a8d4;font-weight:800}
 .m-body{flex:1;min-height:0;display:flex;gap:10px;align-items:stretch;position:relative}
 .match-list-wrap{
   flex:0 1 auto;width:auto;max-width:46%;height:100%;min-width:0;
@@ -543,11 +546,18 @@ main{
 .match-mini{
   position:relative;display:flex;align-items:center;gap:7px;
   background:#131f33;border:1px solid #23314a;border-radius:10px;
-  padding:4px 6px;cursor:pointer;transition:.14s;min-width:0;
+  padding:4px 6px;cursor:pointer;transition:border-color .12s,background .12s;min-width:0;
+  min-height:44px;touch-action:manipulation;-webkit-tap-highlight-color:transparent;
 }
 .match-mini:hover{border-color:#3b82f6;background:#16243b}
 .match-mini.paired{border-color:#7c3aed;background:#1a1633}
 .match-mini.selected{border-color:#22d3ee;box-shadow:0 0 0 1px #22d3ee88}
+.match-mini.ref{border-color:#f472b6;background:#2a1631;box-shadow:0 0 0 1px #f472b688,0 0 14px -6px #f472b6}
+.match-mini.cand{border-color:#22d3ee;background:#102b3a;box-shadow:0 0 0 1px #22d3ee88,0 0 14px -6px #22d3ee}
+.match-mini.ref::after,.match-mini.cand::after{position:absolute;top:-1px;right:-1px;padding:1px 4px;
+  border-radius:0 9px 0 8px;font-size:9px;font-weight:800;line-height:1.35;pointer-events:none}
+.match-mini.ref::after{content:'参照';background:#7f1d3f;color:#fbcfe8}
+.match-mini.cand::after{content:'预想';background:#0e4b5b;color:#a5f3fc}
 .match-mini .num{
   flex:none;width:20px;height:20px;border-radius:50%;background:#1e293b;border:1px solid #475569;
   display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;color:#e2e8f0;line-height:1;
@@ -622,7 +632,7 @@ main{
   position:absolute;left:10px;bottom:10px;z-index:20;margin:0;
   max-width:min(42%, 430px);text-align:left;pointer-events:none;
   background:rgba(15,23,42,.92);box-shadow:0 8px 24px -10px #000,0 0 18px -8px #38bdf8;
-  animation:lhin .25s ease-out both,lhout .3s ease-in 29.65s forwards;
+  animation:lhin .25s ease-out both,lhout .3s ease-in 14.65s forwards;
 }
 @keyframes lhout{to{opacity:0;transform:translateY(5px)}}
 .lock-hint b{color:#e2f2ff;font-weight:800}
@@ -823,6 +833,8 @@ body[data-role="grade"] #globalView .card{height:calc(100% - 54px)}
   body[data-role="grade"][data-mode="match"] #toast{bottom:84px}
   .m-legend{display:none}
   .m-head{flex-wrap:wrap;row-gap:4px}
+  .match-guide{font-size:10px;line-height:1.4;padding:0 4px}
+  .match-mini .thumb{grid-template-columns:1fr}
   .ro-chip{font-size:10px;padding:2px 7px;line-height:1.32;white-space:normal}
   #annotBar{gap:4px;padding:6px 8px;bottom:8px}
   #annotBar button{padding:5px 8px;font-size:11px}
@@ -943,6 +955,7 @@ body[data-role="grade"] #globalView .card{height:calc(100% - 54px)}
   .cp-gift-wrap{left:auto;right:max(10px,env(safe-area-inset-right));bottom:max(84px,calc(env(safe-area-inset-bottom) + 74px))}
 }
 @media (max-width:760px){
+  .match-guide{display:none}
   .cp-gift{width:78px;height:78px;max-width:none;padding:0}
   .cp-gift .gift-ico{font-size:43px}
   .cp-gift .gift-sub{max-width:100px;font-size:9.5px}
@@ -1453,7 +1466,7 @@ function scheduleLockHintHide() {
       hint.style.animation = 'lhout .3s ease-in forwards';
       setTimeout(() => hint.remove(), 320);
     }
-  }, 30000);
+  }, 15000);
 }
 let matchSlotA = null, matchSlotA_photoIdx = 0, matchSlotA_mode = 'single';
 let matchSlotB = null, matchSlotB_photoIdx = 0, matchSlotB_mode = 'single';
@@ -2766,8 +2779,10 @@ function syncMatchHeights() {
   if (!body.clientHeight) return;
   const header = document.querySelector('header');
   const headerBottom = header ? header.getBoundingClientRect().bottom : 0;
-  // 基准与角色无关：顶栏 + 计分行(39) + 信息头(46) + 底部预留(96) → 三种模式取值完全一致
-  const avail = Math.max(300, Math.floor(window.innerHeight - headerBottom - 39 - 46 - 96));
+  const guide = document.querySelector('.match-guide');
+  const guideH = guide ? Math.ceil(guide.getBoundingClientRect().height) + 8 : 0;
+  // 基准与角色无关：顶栏 + 计分行(39) + 信息头(46) + 底部预留(96) + 选人引导 → 三种模式取值一致
+  const avail = Math.max(300, Math.floor(window.innerHeight - headerBottom - 39 - 46 - 96 - guideH));
   const colH = Math.max(240, avail - 56);        // 左右两栏等高；56 留给底部锁定/解绑栏
   body.style.height = '';
   ws.style.height = 'auto';
@@ -4008,7 +4023,7 @@ function renderMatchSlot(which) {
   wrap.className = 'slot-wrapper';
   const title = document.createElement('div');
   title.className = 'slot-title';
-  title.textContent = which === 'A' ? '参照对象' : '预想 CP';
+  title.textContent = which === 'A' ? '① 参照对象' : '② 预想 CP';
   wrap.appendChild(title);
 
   const box = document.createElement('div');
@@ -4017,7 +4032,7 @@ function renderMatchSlot(which) {
     box.classList.add('empty');
     const ph = document.createElement('div');
     ph.className = 'placeholder';
-    ph.textContent = which === 'A' ? '点击左侧卡片选择' : '再选一张凑成 CP';
+    ph.textContent = which === 'A' ? '先点左侧卡片选参照对象' : (matchSlotA === null ? '选好参照后再点卡片' : '点任意其它卡片切换预想 CP');
     box.appendChild(ph);
   } else {
     const card = state.cards.find(c => c.id === id);
@@ -4042,11 +4057,11 @@ function renderMatchSlot(which) {
         onIdx: n => {
           if (which === 'A') { matchSlotA_photoIdx = n; matchSlotA_mode = 'single'; }
           else { matchSlotB_photoIdx = n; matchSlotB_mode = 'single'; }
-          renderMatch();
+          renderMatch({ light: true });
         },
         onMode: m => {
           if (which === 'A') matchSlotA_mode = m; else matchSlotB_mode = m;
-          renderMatch();
+          renderMatch({ light: true });
         }
       });
       box.appendChild(cardEl);
@@ -4056,8 +4071,15 @@ function renderMatchSlot(which) {
       clr.title = '清空该槽';
       clr.addEventListener('click', e => {
         e.stopPropagation();
-        if (which === 'A') matchSlotA = null; else matchSlotB = null;
-        renderMatch();
+        if (which === 'A') {
+          matchSlotA = null; matchSlotB = null;
+          matchSlotA_photoIdx = 0; matchSlotB_photoIdx = 0;
+          matchSlotA_mode = 'single'; matchSlotB_mode = 'single';
+        } else {
+          matchSlotB = null; matchSlotB_photoIdx = 0; matchSlotB_mode = 'single';
+        }
+        lockTip = null;
+        renderMatch({ light: true });
       });
       cardEl.appendChild(clr);
     }
@@ -4066,8 +4088,58 @@ function renderMatchSlot(which) {
   return wrap;
 }
 
-function renderMatch() {
+function updateMatchListSelection(list) {
+  if (!list) return;
+  list.querySelectorAll('.match-mini').forEach(el => {
+    const id = Number(el.dataset.cardId);
+    const isRef = id === matchSlotA;
+    const isCand = id === matchSlotB && !isRef;
+    el.classList.toggle('selected', isRef || isCand);
+    el.classList.toggle('ref', isRef);
+    el.classList.toggle('cand', isCand);
+  });
+}
+
+// 匹配视角选卡顺序：先锁定左边参照对象；之后所有点选只切换右边预想 CP。
+function handleMatchCardSelect(card) {
+  lockTip = null;
+  clearLockHintTimer();
+  const oldHint = $('#matchView .lock-hint.float');
+  if (oldHint) oldHint.remove();
+
+  if (matchSlotA === null) {
+    matchSlotA = card.id;
+    matchSlotA_photoIdx = firstPhotoIdx(card);
+    matchSlotA_mode = 'single';
+    matchSlotB = null;
+    matchSlotB_photoIdx = 0;
+    matchSlotB_mode = 'single';
+    toast('已锁定参照第 ' + (card.id + 1) + ' 号；现在点其它卡片切换预想 CP', 1500, true);
+    renderMatch({ light: true });
+    return;
+  }
+
+  if (card.id === matchSlotA) {
+    toast('参照对象已固定；要换参照，请先点「✕ 清空展示」', 1500, true);
+    return;
+  }
+
+  if (matchSlotB === card.id) return;
+  matchSlotB = card.id;
+  matchSlotB_photoIdx = firstPhotoIdx(card);
+  matchSlotB_mode = 'single';
+  renderMatch({ light: true });
+}
+
+function renderMatch(opts) {
+  opts = opts || {};
   const mv = $('#matchView');
+  const light = !!opts.light && state.role !== 'grade' && state.mode === 'match';
+  let oldList = null, oldScroll = 0;
+  if (light) {
+    oldList = mv.querySelector('.match-list-wrap');
+    if (oldList) oldScroll = oldList.scrollTop;
+  }
   mv.innerHTML = '';
   if (!lockTip) clearLockHintTimer();
   const p = currentPlayer();
@@ -4078,6 +4150,7 @@ function renderMatch() {
   const store = pairStore();
   const hideAns = answersHidden();
   const pairs = hideAns ? [] : store.pairs;   // 加密未公开时，不把标准配对带到列表 / 展示框
+  const compactThumbs = window.matchMedia('(max-width:900px)').matches;
 
   const head = document.createElement('div');
   head.className = 'm-head';
@@ -4093,12 +4166,22 @@ function renderMatch() {
       '<span class="ref">CP 正确 ' + sc.pairCorrect + '/' + sc.pairTotal + '</span>';
   }
   mv.appendChild(head);
+  if (state.role !== 'grade') {
+    const guide = document.createElement('div');
+    guide.className = 'match-guide';
+    guide.innerHTML = '<b>① 点一张卡定为参照（锁定）</b> → ② 再点其它卡切换预想 CP → ③ 锁死 CP → ④ 清空展示换参照';
+    mv.appendChild(guide);
+  }
 
   const body = document.createElement('div');
   body.className = 'm-body';
 
-  // 左列表
-  const listWrap = document.createElement('div');
+  // 左列表：轻量刷新时复用旧列表，避免每次点选都重建几十张缩略图
+  let listWrap;
+  if (oldList) {
+    listWrap = oldList;
+  } else {
+  listWrap = document.createElement('div');
   listWrap.className = 'match-list-wrap';
   const grid = document.createElement('div');
   grid.className = 'card-grid';
@@ -4106,8 +4189,10 @@ function renderMatch() {
     const partner = pairs.find(pr => pr[0] === card.id || pr[1] === card.id);
     const pairedId = partner ? (partner[0] === card.id ? partner[1] : partner[0]) : null;
     const item = document.createElement('div');
+    const isRef = matchSlotA === card.id, isCand = matchSlotB === card.id && !isRef;
     item.className = 'match-mini' + (pairedId !== null ? ' paired' : '') +
-      ((matchSlotA === card.id || matchSlotB === card.id) ? ' selected' : '');
+      ((isRef || isCand) ? ' selected' : '') + (isRef ? ' ref' : isCand ? ' cand' : '');
+    item.dataset.cardId = String(card.id);
 
     const num = document.createElement('div');
     num.className = 'num';
@@ -4116,7 +4201,8 @@ function renderMatch() {
 
     const thumb = document.createElement('div');
     thumb.className = 'thumb';
-    for (let i = 0; i < 4; i++) {
+    const thumbIdxs = compactThumbs ? [firstPhotoIdx(card)] : [0, 1, 2, 3];
+    thumbIdxs.forEach(i => {
       const cell = document.createElement('div');
       cell.className = 'thumb-cell';
       const thumbSrc = photoSrcAt(card, i);
@@ -4127,10 +4213,11 @@ function renderMatch() {
         im.dataset.photoIdx = String(i);
         im.alt = '';
         im.loading = 'lazy';
+        im.decoding = 'async';
         cell.appendChild(im);
       }
       thumb.appendChild(cell);
-    }
+    });
     item.appendChild(thumb);
 
     const nm = document.createElement('div');
@@ -4149,50 +4236,13 @@ function renderMatch() {
       }
     }
 
-    item.addEventListener('click', () => {
-      lockTip = null;
-      if (pairedId !== null) {
-        const info = (store.photos && store.photos[getPairKey(card.id, pairedId)]) || {};
-        matchSlotA = card.id;
-        matchSlotB = pairedId;
-        matchSlotA_photoIdx = typeof info[card.id] === 'number' ? info[card.id] : firstPhotoIdx(card);
-        const pairedCard = state.cards.find(c => c.id === pairedId);
-        matchSlotB_photoIdx = typeof info[pairedId] === 'number' ? info[pairedId] : firstPhotoIdx(pairedCard);
-        matchSlotA_mode = 'single'; matchSlotB_mode = 'single';
-      } else {
-        const busyWith = (id) => {
-          if (id === null) return null;
-          const pr = pairs.find(x => x[0] === id || x[1] === id);
-          if (!pr) return null;
-          const other = pr[0] === id ? pr[1] : pr[0];
-          return other === card.id ? null : other;
-        };
-        const busyA = busyWith(matchSlotA);
-        if (busyA !== null) {
-          toast('第 ' + (matchSlotA + 1) + ' 号已与第 ' + (busyA + 1) + ' 号锁死，请先点「🔓 解绑 CP」再换人');
-          return;
-        }
-        const busyB = busyWith(matchSlotB);
-        if (busyB !== null) {
-          toast('第 ' + (matchSlotB + 1) + ' 号已与第 ' + (busyB + 1) + ' 号锁死，请先点「🔓 解绑 CP」再换人');
-          return;
-        }
-        if (matchSlotA === null) {
-          matchSlotA = card.id; matchSlotA_photoIdx = firstPhotoIdx(card); matchSlotA_mode = 'single';
-        } else if (matchSlotA === card.id) {
-          matchSlotA = null;
-        } else {
-          if (matchSlotA === null) { matchSlotA = card.id; matchSlotA_photoIdx = firstPhotoIdx(card); }
-          else if (matchSlotB === null) { matchSlotB = card.id; matchSlotB_photoIdx = firstPhotoIdx(card); matchSlotB_mode = 'single'; }
-          else { matchSlotA = card.id; matchSlotA_photoIdx = firstPhotoIdx(card); matchSlotA_mode = 'single'; }
-        }
-      }
-      renderMatch();
-    });
+    item.addEventListener('click', () => handleMatchCardSelect(card));
     grid.appendChild(item);
   });
   listWrap.appendChild(grid);
+  }
   body.appendChild(listWrap);
+  if (oldList) updateMatchListSelection(listWrap);
 
   // 右侧工作区
   const ws = document.createElement('div');
@@ -4318,7 +4368,7 @@ function renderMatch() {
       matchSlotA_photoIdx = 0; matchSlotB_photoIdx = 0;
       matchSlotA_mode = 'single'; matchSlotB_mode = 'single';
       lockTip = null;
-      renderMatch();
+      renderMatch({ light: true });
       toast('已清空展示框（已锁死的 CP 仍保留，点对应卡片可继续操作）');
     });
     bar.appendChild(clearSlotBtn);
@@ -4329,7 +4379,7 @@ function renderMatch() {
       hint.className = 'lock-hint float';
       const monMob = window.matchMedia('(max-width:760px)').matches;
       hint.innerHTML = '<b>' + lockTip.t + '</b>' + (monMob ? ' ' + lockTip.short : lockTip.full);
-      // 放到左侧空白处，绝对定位，不挤占按钮行；30 秒后自动淡出
+      // 放到左侧空白处，绝对定位，不挤占按钮行；15 秒后自动淡出
       body.appendChild(hint);
       scheduleLockHintHide();
     }
@@ -4340,7 +4390,10 @@ function renderMatch() {
   const gift = giftForSelection();
   if (gift) mv.appendChild(makeGiftCorner(gift));
   else lastGiftKey = null;
-  requestAnimationFrame(syncMatchHeights);
+  requestAnimationFrame(() => {
+    if (oldList) listWrap.scrollTop = oldScroll;
+    syncMatchHeights();
+  });
 }
 
 /* =========================================================
