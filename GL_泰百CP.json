@@ -883,10 +883,6 @@
         11
       ],
       [
-        10,
-        14
-      ],
-      [
         12,
         3
       ],
@@ -917,18 +913,25 @@
       [
         8,
         17
+      ],
+      [
+        14,
+        10
       ]
     ],
     "pairOffsets": {},
     "pairPhotos": {
-      "10-14": {
-        "10": 0,
-        "14": 3
-      },
       "2-9": {
         "2": 0,
         "9": 2
       }
+    },
+    "gifts": {
+      "10-14": [
+        "https://www.bilibili.com/video/BV1fNHr6iEk3/?share_source=copy_web&vd_source=f101902fb224f6cf5bff3fdedd7bad94",
+        "https://www.bilibili.com/video/BV193rYBEEx6/?share_source=copy_web&vd_source=f101902fb224f6cf5bff3fdedd7bad94",
+        "https://www.bilibili.com/video/BV1ziVJ64Eof/?share_source=copy_web&vd_source=f101902fb224f6cf5bff3fdedd7bad94"
+      ]
     }
   },
   "players": [
@@ -967,5 +970,5 @@
       "texts": []
     }
   },
-  "savedAt": "2026-11-22T02:19:20.690Z"
+  "savedAt": "2026-11-22T09:40:21.341Z"
 }

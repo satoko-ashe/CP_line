@@ -710,14 +710,6 @@
     },
     "pairs": [
       [
-        0,
-        11
-      ],
-      [
-        2,
-        9
-      ],
-      [
         1,
         14
       ],
@@ -740,10 +732,26 @@
       [
         13,
         4
+      ],
+      [
+        0,
+        11
+      ],
+      [
+        2,
+        9
       ]
     ],
     "pairOffsets": {},
-    "pairPhotos": {}
+    "pairPhotos": {},
+    "gifts": {
+      "0-11": [
+        "https://www.bilibili.com/video/BV1pVNDz5EQY/?share_source=copy_web&vd_source=f101902fb224f6cf5bff3fdedd7bad94"
+      ],
+      "2-9": [
+        "https://www.bilibili.com/video/BV1VhVn6SE8p/?share_source=copy_web&vd_source=f101902fb224f6cf5bff3fdedd7bad94"
+      ]
+    }
   },
   "players": [
     {
@@ -781,5 +789,5 @@
       "texts": []
     }
   },
-  "savedAt": "2026-11-22T02:20:41.303Z"
+  "savedAt": "2026-11-22T09:49:53.665Z"
 }

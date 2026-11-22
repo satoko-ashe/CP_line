@@ -46,6 +46,9 @@ input,select{font-family:inherit}
 .ab-lock.locked{border-color:#fb7185;background:#2a1622;color:#fecdd3;box-shadow:0 0 14px -4px #fb7185}
 .ab-lock.tool{border-color:#0e7490;background:#0b2530;color:#a5f3fc;text-decoration:none}
 .ab-lock.tool:hover{border-color:#22d3ee;color:#fff;box-shadow:0 0 14px -4px #22d3ee}
+.ab-lock.tool.music{border-color:#ff4d6d;background:#2a0b16;box-shadow:0 0 12px -5px #ff4d6d}
+.ab-lock.tool.music:hover{border-color:#ff8fa3;box-shadow:0 0 16px -3px #ff4d6d}
+.music-ico{width:14px;height:14px;display:block;filter:drop-shadow(0 0 5px #ff4d6dcc)}
 .ab-lock.reveal{border-color:#334155;background:#0f172a;color:#cbd5e1}
 .ab-lock.reveal.public{border-color:#0e7490;background:#0b2530;color:#a5f3fc}
 .ab-lock.reveal.hidden{border-color:#7c3aed;background:#1a1633;color:#ddd6fe}
@@ -84,13 +87,20 @@ input,select{font-family:inherit}
   display:flex;align-items:center;justify-content:center;transition:.15s;z-index:1;
 }
 .ps-pull:hover{background:transparent;border:0;color:#67e8f9;text-shadow:0 0 10px #38bdf8}
+.ps-pull .dl-ico{width:19px;height:19px}
+.dl-ico{width:15px;height:15px;flex:none;stroke:currentColor;fill:none;stroke-width:2.3;
+  stroke-linecap:round;stroke-linejoin:round;vertical-align:middle}
+#btnPullProject{display:inline-flex;align-items:center;gap:5px}
 .tbtn{
   background:#182234;border:1px solid #253247;color:#cbd5e1;
   padding:5px 10px;border-radius:9px;font-size:12px;white-space:nowrap;transition:.15s;
 }
 .tbtn:hover{background:#1e2b40;border-color:#334155;color:#f1f5f9}
 .tbtn.on{background:#0f2a42;border-color:#0e7490;color:#67e8f9}
-.tbtn.layout{padding:5px 8px;font-weight:700;letter-spacing:0}
+.tbtn.layout{padding:5px 9px;font-weight:700;letter-spacing:0;display:inline-flex;align-items:center;gap:6px}
+.tbtn.layout .layout-ico{font-size:14px;line-height:1}
+.tbtn.layout .layout-label{font-size:11.5px;font-weight:700;line-height:1;white-space:nowrap}
+@media (max-width:1100px){.tbtn.layout .layout-label{display:none}.tbtn.layout{padding:5px 8px}}
 .grow{flex:1}
 .modes{display:flex;gap:4px;background:#131d2e;border:1px solid #1e293b;border-radius:11px;padding:3px}
 .mode-btn{
@@ -518,7 +528,7 @@ main{
 .empty-hint{flex:1;display:flex;align-items:center;justify-content:center;color:#475569;font-size:14px}
 .m-head{display:flex;align-items:center;gap:10px;font-size:12px;color:#94a3b8;flex:none}
 .m-head .ref{color:#f472b6;font-weight:700}
-.m-body{flex:1;min-height:0;display:flex;gap:10px;align-items:stretch}
+.m-body{flex:1;min-height:0;display:flex;gap:10px;align-items:stretch;position:relative}
 .match-list-wrap{
   flex:0 1 auto;width:auto;max-width:46%;height:100%;min-width:0;
   display:flex;flex-direction:column;
@@ -608,6 +618,13 @@ main{
   background:rgba(56,189,248,.08);border:1px solid rgba(56,189,248,.3);color:#9fd2f2;
   font-size:12px;line-height:1.55;text-align:center;
 }
+.lock-hint.float{
+  position:absolute;left:10px;bottom:10px;z-index:20;margin:0;
+  max-width:min(42%, 430px);text-align:left;pointer-events:none;
+  background:rgba(15,23,42,.92);box-shadow:0 8px 24px -10px #000,0 0 18px -8px #38bdf8;
+  animation:lhin .25s ease-out both,lhout .3s ease-in 29.65s forwards;
+}
+@keyframes lhout{to{opacity:0;transform:translateY(5px)}}
 .lock-hint b{color:#e2f2ff;font-weight:800}
 .btn-clear-slot{
   padding:10px 18px;border-radius:12px;font-size:13px;font-weight:700;
@@ -790,6 +807,7 @@ body[data-role="grade"] #globalView .card{height:calc(100% - 54px)}
   .slot-wrapper{max-width:50%;width:auto;flex:1 1 46%;min-height:0;flex-direction:column;align-items:center}
   .slot-title{width:auto;text-align:center;align-self:center;font-size:10px;letter-spacing:0;line-height:1.5;white-space:nowrap}
   .lock-hint{font-size:11px;padding:6px 10px;margin-bottom:8px;line-height:1.45}
+  .lock-hint.float{left:8px;right:8px;bottom:auto;top:8px;max-width:none;text-align:left}
   .lock-action-bar{gap:6px}
   .btn-lock-big,.btn-unlock-big{padding:9px 14px;font-size:12.5px;white-space:nowrap}
   .btn-clear-slot{padding:9px 12px;font-size:12px;white-space:nowrap}
@@ -858,6 +876,82 @@ body[data-role="grade"] #globalView .card{height:calc(100% - 54px)}
   .g-row{justify-content:flex-start}
   .card-name{font-size:12px}
 }
+
+/* ===== 年度最佳 CP 大礼包：左下角入口 ===== */
+.cp-gift-wrap{position:fixed;left:auto;right:max(10px,env(safe-area-inset-right));bottom:max(10px,env(safe-area-inset-bottom));
+  z-index:150;display:flex;align-items:flex-end;justify-content:flex-start;pointer-events:none;touch-action:none}
+.cp-gift{pointer-events:auto;position:relative;display:flex;align-items:center;justify-content:center;touch-action:none;
+  width:clamp(86px,9vw,112px);height:clamp(86px,9vw,112px);padding:0;border-radius:50%;
+  border:2px solid #f9a8d4;color:#fff;text-align:center;
+  background:radial-gradient(circle at 38% 28%,#922d85,#4c1d70 55%,#14213d 100%);
+  box-shadow:0 10px 30px #0008,0 0 28px -4px #f472b6,inset 0 1px 0 #ffffff40;
+  transition:.16s;overflow:hidden}
+.cp-gift::after{content:'';position:absolute;inset:6px;border-radius:50%;border:1px solid #fbcfe855;
+  box-shadow:inset 0 0 18px #f472b633;pointer-events:none}
+.cp-gift{cursor:grab}
+.cp-gift:active{cursor:grabbing}
+.cp-gift:hover{transform:translateY(-3px) scale(1.06);box-shadow:0 14px 38px #0009,0 0 42px 2px #fb7185}
+.cp-gift .gift-ico{font-size:clamp(48px,6.2vw,72px);line-height:1;
+  filter:drop-shadow(0 0 10px #fbbf24cc) drop-shadow(0 0 24px #f472b688);
+  animation:giftSwingBig 2.2s ease-in-out infinite}
+.cp-gift-wrap.fresh .cp-gift{animation:giftPop .8s cubic-bezier(.2,1.6,.5,1),giftWiggle 2.4s .8s ease-in-out 2}
+.cp-gift-confetti{position:absolute;left:50%;bottom:50%;width:0;height:0;pointer-events:none}
+.cp-gift-confetti i{position:absolute;width:7px;height:10px;border-radius:2px;background:var(--c);opacity:0;
+  animation:giftConfetti 1.5s ease-out forwards;animation-delay:var(--d,0s)}
+@keyframes giftPop{0%{transform:scale(.35) rotate(-14deg);opacity:.2}55%{transform:scale(1.18) rotate(8deg);opacity:1}100%{transform:scale(1) rotate(0)}}
+@keyframes giftWiggle{0%,100%{transform:rotate(0)}18%{transform:rotate(-13deg)}38%{transform:rotate(11deg)}58%{transform:rotate(-9deg)}78%{transform:rotate(10deg)}}
+@keyframes giftSwingBig{0%,100%{transform:rotate(-10deg) translateY(0)}25%{transform:rotate(9deg) translateY(-7px)}50%{transform:rotate(-7deg) translateY(-2px)}75%{transform:rotate(11deg) translateY(-5px)}}
+@keyframes giftConfetti{0%{opacity:0;transform:translate(0,0) rotate(0)}15%{opacity:1}100%{opacity:0;transform:translate(var(--x),var(--y)) rotate(var(--r))}}
+/* ===== 大礼包播放弹窗：与个人信息面板同尺寸 ===== */
+.gift-modal{width:min(1200px,96vw);height:92vh;max-height:92vh}
+.gift-main{display:grid;grid-template-columns:108px minmax(0,1fr);gap:12px;padding:14px 16px;min-height:0;flex:1;overflow:hidden}
+.gift-list{display:flex;flex-direction:column;gap:8px;overflow-y:auto;min-height:0;padding-right:2px;scrollbar-width:none}
+.gift-list::-webkit-scrollbar{display:none}
+.gift-item{display:flex;align-items:center;justify-content:center;width:100%;min-height:52px;padding:10px 8px;border-radius:12px;
+  border:1px solid #334155;background:#101b2d;color:#cbd5e1;text-align:center;transition:.15s}
+.gift-item:hover{border-color:#f472b6;color:#fff}
+.gift-item.on{border-color:#f472b6;background:#2a1631;color:#fff;box-shadow:0 0 18px -6px #f472b6}
+.gift-item b{font-size:13px;font-weight:800;color:#fbcfe8}
+.gift-auto{display:flex;align-items:center;gap:5px;margin-left:auto;font-size:11px;color:#cbd5e1;
+  white-space:nowrap;cursor:pointer}
+.gift-auto input{accent-color:#f472b6;width:14px;height:14px}
+.gift-auto input:disabled{opacity:.35;cursor:not-allowed}
+.gift-auto:has(input:disabled){opacity:.55;cursor:default}
+.gift-stage{position:relative;min-height:0;min-width:0;background:#020617;border:1px solid #26344c;border-radius:16px;overflow:hidden;
+  display:flex;align-items:center;justify-content:center}
+.gift-stage iframe,.gift-stage video{width:100%;height:100%;border:0;display:block;background:#000}
+.gift-empty{max-width:420px;padding:20px;text-align:center;color:#94a3b8;font-size:13px;line-height:1.7}
+.gift-empty a{color:#67e8f9;text-decoration:underline}
+.gift-note{font-size:11px;color:#64748b;line-height:1.5;flex:1}
+.gift-note b{color:#fbcfe8}
+ .gift-stage .gift-fallback{position:absolute;right:9px;bottom:9px;z-index:3;display:inline-flex;
+  align-items:center;padding:4px 7px;border-radius:8px;background:#020617cc;border:1px solid #334155;
+  color:#93c5fd;font-size:10.5px;text-decoration:none;line-height:1.3}
+.gift-stage .gift-fallback:hover{color:#fff;border-color:#f472b6;background:#2a1631ee}
+/* ===== 大礼包设置弹窗 ===== */
+#giftSetup .modal{width:min(560px,96vw);max-height:90vh;padding:16px;gap:10px}
+.gift-setup-pair{font-size:12px;color:#fbcfe8;font-weight:800;line-height:1.5}
+.gift-setup-tip{font-size:11px;color:#64748b;line-height:1.6}
+.gift-url-wrap{display:flex;flex-direction:column;gap:7px}
+.gift-url-wrap input{width:100%;background:#0b1322;border:1px solid #334155;border-radius:9px;color:#e2e8f0;
+  padding:8px 10px;font-size:12px;outline:none}
+.gift-url-wrap input:focus{border-color:#f472b6;box-shadow:0 0 0 3px #f472b622}
+.gift-setup-actions{display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap}
+.gift-setup-actions .clear{margin-right:auto;color:#fda4af;border-color:#7f1d1d;background:#220d0d}
+@media (max-width:980px){
+  /* 平板/小屏：默认停靠右侧，避免压住左下角内容；仍可拖动到任意位置 */
+  .cp-gift-wrap{left:auto;right:max(10px,env(safe-area-inset-right));bottom:max(84px,calc(env(safe-area-inset-bottom) + 74px))}
+}
+@media (max-width:760px){
+  .cp-gift{width:78px;height:78px;max-width:none;padding:0}
+  .cp-gift .gift-ico{font-size:43px}
+  .cp-gift .gift-sub{max-width:100px;font-size:9.5px}
+  .gift-main{grid-template-columns:1fr;grid-template-rows:auto minmax(0,1fr);padding:10px 11px;gap:9px}
+  .gift-list{flex-direction:row;overflow-x:auto;overflow-y:hidden;padding-bottom:2px}
+  .gift-item{min-width:76px;min-height:40px;padding:7px 9px}
+  .gift-modal .ci-foot{padding:9px 11px}
+}
+
 </style>
 </head>
 <body>
@@ -883,7 +977,7 @@ body[data-role="grade"] #globalView .card{height:calc(100% - 54px)}
     </div>
 
     <div class="grow"></div>
-    <button class="tbtn layout" id="btnToggleLayout" title="统一切换卡片显示：单图 / 多宫格">⊞</button>
+    <button class="tbtn layout" id="btnToggleLayout" title="统一切换卡片显示：单图 / 多宫格"><span class="layout-ico">⊞</span><span class="layout-label">多图显示</span></button>
     <button class="tbtn" id="btnToggleStats">👁️ 显示统计</button>
     <button class="tbtn" id="btnSettings">⚙ 设置</button>
     <button class="tbtn" id="btnShot">📷 截图</button>
@@ -937,7 +1031,7 @@ body[data-role="grade"] #globalView .card{height:calc(100% - 54px)}
       <div class="file-line">
         <span class="file-line-tag">导入</span>
         <button class="btn-ghost" id="btnImport">📂 导入项目</button>
-        <button class="btn-ghost" id="btnPullProject">⬇ 拉取在线项目</button>
+        <button class="btn-ghost" id="btnPullProject"><svg class="dl-ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v11m0 0 4.5-4.5M12 14 7.5 9.5M5 17.5V20h14v-2.5"/></svg><span>拉取在线项目</span></button>
         <button class="btn-ghost" id="btnImportResult">📥 导入答题记录</button>
       </div>
       <div class="file-line">
@@ -970,7 +1064,7 @@ body[data-role="grade"] #globalView .card{height:calc(100% - 54px)}
 <!-- ================= 项目切换 ================= -->
 <div class="modal-mask" id="projSwitch">
   <div class="modal proj-switch-modal">
-    <button class="ps-pull" id="psPull" title="从远程清单拉取 / 切换项目（未改动沿用本地缓存）">⬇</button>
+    <button class="ps-pull" id="psPull" title="从远程清单拉取 / 切换项目（未改动沿用本地缓存）"><svg class="dl-ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v11m0 0 4.5-4.5M12 14 7.5 9.5M5 17.5V20h14v-2.5"/></svg></button>
     <h2>📁 当前项目：<span id="psCurName">未命名项目</span></h2>
     <h3>点选其他项目即切换，各自数据独立保存，互不混淆</h3>
     <div class="ps-list" id="psList"></div>
@@ -1157,6 +1251,45 @@ body[data-role="grade"] #globalView .card{height:calc(100% - 54px)}
   </div>
 </div>
 
+
+<!-- ================= 年度最佳CP视频大礼包 ================= -->
+<div class="modal-mask" id="giftModal">
+  <div class="ci-modal gift-modal">
+    <div class="ci-top">
+      <div class="ci-brand">🎁 年度最佳 CP 视频大礼包 <span id="giftPairTag" style="font-size:11px;color:#fbcfe8;font-weight:700"></span></div>
+      <label class="gift-auto" title="直链 mp4 播完自动切下一条；B站 / YouTube 内嵌无法读取结束时间，请手动点视频按钮切换"><input type="checkbox" id="giftAutoPlay" checked> 直链自动连播</label>
+      <button class="ci-x" data-close="giftModal" title="关闭">✕</button>
+    </div>
+    <div class="gift-main">
+      <div class="gift-list" id="giftList"></div>
+      <div class="gift-stage" id="giftStage"></div>
+    </div>
+    <div class="ci-foot">
+      <div class="gift-note">💞 这是出题人为这对 CP 准备的专属奖励，只有玩家连线正确时才会出现。</div>
+      <div class="ci-actions"><button class="btn-ghost" data-close="giftModal">关闭</button></div>
+    </div>
+  </div>
+</div>
+
+<!-- ================= 大礼包设置 ================= -->
+<div class="modal-mask" id="giftSetup">
+  <div class="modal">
+    <h2>🎁 为这对 CP 设置大礼包？</h2>
+    <div class="gift-setup-pair" id="giftSetupPair"></div>
+    <div class="gift-setup-tip">最多 3 个视频链接，支持 B 站 BV 号 / B 站视频页、YouTube、直链 mp4。留空或点「否」= 不设置；之后解绑再重新连线，可再次修改。</div>
+    <div class="gift-url-wrap">
+      <input type="text" id="giftUrl1" placeholder="视频链接 1（可留空）">
+      <input type="text" id="giftUrl2" placeholder="视频链接 2（可留空）">
+      <input type="text" id="giftUrl3" placeholder="视频链接 3（可留空）">
+    </div>
+    <div class="gift-setup-actions">
+      <button class="btn-ghost clear" id="giftClear" type="button">清除该 CP 大礼包</button>
+      <button class="btn-ghost" id="giftNo" type="button" data-close="giftSetup">否，暂不设置</button>
+      <button class="btn-primary" id="giftYes" type="button">是，保存</button>
+    </div>
+  </div>
+</div>
+
 <div id="toast"></div>
 <!-- 手机/平板竖屏提示 -->
 <div id="rotateHint">
@@ -1245,6 +1378,13 @@ function makeAuthorBar() {
   }
   // 修图工具：跳转外部图片编辑器
   html += '<a class="ab-lock tool" href="https://satoko-ashe.github.io/label/image-editor.html" target="_blank" rel="noopener noreferrer" title="修图工具（推荐照片 900×1200，3:4）">🖌️</a>';
+  // 出题模式全局视角：修图工具后面的音乐播放器入口
+  html += '<a class="ab-lock tool music" href="https://satoko-ashe.github.io/music/" target="_blank" rel="noopener noreferrer" title="打开音乐播放器" aria-label="打开音乐播放器">' +
+    '<svg class="music-ico" viewBox="0 0 24 24" aria-hidden="true">' +
+    '<path d="M9 17.3V6.1l9-1.9v11.2" fill="none" stroke="#ff4d6d" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"/>' +
+    '<circle cx="6.2" cy="18" r="2.7" fill="#ff4d6d"/>' +
+    '<circle cx="15.2" cy="16.2" r="2.7" fill="#ff4d6d"/>' +
+    '</svg></a>';
   if (state.lockDirty) html += '<span class="ab-dirty" title="密码只保存在本机，需重新导出项目文件才会写入">⚠ 密码待导出</span>';
   bar.innerHTML = html;
 
@@ -1281,7 +1421,7 @@ function makeAuthorBar() {
 const state = {
   pairCount: 10,
   cards: [],
-  answers: { attrs: {}, pairs: [], pairOffsets: {}, pairPhotos: {} },
+  answers: { attrs: {}, pairs: [], pairOffsets: {}, pairPhotos: {}, gifts: {} },
   players: [],
   currentPlayerId: null,
   mode: 'global',          // global | match
@@ -1299,9 +1439,33 @@ const state = {
 };
 
 let lockTip = null;
+let lockHintTimer = null;
+function clearLockHintTimer() {
+  if (lockHintTimer) { clearTimeout(lockHintTimer); lockHintTimer = null; }
+}
+function scheduleLockHintHide() {
+  clearLockHintTimer();
+  lockHintTimer = setTimeout(() => {
+    lockHintTimer = null;
+    lockTip = null;
+    const hint = $('.lock-hint.float');
+    if (hint) {
+      hint.style.animation = 'lhout .3s ease-in forwards';
+      setTimeout(() => hint.remove(), 320);
+    }
+  }, 30000);
+}
 let matchSlotA = null, matchSlotA_photoIdx = 0, matchSlotA_mode = 'single';
 let matchSlotB = null, matchSlotB_photoIdx = 0, matchSlotB_mode = 'single';
 let globalPairingRef = null;
+let lastGiftKey = null;
+let currentGift = null;
+let giftPlayIndex = 0;
+let giftAutoTimer = null;
+let giftFloatPos = null;
+let giftDrag = null;
+let giftSuppressClick = false;
+let giftSetupPair = null;
 
 let photoTarget = null;
 let replaceTarget = null;
@@ -1338,6 +1502,266 @@ function pairPartnerOf(pairs, id) {
   const pr = (pairs || []).find(x => x[0] === id || x[1] === id);
   if (!pr) return null;
   return pr[0] === id ? pr[1] : pr[0];
+}
+
+/* =========================================================
+   年度最佳 CP 视频大礼包
+   ========================================================= */
+function giftVideosFor(a, b) {
+  const key = getPairKey(Number(a), Number(b));
+  const list = state.answers && state.answers.gifts ? state.answers.gifts[key] : null;
+  return Array.isArray(list) ? list.slice(0, 3).filter(Boolean) : [];
+}
+function setGiftVideos(a, b, urls) {
+  const key = getPairKey(Number(a), Number(b));
+  if (!state.answers.gifts) state.answers.gifts = {};
+  const list = (urls || []).map(v => String(v || '').trim()).filter(Boolean).slice(0, 3);
+  if (list.length) state.answers.gifts[key] = list;
+  else delete state.answers.gifts[key];
+  triggerAutoSave(true);
+}
+function giftPairTitle(a, b) {
+  const ca = state.cards.find(c => c.id === a);
+  const cb = state.cards.find(c => c.id === b);
+  return 'NO.' + (a + 1) + (ca && ca.name ? ' ' + ca.name : '') + ' × NO.' + (b + 1) + (cb && cb.name ? ' ' + cb.name : '');
+}
+function maybePromptGift(a, b) {
+  if (state.role !== 'author' || state.locked || !state.named) return;
+  if (!state.answers || !state.answers.gifts) return;
+  openGiftSetup(a, b);
+}
+function openGiftSetup(a, b) {
+  giftSetupPair = { a: Number(a), b: Number(b) };
+  const existing = giftVideosFor(a, b);
+  $('#giftSetupPair').textContent = '💞 ' + giftPairTitle(a, b);
+  ['#giftUrl1', '#giftUrl2', '#giftUrl3'].forEach((sel, i) => {
+    const el = $(sel); if (el) el.value = existing[i] || '';
+  });
+  const clr = $('#giftClear');
+  if (clr) clr.style.display = existing.length ? '' : 'none';
+  $('#giftSetup').classList.add('show');
+  setTimeout(() => { const el = $('#giftUrl1'); if (el) el.focus(); }, 80);
+}
+function closeGiftSetup() {
+  $('#giftSetup').classList.remove('show');
+  giftSetupPair = null;
+}
+function saveGiftSetup() {
+  if (!giftSetupPair) return;
+  const list = ['#giftUrl1', '#giftUrl2', '#giftUrl3']
+    .map(sel => { const el = $(sel); return el ? el.value.trim() : ''; })
+    .filter(Boolean).slice(0, 3);
+  setGiftVideos(giftSetupPair.a, giftSetupPair.b, list);
+  const had = list.length;
+  closeGiftSetup();
+  toast(had ? '已保存这对 CP 的大礼包（' + had + ' 个视频）' : '未填写链接，已跳过该 CP 的大礼包');
+}
+function clearGiftSetup() {
+  if (!giftSetupPair) return;
+  setGiftVideos(giftSetupPair.a, giftSetupPair.b, []);
+  closeGiftSetup();
+  toast('已清除该 CP 的大礼包');
+}
+function giftForSelection() {
+  if (state.mode !== 'match' || state.role !== 'player') return null;
+  if (matchSlotA === null || matchSlotB === null) return null;
+  // 必须已经锁死为玩家的正式 CP，避免只点两张卡就泄露答案 / 提前弹出礼包
+  const cur = currentPlayer();
+  if (!cur || !(cur.pairs || []).some(pr => (pr[0] === matchSlotA && pr[1] === matchSlotB) || (pr[0] === matchSlotB && pr[1] === matchSlotA))) return null;
+  if (!isCorrectPair(matchSlotA, matchSlotB)) return null;
+  const key = getPairKey(matchSlotA, matchSlotB);
+  const urls = giftVideosFor(matchSlotA, matchSlotB);
+  if (!urls.length) return null;
+  return { key, a: matchSlotA, b: matchSlotB, urls };
+}
+function playGiftSound() {
+  try {
+    const AC = window.AudioContext || window.webkitAudioContext;
+    if (!AC) return;
+    const ac = new AC();
+    const t0 = ac.currentTime;
+    [880, 1174, 1568].forEach((freq, i) => {
+      const o = ac.createOscillator(), g = ac.createGain();
+      o.type = 'triangle'; o.frequency.value = freq;
+      const t = t0 + i * 0.07;
+      g.gain.setValueAtTime(0, t);
+      g.gain.linearRampToValueAtTime(0.08, t + 0.01);
+      g.gain.exponentialRampToValueAtTime(0.001, t + 0.24);
+      o.connect(g); g.connect(ac.destination);
+      o.start(t); o.stop(t + 0.26);
+    });
+    setTimeout(() => { try { ac.close(); } catch (e) {} }, 900);
+  } catch (err) {}
+}
+function makeGiftCorner(gift) {
+  const wrap = document.createElement('div');
+  wrap.className = 'cp-gift-wrap';
+  const fresh = lastGiftKey !== gift.key;
+  if (fresh) { lastGiftKey = gift.key; wrap.classList.add('fresh'); playGiftSound(); }
+  const btn = document.createElement('button');
+  btn.className = 'cp-gift';
+  btn.type = 'button';
+  btn.title = '打开 ' + giftPairTitle(gift.a, gift.b) + ' 的年度最佳 CP 大礼包';
+  btn.setAttribute('aria-label', '打开年度最佳 CP 大礼包：' + giftPairTitle(gift.a, gift.b));
+  btn.innerHTML = '<span class="gift-ico">🎁</span>';
+  // 悬浮窗拖动：拖到任意位置，避免固定占住左下角（尤其小屏）
+  if (giftFloatPos) {
+    const maxX = Math.max(6, window.innerWidth - 122);
+    const maxY = Math.max(6, window.innerHeight - 122);
+    wrap.style.left = Math.min(giftFloatPos.x, maxX) + 'px';
+    wrap.style.top = Math.min(giftFloatPos.y, maxY) + 'px';
+    wrap.style.bottom = 'auto';
+    wrap.style.right = 'auto';
+  }
+  btn.addEventListener('pointerdown', e => {
+    if (e.button && e.button !== 0) return;
+    const r = wrap.getBoundingClientRect();
+    giftDrag = { startX: e.clientX, startY: e.clientY, x: r.left, y: r.top, moved: false };
+    wrap.style.left = r.left + 'px';
+    wrap.style.top = r.top + 'px';
+    wrap.style.bottom = 'auto';
+    wrap.style.right = 'auto';
+    try { btn.setPointerCapture(e.pointerId); } catch (err) {}
+  });
+  btn.addEventListener('pointermove', e => {
+    if (!giftDrag) return;
+    const dx = e.clientX - giftDrag.startX, dy = e.clientY - giftDrag.startY;
+    if (Math.abs(dx) > 4 || Math.abs(dy) > 4) giftDrag.moved = true;
+    const maxX = Math.max(6, window.innerWidth - btn.offsetWidth - 8);
+    const maxY = Math.max(6, window.innerHeight - btn.offsetHeight - 8);
+    const x = Math.max(6, Math.min(giftDrag.x + dx, maxX));
+    const y = Math.max(6, Math.min(giftDrag.y + dy, maxY));
+    wrap.style.left = x + 'px';
+    wrap.style.top = y + 'px';
+    giftFloatPos = { x, y };
+    if (giftDrag.moved) e.preventDefault();
+  });
+  btn.addEventListener('pointerup', e => {
+    if (!giftDrag) return;
+    if (giftDrag.moved) {
+      giftSuppressClick = true;
+      setTimeout(() => { giftSuppressClick = false; }, 260);
+    }
+    giftDrag = null;
+    try { btn.releasePointerCapture(e.pointerId); } catch (err) {}
+  });
+  btn.addEventListener('pointercancel', () => { giftDrag = null; });
+  btn.addEventListener('click', e => {
+    e.stopPropagation();
+    if (giftSuppressClick) { giftSuppressClick = false; e.preventDefault(); return; }
+    openGiftModal(gift);
+  });
+  wrap.appendChild(btn);
+  if (fresh) {
+    const conf = document.createElement('span');
+    conf.className = 'cp-gift-confetti';
+    const colors = ['#f472b6', '#fbbf24', '#67e8f9', '#a78bfa', '#4ade80', '#fb7185'];
+    for (let i = 0; i < 12; i++) {
+      const bit = document.createElement('i');
+      bit.style.setProperty('--c', colors[i % colors.length]);
+      bit.style.setProperty('--x', (Math.random() * 86 - 43) + 'px');
+      bit.style.setProperty('--y', (-30 - Math.random() * 52) + 'px');
+      bit.style.setProperty('--r', (Math.random() * 420 - 210) + 'deg');
+      bit.style.setProperty('--d', (i * 0.035) + 's');
+      conf.appendChild(bit);
+    }
+    wrap.appendChild(conf);
+  }
+  return wrap;
+}
+function clearGiftAutoTimer() {
+  if (giftAutoTimer) { clearTimeout(giftAutoTimer); giftAutoTimer = null; }
+}
+function giftAutoEnabled() {
+  const chk = $('#giftAutoPlay');
+  return !!(chk && chk.checked);
+}
+function giftAdvance() {
+  if (!currentGift || !giftAutoEnabled()) return;
+  if (giftPlayIndex + 1 < currentGift.urls.length) playGiftIndex(giftPlayIndex + 1);
+}
+function renderGiftStage(url, opts) {
+  opts = opts || {};
+  const stage = $('#giftStage');
+  if (!stage) return;
+  clearGiftAutoTimer();
+  stage.innerHTML = '';
+  const emb = videoEmbed(url);
+  const autoChk = $('#giftAutoPlay');
+  // B站 / YouTube 无法读取结束事件：自动连播只对直链视频生效，内嵌时禁用勾选并提示手动切换
+  if (autoChk) autoChk.disabled = !!(emb && emb.type === 'iframe');
+  if (!emb) {
+    const empty = document.createElement('div');
+    empty.className = 'gift-empty';
+    empty.innerHTML = '该链接暂不支持内嵌播放。<br><a href="' + esc(url) + '" target="_blank" rel="noopener noreferrer">在新标签页打开视频</a>';
+    stage.appendChild(empty);
+    return;
+  }
+  if (emb.type === 'iframe') {
+    const f = document.createElement('iframe');
+    // 大礼包打开时尝试自动播放；被浏览器策略拦截也不影响手动播放
+    f.src = emb.url.replace('autoplay=0', 'autoplay=1');
+    f.setAttribute('allow', 'autoplay; fullscreen; picture-in-picture');
+    f.allowFullscreen = true;
+    f.referrerPolicy = 'no-referrer';
+    f.title = '年度最佳 CP 视频';
+    stage.appendChild(f);
+    // B站 / YouTube 内嵌无法可靠读取播放结束事件：不硬切换，由用户点上方视频按钮手动切换
+  } else {
+    const v = document.createElement('video');
+    v.src = emb.url; v.controls = true; v.autoplay = true; v.playsInline = true;
+    if (opts.hasNext && opts.auto) {
+      v.addEventListener('ended', () => { if (giftAutoEnabled()) giftAdvance(); });
+    }
+    stage.appendChild(v);
+  }
+  // 内嵌被平台限制时，给一个始终可点的跳转兜底
+  const jump = document.createElement('a');
+  jump.className = 'gift-fallback';
+  jump.href = emb.url;
+  jump.target = '_blank';
+  jump.rel = 'noopener noreferrer';
+  jump.textContent = '无法播放？在新标签打开 ↗';
+  stage.appendChild(jump);
+}
+function playGiftIndex(i) {
+  if (!currentGift) return;
+  const urls = currentGift.urls || [];
+  if (!urls.length) return;
+  i = Math.max(0, Math.min(Number(i) || 0, urls.length - 1));
+  giftPlayIndex = i;
+  const list = $('#giftList');
+  if (list) {
+    list.querySelectorAll('.gift-item').forEach((el, j) => el.classList.toggle('on', j === i));
+  }
+  renderGiftStage(urls[i], { auto: giftAutoEnabled(), hasNext: i + 1 < urls.length });
+}
+function openGiftModal(gift) {
+  currentGift = gift;
+  $('#giftPairTag').textContent = '· ' + giftPairTitle(gift.a, gift.b);
+  const list = $('#giftList');
+  list.innerHTML = '';
+  gift.urls.forEach((url, i) => {
+    const item = document.createElement('button');
+    item.type = 'button';
+    item.className = 'gift-item' + (i === 0 ? ' on' : '');
+    item.innerHTML = '<b>视频 ' + (i + 1) + '</b>';
+    item.setAttribute('aria-label', '播放视频 ' + (i + 1));
+    item.addEventListener('click', () => playGiftIndex(i));
+    list.appendChild(item);
+  });
+  const chk = $('#giftAutoPlay');
+  if (chk) chk.checked = true;
+  $('#giftModal').classList.add('show');
+  playGiftIndex(0);
+}
+function closeGiftModal() {
+  clearGiftAutoTimer();
+  $('#giftModal').classList.remove('show');
+  const stage = $('#giftStage');
+  if (stage) stage.innerHTML = '';
+  currentGift = null;
+  giftPlayIndex = 0;
 }
 // 批改：单张卡同时看「属性」与「这张卡的 CP 连线」，全对 / 全错 / 一对一错
 function gradeCardStatus(card) {
@@ -1642,9 +2066,26 @@ function photoSlots(card) {
   }
   return slots;
 }
+// 未设置 CP 合照时，默认取该卡第一张实际存在的照片（不是盲取第 0 个空槽）
+function firstPhotoIdx(card) {
+  const slots = photoSlots(card);
+  return slots.length ? slots[0].idx : 0;
+}
+function effectivePhotoIdx(card, idx) {
+  const n = Number(idx);
+  const slots = photoSlots(card);
+  return slots.some(s => s.idx === n) ? n : firstPhotoIdx(card);
+}
 function setPhotoImgSrc(img, src) {
   const shouldWarm = !NET_METERED && isHttpUrl(src) && !IMG_OBJ_URLS[src];
   if (shouldWarm) img.addEventListener('load', () => warmOriginalSrc(src), { once: true });
+  // URL 原图防盗链 / 跨域失败时，自动回退本地 base64，避免 WiFi 下出现黑图
+  if (isHttpUrl(src)) {
+    img.addEventListener('error', () => {
+      const local = localPhotoForShot(img.dataset.cardId, img.dataset.photoIdx);
+      if (local && img.getAttribute('src') !== local) img.src = local;
+    }, { once: true });
+  }
   img.src = src;
 }
 // 生日：兼容 1998/01/18、1998年01月18日、19980118 等写法，统一输出 YYYY/MM/DD
@@ -1742,6 +2183,20 @@ function normalizePairs(arr) {
   return arr.filter(pr => Array.isArray(pr) && pr.length === 2 && !isNaN(pr[0]) && !isNaN(pr[1]))
             .map(pr => [Number(pr[0]), Number(pr[1])]);
 }
+// CP 大礼包：answers.gifts = { "0-1": ["视频1", "视频2", "视频3"] }
+function normalizeGifts(obj) {
+  const out = {};
+  if (!obj || typeof obj !== 'object' || Array.isArray(obj)) return out;
+  Object.keys(obj).forEach(k => {
+    if (!/^\d+-\d+$/.test(String(k))) return;
+    const list = (Array.isArray(obj[k]) ? obj[k] : [])
+      .map(v => typeof v === 'string' ? v.trim() : '')
+      .filter(Boolean)
+      .slice(0, 3);
+    if (list.length) out[k] = list;
+  });
+  return out;
+}
 function normalizePairPhotos(obj) {
   const out = {};
   if (!obj || typeof obj !== 'object') return out;
@@ -1774,7 +2229,8 @@ function buildCards(n, fresh) {
 
   const attrs = {};
   if (!fresh) state.cards.forEach((c, i) => { attrs[c.id] = i % 2 === 0 ? 1 : 0; });  // 新建项目留空，由出题人自己设答案
-  state.answers = { attrs, pairs: [], pairOffsets: {}, pairPhotos: {} };
+  const gifts = fresh ? {} : ((state.answers && state.answers.gifts) || {});
+  state.answers = { attrs, pairs: [], pairOffsets: {}, pairPhotos: {}, gifts: normalizeGifts(gifts) };
 
   state.players.forEach(p => {
     p.attrs = {};
@@ -1803,7 +2259,7 @@ function initDefault() {
   state.pairCount = 10;
   state.globalPhotoMode = 'single';
   state.cards = [];
-  state.answers = { attrs: {}, pairs: [], pairOffsets: {}, pairPhotos: {} };
+  state.answers = { attrs: {}, pairs: [], pairOffsets: {}, pairPhotos: {}, gifts: {} };
   buildCards(10, true);
   state.players = [newPlayer('玩家1', 0)];
   state.currentPlayerId = state.players[0].id;
@@ -1879,8 +2335,12 @@ function syncLayoutBtn() {
   if (!btn) return;
   btn.style.display = state.mode === 'global' ? '' : 'none';
   const single = state.globalPhotoMode === 'single';
-  btn.textContent = single ? '⊞' : '▣';
-  btn.title = single ? '统一切换为多宫格' : '统一切换为单图';
+  const ico = btn.querySelector('.layout-ico');
+  const label = btn.querySelector('.layout-label');
+  if (ico) ico.textContent = single ? '⊞' : '▣';
+  else btn.textContent = single ? '⊞' : '▣';
+  if (label) label.textContent = single ? '多图显示' : '单图显示';
+  btn.title = single ? '当前单图显示，点击切换为多图' : '当前多图显示，点击切换为单图';
 }
 function toggleGlobalLayout() {
   if (state.mode !== 'global') return;
@@ -1985,7 +2445,7 @@ function makePhotoBox(card, override) {
           if (canEdit() && !readonly) replacePhoto(card.id, slot.idx);
           else showPreview(src);
         });
-        im.title = override.onIdx ? '选这张作为 CP 图' : '';
+        im.title = override.onIdx ? '选这张作为 CP 合照' : '';
         box.appendChild(im);
       } else {
         const ph = document.createElement('div');
@@ -2674,6 +3134,7 @@ function toggleGlobalPair(cardId) {
   globalPairingRef = null;
   renderAll();
   triggerAutoSave();
+  if (state.role === 'author') maybePromptGift(a, b);
 }
 
 /* =========================================================
@@ -3162,7 +3623,7 @@ function videoEmbed(url) {
     if (u.indexOf('//') === 0) u = 'https:' + u;
     return { type: 'iframe', url: u };
   }
-  const bv = raw.match(/(BV[0-9A-Za-z]{10})/);
+  const bv = raw.match(/(BV[0-9A-Za-z]{10})/) || raw.match(/[?&]bvid=(BV[0-9A-Za-z]{10})/);
   if (bv) {
     return { type: 'iframe', url: 'https://player.bilibili.com/player.html?bvid=' + bv[1] + '&page=1&high_quality=1&danmaku=0&autoplay=0' };
   }
@@ -3565,7 +4026,8 @@ function renderMatchSlot(which) {
     } else {
       box.classList.add('filled');
       const mode = which === 'A' ? matchSlotA_mode : matchSlotB_mode;
-      const pIdx = which === 'A' ? matchSlotA_photoIdx : matchSlotB_photoIdx;
+      const pIdxRaw = which === 'A' ? matchSlotA_photoIdx : matchSlotB_photoIdx;
+      const pIdx = effectivePhotoIdx(card, pIdxRaw);
       const pSlots = photoSlots(card);
       if (pSlots.length > 1) {
         const shortMob = window.matchMedia('(max-width:760px)').matches;
@@ -3607,6 +4069,7 @@ function renderMatchSlot(which) {
 function renderMatch() {
   const mv = $('#matchView');
   mv.innerHTML = '';
+  if (!lockTip) clearLockHintTimer();
   const p = currentPlayer();
   if (state.role !== 'author' && !p) {
     mv.innerHTML = '<div class="empty-hint">请先在「设置」里添加玩家</div>';
@@ -3692,8 +4155,9 @@ function renderMatch() {
         const info = (store.photos && store.photos[getPairKey(card.id, pairedId)]) || {};
         matchSlotA = card.id;
         matchSlotB = pairedId;
-        matchSlotA_photoIdx = typeof info[card.id] === 'number' ? info[card.id] : 0;
-        matchSlotB_photoIdx = typeof info[pairedId] === 'number' ? info[pairedId] : 0;
+        matchSlotA_photoIdx = typeof info[card.id] === 'number' ? info[card.id] : firstPhotoIdx(card);
+        const pairedCard = state.cards.find(c => c.id === pairedId);
+        matchSlotB_photoIdx = typeof info[pairedId] === 'number' ? info[pairedId] : firstPhotoIdx(pairedCard);
         matchSlotA_mode = 'single'; matchSlotB_mode = 'single';
       } else {
         const busyWith = (id) => {
@@ -3714,13 +4178,13 @@ function renderMatch() {
           return;
         }
         if (matchSlotA === null) {
-          matchSlotA = card.id; matchSlotA_photoIdx = 0; matchSlotA_mode = 'single';
+          matchSlotA = card.id; matchSlotA_photoIdx = firstPhotoIdx(card); matchSlotA_mode = 'single';
         } else if (matchSlotA === card.id) {
           matchSlotA = null;
         } else {
-          if (matchSlotA === null) matchSlotA = card.id;
-          else if (matchSlotB === null) { matchSlotB = card.id; matchSlotB_photoIdx = 0; matchSlotB_mode = 'single'; }
-          else { matchSlotA = card.id; matchSlotA_photoIdx = 0; matchSlotA_mode = 'single'; }
+          if (matchSlotA === null) { matchSlotA = card.id; matchSlotA_photoIdx = firstPhotoIdx(card); }
+          else if (matchSlotB === null) { matchSlotB = card.id; matchSlotB_photoIdx = firstPhotoIdx(card); matchSlotB_mode = 'single'; }
+          else { matchSlotA = card.id; matchSlotA_photoIdx = firstPhotoIdx(card); matchSlotA_mode = 'single'; }
         }
       }
       renderMatch();
@@ -3764,7 +4228,7 @@ function renderMatch() {
     const roAuthor = state.role === 'author' && state.locked;
     const lockBtn = document.createElement('button');
     lockBtn.className = 'btn-lock-big';
-    lockBtn.textContent = hasPair ? '🔒 更新 CP 图' : '🔒 锁死 CP';
+    lockBtn.textContent = hasPair ? '🔒 更新 CP 合照' : '🔒 锁死 CP';
     lockBtn.disabled = roAuthor || !(matchSlotA !== null && matchSlotB !== null);
     lockBtn.title = roAuthor ? '项目已加密：解锁后才能编辑' : '';
     lockBtn.addEventListener('click', () => {
@@ -3797,24 +4261,24 @@ function renderMatch() {
         pairs.push([a, b]);
       }
       store.photos = store.photos || {};
-      store.photos[getPairKey(a, b)] = {
-        [a]: matchSlotA_photoIdx || 0,
-        [b]: matchSlotB_photoIdx || 0
-      };
-      const sIdxA = matchSlotA_photoIdx || 0, sIdxB = matchSlotB_photoIdx || 0;
+      const ca0 = state.cards.find(c => c.id === a), cb0 = state.cards.find(c => c.id === b);
+      const sIdxA = effectivePhotoIdx(ca0, matchSlotA_photoIdx);
+      const sIdxB = effectivePhotoIdx(cb0, matchSlotB_photoIdx);
+      store.photos[getPairKey(a, b)] = { [a]: sIdxA, [b]: sIdxB };
       globalPairingRef = null;
       renderAll();
-      triggerAutoSave();
+      triggerAutoSave(true);
       const ca = state.cards.find(c => c.id === a), cb = state.cards.find(c => c.id === b);
       const nA = (ca && photoSlots(ca).length > 1) ? '第' + (sIdxA + 1) + '张' : '单图';
       const nB = (cb && photoSlots(cb).length > 1) ? '第' + (sIdxB + 1) + '张' : '单图';
       lockTip = {
         t: stillPaired ? '✅ 已更新该组 CP 合照' : '✅ 已锁死保存该组新人 CP',
         full: '（第 ' + (a + 1) + ' 号 · ' + nA + ' × 第 ' + (b + 1) + ' 号 · ' + nB + '）' +
-              '<br>请继续下一步：可「🔒 更新 CP 图」换合照，或点「✕ 清空展示」再组合新的 CP',
+              '<br>请继续下一步：可「🔒 更新 CP 合照」换合照，或点「✕ 清空展示」再组合新的 CP',
         short: '（' + (a + 1) + '号' + nA + ' × ' + (b + 1) + '号' + nB + '）· 可更新合照或清空展示'
       };
       renderMatch();
+      if (!stillPaired && state.role === 'author') maybePromptGift(a, b);
     });
     const unlockBtn = document.createElement('button');
     unlockBtn.className = 'btn-unlock-big';
@@ -3862,15 +4326,20 @@ function renderMatch() {
   if (state.role !== 'grade') {
     if (lockTip) {
       const hint = document.createElement('div');
-      hint.className = 'lock-hint';
+      hint.className = 'lock-hint float';
       const monMob = window.matchMedia('(max-width:760px)').matches;
       hint.innerHTML = '<b>' + lockTip.t + '</b>' + (monMob ? ' ' + lockTip.short : lockTip.full);
-      ws.appendChild(hint);
+      // 放到左侧空白处，绝对定位，不挤占按钮行；30 秒后自动淡出
+      body.appendChild(hint);
+      scheduleLockHintHide();
     }
     ws.appendChild(bar);
   }
   body.appendChild(ws);
   mv.appendChild(body);
+  const gift = giftForSelection();
+  if (gift) mv.appendChild(makeGiftCorner(gift));
+  else lastGiftKey = null;
   requestAnimationFrame(syncMatchHeights);
 }
 
@@ -4121,7 +4590,11 @@ function projectData() {
       attrs: state.answers.attrs,
       pairs: state.answers.pairs,
       pairOffsets: state.answers.pairOffsets,
-      pairPhotos: state.answers.pairPhotos
+      pairPhotos: state.answers.pairPhotos,
+      gifts: (function () {
+        const g = normalizeGifts(state.answers.gifts);
+        return Object.keys(g).length ? g : undefined;
+      })()
     },
     players: state.players.map(p => ({
       id: p.id, name: p.name, color: p.color,
@@ -4215,6 +4688,7 @@ function exportResult() {
       const sc = computeScore(p);
       return {
         name: p.name, attrs: p.attrs, pairs: p.pairs,
+        pairOffsets: p.pairOffsets, pairPhotos: p.pairPhotos,
         score: sc, percent: scorePct(sc)
       };
     })
@@ -4264,7 +4738,8 @@ function loadProject(data) {
     attrs: normalizeAttrs(ans.attrs),
     pairs: normalizePairs(ans.pairs),
     pairOffsets: normalizeOffsets(ans.pairOffsets),
-    pairPhotos: normalizePairPhotos(ans.pairPhotos)
+    pairPhotos: normalizePairPhotos(ans.pairPhotos),
+    gifts: normalizeGifts(ans.gifts)
   };
   // 只补齐“已有答案”的缺失项；空白新项目不要凭空生成答案（否则会像复制了旧答案）
   if (!state.locked && Object.keys(state.answers.attrs || {}).length) {
@@ -4298,6 +4773,8 @@ function loadProject(data) {
   matchSlotA = null; matchSlotB = null; globalPairingRef = null;
   applyOrigCache();
   hydrateOriginalCache();
+  // 设置面板勾选「一键预加载原图」且当前是 WiFi / 电脑网络时，打开项目后自动补齐原图
+  if (AUTO_ORIG && netAllowsAutoOrig()) setTimeout(() => pullAllOriginals(true), 400);
   return true;
 }
 
@@ -4489,7 +4966,7 @@ async function newProject(name, quiet) {
   state.pairCount = 10;
   state.globalPhotoMode = 'single';
   state.cards = [];
-  state.answers = { attrs: {}, pairs: [] };
+  state.answers = { attrs: {}, pairs: [], gifts: {} };
   buildCards(10, true);                     // 卡片、属性答案、连线全部清空
   state.players = [newPlayer('玩家1', 0)];
   state.currentPlayerId = state.players[0].id;
@@ -5664,6 +6141,22 @@ function bindEvents() {
     toast('已清空本模式批注');
   });
 
+  // 大礼包设置 / 播放
+  const giftYes = $('#giftYes');
+  if (giftYes) giftYes.addEventListener('click', saveGiftSetup);
+  const giftNo = $('#giftNo');
+  if (giftNo) giftNo.addEventListener('click', closeGiftSetup);
+  const giftClearBtn = $('#giftClear');
+  if (giftClearBtn) giftClearBtn.addEventListener('click', clearGiftSetup);
+  const giftSetupMask = $('#giftSetup');
+  if (giftSetupMask) giftSetupMask.addEventListener('click', e => { if (e.target === giftSetupMask) closeGiftSetup(); });
+  const giftModal = $('#giftModal');
+  if (giftModal) {
+    giftModal.addEventListener('click', e => { if (e.target === giftModal) closeGiftModal(); });
+    giftModal.querySelectorAll('[data-close="giftModal"]').forEach(btn => btn.addEventListener('click', closeGiftModal));
+  }
+  const giftAutoChk = $('#giftAutoPlay');
+  if (giftAutoChk) giftAutoChk.addEventListener('change', () => { if (currentGift) playGiftIndex(giftPlayIndex); });
   // 统计 / 截图 / 录屏 / 全屏
   const layoutBtn = $('#btnToggleLayout');
   if (layoutBtn) layoutBtn.addEventListener('click', toggleGlobalLayout);
