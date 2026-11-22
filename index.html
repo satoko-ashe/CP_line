@@ -46,6 +46,9 @@ input,select{font-family:inherit}
 .ab-lock.locked{border-color:#fb7185;background:#2a1622;color:#fecdd3;box-shadow:0 0 14px -4px #fb7185}
 .ab-lock.tool{border-color:#0e7490;background:#0b2530;color:#a5f3fc;text-decoration:none}
 .ab-lock.tool:hover{border-color:#22d3ee;color:#fff;box-shadow:0 0 14px -4px #22d3ee}
+.ab-lock.reveal{border-color:#334155;background:#0f172a;color:#cbd5e1}
+.ab-lock.reveal.public{border-color:#0e7490;background:#0b2530;color:#a5f3fc}
+.ab-lock.reveal.hidden{border-color:#7c3aed;background:#1a1633;color:#ddd6fe}
 .ab-dirty{font-size:10.5px;font-weight:700;color:#fbbf24;border:1px dashed #a16207;background:#2a2109;
   border-radius:8px;padding:2px 6px;white-space:nowrap}
 .ab-name-btn{
@@ -73,12 +76,21 @@ input,select{font-family:inherit}
   color:#fb7185;font-size:12px;line-height:1;transition:.15s;
 }
 .ps-del:hover{background:#2a1622;border-color:#fb7185;box-shadow:0 0 14px -4px #fb7185}
+#projSwitch .proj-switch-modal{position:relative}
+#projSwitch .proj-switch-modal h2{padding-right:46px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ps-pull{
+  position:absolute;top:12px;right:14px;width:32px;height:32px;border-radius:8px;
+  border:0;background:transparent;color:#93c5fd;font-size:17px;line-height:1;
+  display:flex;align-items:center;justify-content:center;transition:.15s;z-index:1;
+}
+.ps-pull:hover{background:transparent;border:0;color:#67e8f9;text-shadow:0 0 10px #38bdf8}
 .tbtn{
   background:#182234;border:1px solid #253247;color:#cbd5e1;
   padding:5px 10px;border-radius:9px;font-size:12px;white-space:nowrap;transition:.15s;
 }
 .tbtn:hover{background:#1e2b40;border-color:#334155;color:#f1f5f9}
 .tbtn.on{background:#0f2a42;border-color:#0e7490;color:#67e8f9}
+.tbtn.layout{padding:5px 8px;font-weight:700;letter-spacing:0}
 .grow{flex:1}
 .modes{display:flex;gap:4px;background:#131d2e;border:1px solid #1e293b;border-radius:11px;padding:3px}
 .mode-btn{
@@ -358,6 +370,7 @@ main{
 .ci-figures input[type=number]::-webkit-outer-spin-button,
 .ci-figures input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
 .ci-figures input[type=date]{width:136px;max-width:100%;min-width:0;color-scheme:dark}
+#info_birthday{width:126px;max-width:100%;min-width:0}
 .ci-unit{color:#7dd3fc;font-size:12.5px;font-weight:800;opacity:1}
 .ci-block{background:#101b2d;border:1px solid #1e293b;border-radius:14px;padding:9px 10px;display:flex;flex-direction:column;gap:7px}
 /* 矮屏：右栏再压缩一点，尽量避免出现滚动条 */
@@ -443,11 +456,19 @@ main{
 .ci-player.done .ph{display:none}
 /* 视频放大浮层 */
 #videoView{position:fixed;inset:0;z-index:430;display:none;align-items:center;justify-content:center;
-  background:rgba(2,6,23,.95);backdrop-filter:blur(3px);padding:20px}
+  background:rgba(2,6,23,.95);backdrop-filter:blur(3px);padding:16px}
 #videoView.show{display:flex}
-#videoView .wrap{position:relative;width:min(1200px,94vw);height:min(760px,88vh);
-  background:#000;border-radius:16px;overflow:hidden;box-shadow:0 30px 80px #000}
+#videoView .wrap{position:relative;width:min(1200px,96vw);height:92vh;max-height:calc(100vh - 32px);
+  background:#000;border-radius:22px;overflow:hidden;box-shadow:0 30px 80px #000}
 #videoView iframe,#videoView video{width:100%;height:100%;border:0;display:block}
+.vv-fallback{position:absolute;left:50%;bottom:18px;transform:translateX(-50%);display:none;
+  align-items:center;gap:10px;padding:9px 14px;border-radius:999px;background:rgba(15,23,42,.9);
+  border:1px solid #475569;box-shadow:0 8px 24px #0009;color:#e2e8f0;font-size:12px;z-index:4}
+.vv-fallback.show{display:flex}
+.vv-fallback.only{top:50%;bottom:auto;transform:translate(-50%,-50%);flex-direction:column;text-align:center;padding:18px 22px;border-radius:16px}
+.vv-fallback.only .vv-tip{max-width:74vw}
+.vv-fallback a{color:#67e8f9;text-decoration:underline;white-space:nowrap}
+.vv-fallback .vv-tip{max-width:62vw;line-height:1.5}
 #videoView .x{position:fixed;top:18px;right:20px;width:38px;height:38px;border-radius:50%;
   background:#1e293b;border:1px solid #475569;color:#e2e8f0;font-size:16px;z-index:2}
 #videoView .x:hover{background:#ef4444;border-color:#f87171;color:#fff}
@@ -471,6 +492,7 @@ main{
 }
 @media (max-width:760px){
   .ci-modal{width:96vw;height:94vh;max-height:94vh;border-radius:18px}
+  #videoView .wrap{width:96vw;height:94vh;max-height:94vh;border-radius:18px}
   .ci-main{display:flex;flex-direction:column;padding:8px 10px;gap:10px;overflow-y:auto}
   .ci-stage{flex:none;min-height:0}
   .ci-col{flex:none;flex-direction:row;flex-wrap:wrap;gap:8px;overflow:visible}
@@ -648,7 +670,8 @@ main{
   #settingsModal .modal{width:96vw;padding:11px 12px;gap:7px;border-radius:16px}
   #settingsModal .modal section{gap:5px;padding-top:7px}
   #settingsModal .file-line{gap:6px}
-  #settingsModal .btn-ghost{padding:6px 11px;font-size:12px}
+  #settingsModal .btn-ghost{padding:6px 8px;font-size:11.5px}
+  #settingsModal .file-line{gap:5px}
 }
 .file-line{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
 .file-line-tag{flex:none;font-size:10.5px;font-weight:800;color:#7dd3fc;border:1px solid #164e63;
@@ -792,6 +815,7 @@ body[data-role="grade"] #globalView .card{height:calc(100% - 54px)}
   .ci-figures label{flex:1 1 calc(50% - 6px);justify-content:center;min-width:0}
   .ci-figures label.birth{flex:1 1 100%}
   .ci-figures label.birth input{width:auto;flex:1 1 auto;min-width:0;text-align:center}
+  #info_birthday{width:auto}
 }
 @media (max-width:640px){
   /* 小屏：标注栏压成一行，避免挤占展示区 */
@@ -859,6 +883,7 @@ body[data-role="grade"] #globalView .card{height:calc(100% - 54px)}
     </div>
 
     <div class="grow"></div>
+    <button class="tbtn layout" id="btnToggleLayout" title="统一切换卡片显示：单图 / 多宫格">⊞</button>
     <button class="tbtn" id="btnToggleStats">👁️ 显示统计</button>
     <button class="tbtn" id="btnSettings">⚙ 设置</button>
     <button class="tbtn" id="btnShot">📷 截图</button>
@@ -912,6 +937,7 @@ body[data-role="grade"] #globalView .card{height:calc(100% - 54px)}
       <div class="file-line">
         <span class="file-line-tag">导入</span>
         <button class="btn-ghost" id="btnImport">📂 导入项目</button>
+        <button class="btn-ghost" id="btnPullProject">⬇ 拉取在线项目</button>
         <button class="btn-ghost" id="btnImportResult">📥 导入答题记录</button>
       </div>
       <div class="file-line">
@@ -921,7 +947,7 @@ body[data-role="grade"] #globalView .card{height:calc(100% - 54px)}
         <button class="btn-ghost" id="btnPrint">🖨 导出 PDF</button>
       </div>
       <div class="ps-note" style="margin-top:8px">📌 导入以「文件名」为项目名，改文件名再导入即可。</div>
-      <div class="ps-note">📌 答题记录不含卡片：请先打开对应题库，再用「导入答题记录」；按玩家名合并，不会覆盖题库。</div>
+      <div class="ps-note">📌 答题记录不含卡片：先开题库再导入，按玩家名合并；🔐 带密码题库导出需验证原密码。</div>
     </section>
     <section>
       <h3>清空</h3>
@@ -943,7 +969,8 @@ body[data-role="grade"] #globalView .card{height:calc(100% - 54px)}
 
 <!-- ================= 项目切换 ================= -->
 <div class="modal-mask" id="projSwitch">
-  <div class="modal">
+  <div class="modal proj-switch-modal">
+    <button class="ps-pull" id="psPull" title="从远程清单拉取 / 切换项目（未改动沿用本地缓存）">⬇</button>
     <h2>📁 当前项目：<span id="psCurName">未命名项目</span></h2>
     <h3>点选其他项目即切换，各自数据独立保存，互不混淆</h3>
     <div class="ps-list" id="psList"></div>
@@ -1053,7 +1080,7 @@ body[data-role="grade"] #globalView .card{height:calc(100% - 54px)}
           <div class="ci-figures">
             <label>身高<input type="number" id="info_height" min="0" max="300" step="1" placeholder="163"><span class="ci-unit">cm</span></label>
             <label>体重<input type="number" id="info_weight" min="0" max="300" step="1" placeholder="48"><span class="ci-unit">kg</span></label>
-            <label class="birth">生日<input type="date" id="info_birthday"></label>
+            <label class="birth">生日<input type="text" id="info_birthday" placeholder="1998/01/18"></label>
           </div>
         </div>
       </section>
@@ -1205,9 +1232,17 @@ function makeAuthorBar() {
   const lockMode = state.locked ? 'locked' : (state.lock ? 'set' : 'none');
   html += '<button class="ab-lock ' + lockMode + '" data-ab="lock" title="' +
     (state.locked ? '项目已加密：仅读中，点击输入原密码解锁 / 改密'
-      : state.lock ? '已设置密码，点击修改密码（导出后才写入文件）'
+      : state.lock ? '已设置密码，点击修改密码（需先验证原密码）'
         : '未设置密码，点击设置密码（导出时也会询问）') + '">' +
     (state.locked ? '🔒' : (state.lock ? '🔐' : '🔓')) + '</button>';
+  if (state.lock) {
+    const hideAns = answersHidden();
+    html += '<button class="ab-lock reveal ' + (hideAns ? 'hidden' : 'public') + '" data-ab="reveal" title="' +
+      (hideAns ? '答案已隐藏：点击「公开」图标显示属性 / CP 连线答案'
+        : state.locked ? '答案已公开：点击重新隐藏属性 / CP 连线答案'
+          : '项目已解锁：答案已公开') + '">' +
+      (hideAns ? '🙈' : '👁️') + '</button>';
+  }
   // 修图工具：跳转外部图片编辑器
   html += '<a class="ab-lock tool" href="https://satoko-ashe.github.io/label/image-editor.html" target="_blank" rel="noopener noreferrer" title="修图工具（推荐照片 900×1200，3:4）">🖌️</a>';
   if (state.lockDirty) html += '<span class="ab-dirty" title="密码只保存在本机，需重新导出项目文件才会写入">⚠ 密码待导出</span>';
@@ -1227,6 +1262,7 @@ function makeAuthorBar() {
     inp.addEventListener('blur', () => { if (inp.value.trim()) { saveName(inp.value); renderAll(); } });
   }
   bar.querySelectorAll('[data-ab="lock"]').forEach(b => b.addEventListener('click', () => promptProjectPassword()));
+  bar.querySelectorAll('[data-ab="reveal"]').forEach(b => b.addEventListener('click', () => toggleAnswerReveal()));
   bar.querySelectorAll('[data-ab="name"]').forEach(b => b.addEventListener('click', () => ensureNamed()));
   bar.querySelectorAll('[data-ab="edit"]').forEach(b => b.addEventListener('click', () => {
     openInput('修改出题人署名', state.author.name, v => { state.author.name = String(v || '').trim().slice(0, 24); renderAll(); triggerAutoSave(); });
@@ -1249,6 +1285,7 @@ const state = {
   players: [],
   currentPlayerId: null,
   mode: 'global',          // global | match
+  globalPhotoMode: 'single', // 全局卡片统一照片布局：默认 single | grid
   role: 'author',          // author | player | grade
   annot: { author: { strokes: [], texts: [] }, player: { strokes: [], texts: [] }, grade: { strokes: [], texts: [] } },
   projectId: 'proj_' + Date.now(),
@@ -1257,6 +1294,7 @@ const state = {
   author: { name: '', url: '' },       // 出题人署名 + 个人主页链接
   lock: null,                          // {alg,salt,hash} 项目密码（存哈希，导出随 JSON 走）
   locked: false,                       // 本次会话是否处于「仅读」状态
+  revealed: false,                     // 加密项目：本次会话是否已输密码公开答案
   lockDirty: false                     // 密码改过但还没重新导出
 };
 
@@ -1331,6 +1369,10 @@ function pairStore() {
   return { pairs: p.pairs, offsets: p.pairOffsets, photos: p.pairPhotos, owner: p.id };
 }
 function canEdit() { return state.role === 'author' && !state.locked && state.named; }
+// 加密项目在出题模式下默认隐藏「属性 + CP 连线」答案；输原密码公开或解锁后可见
+function answersHidden() {
+  return state.role === 'author' && !!state.lock && state.locked && !state.revealed;
+}
 
 // 未命名项目：先命名才能编辑
 function ensureNamed() {
@@ -1373,6 +1415,7 @@ async function setProjectLock(pw) {
   const salt = randSalt();
   state.lock = { v: 1, salt: salt, hash: await hashPw(pw, salt) };
   state.locked = false;
+  state.revealed = true;
 }
 async function checkProjectLock(pw) {
   if (!state.lock) return false;
@@ -1392,12 +1435,30 @@ function promptProjectPassword() {
   const hint = $('#lockMenuHint');
   if (hint) {
     hint.textContent = state.locked
-      ? '当前为只读。选择「解锁」输入原密码开启编辑，导出时仍会带原密码。'
-      : '项目已加密。如需换个密码，点「修改密码」（重新导出后生效）。';
+      ? '当前为只读。选择「解锁」输入原密码开启编辑；导出题库需再次验证原密码，答题记录可直接导出。'
+      : '项目已加密。修改密码必须先输入原密码验证；重新导出后生效。';
   }
   const un = $('#lmUnlock');
   if (un) un.style.display = state.locked ? '' : 'none';
   mask.classList.add('show');
+}
+
+// 加密项目：出题模式下隐藏 / 公开「属性 + CP 连线」答案
+function toggleAnswerReveal() {
+  if (state.role !== 'author') { toast('请先切到「出题模式」再操作答案公开'); return; }
+  if (!state.lock) return;
+  if (!state.locked) { toast('项目已解锁，答案已公开'); return; }
+  if (state.revealed) {
+    state.revealed = false;
+    matchSlotA = null; matchSlotB = null;
+    renderAll();
+    toast('已隐藏属性与 CP 连线答案（仍可点锁图标解锁后查看）');
+    return;
+  }
+  state.revealed = true;
+  matchSlotA = null; matchSlotB = null;
+  renderAll();
+  toast('已公开属性与 CP 连线答案：仅查看，编辑仍需解锁项目');
 }
 
 // 只解锁：不再弹新密码框
@@ -1406,6 +1467,7 @@ function askOriginalPassword(afterOk) {
     if (!v) { toast('未输入密码'); return; }
     if (!(await checkProjectLock(v))) { toast('密码不正确'); return; }
     state.locked = false;
+    state.revealed = true;
     triggerAutoSave(true);
     renderAll();
     if (afterOk) afterOk();
@@ -1428,6 +1490,7 @@ function askNewPassword(isChange) {
     await setProjectLock(pw);
     state.lockDirty = true;
     state.locked = false;
+    state.revealed = true;
     triggerAutoSave(true);
     renderAll();
     toast('密码已更新：请重新导出项目文件，新密码才会写入（导出后打开即为只读）');
@@ -1584,6 +1647,21 @@ function setPhotoImgSrc(img, src) {
   if (shouldWarm) img.addEventListener('load', () => warmOriginalSrc(src), { once: true });
   img.src = src;
 }
+// 生日：兼容 1998/01/18、1998年01月18日、19980118 等写法，统一输出 YYYY/MM/DD
+function normalizeBirthday(v) {
+  let s = String(v == null ? '' : v).trim();
+  if (!s) return '';
+  s = s.replace(/[年月]/g, '/').replace(/[日号]/g, '').replace(/[.\-]/g, '/').replace(/\s+/g, '');
+  let m = s.match(/^(\d{4})\/(\d{1,2})\/(\d{1,2})$/);
+  if (!m) m = s.match(/^(\d{4})(\d{2})(\d{2})$/);
+  if (!m) return '';
+  const y = Number(m[1]), mo = Number(m[2]), d = Number(m[3]);
+  if (y < 1800 || y > 2200 || mo < 1 || mo > 12 || d < 1 || d > 31) return '';
+  const dt = new Date(y, mo - 1, d);
+  if (dt.getFullYear() !== y || dt.getMonth() !== mo - 1 || dt.getDate() !== d) return '';
+  const z = n => String(n).padStart(2, '0');
+  return String(y) + '/' + z(mo) + '/' + z(d);
+}
 function normalizeCard(c, i) {
   c = c || {};
   // photos 只存本地 base64；originals 只存在线 URL。旧数据里混进 photos 的 URL 自动挪回 originals
@@ -1602,14 +1680,14 @@ function normalizeCard(c, i) {
     weight: c.weight || '',
     lineage: toGeoArr(c.lineage),
     nationality: toGeoArr(c.nationality),
-    birthday: c.birthday || '',
+    birthday: normalizeBirthday(c.birthday) || c.birthday || '', 
     zodiac: c.zodiac || '',
     zodiacThai: c.zodiacThai || '',
     school: c.school || '',
     company: c.company || '',
     photos: photos,
     originals: originals,
-    photoMode: c.photoMode === 'single' ? 'single' : 'grid',
+    photoMode: c.photoMode === 'grid' ? 'grid' : 'single',
     photoIdx: typeof c.photoIdx === 'number' ? c.photoIdx : 0,
     videoUrl: c.videoUrl || '',
     showName: c.showName !== false,
@@ -1717,12 +1795,31 @@ function newPlayer(name, idx) {
   };
 }
 function initDefault() {
-  buildCards(10);
+  // 彻底清空成白纸：绝不能沿用上一份 state.cards（包括照片/答案/密码）
+  state.projectId = 'proj_' + Date.now();
+  state.projectName = '未命名项目';
+  state.named = false;
+  $('#projName').textContent = state.projectName;
+  state.pairCount = 10;
+  state.globalPhotoMode = 'single';
+  state.cards = [];
+  state.answers = { attrs: {}, pairs: [], pairOffsets: {}, pairPhotos: {} };
+  buildCards(10, true);
   state.players = [newPlayer('玩家1', 0)];
   state.currentPlayerId = state.players[0].id;
-  state.answers.pairs = [];
-  state.projectName = '未命名项目';
   state.author = { name: '', url: '' };
+  state.lock = null;
+  state.locked = false;
+  state.revealed = false;
+  state.lockDirty = false;
+  state.role = 'author';
+  state.mode = 'global';
+  state.annot = { author: { strokes: [], texts: [] }, player: { strokes: [], texts: [] }, grade: { strokes: [], texts: [] } };
+  matchSlotA = null; matchSlotB = null; globalPairingRef = null;
+  lockTip = null;
+  filterPlayerId = ''; filterCardId = ''; statsVisible = false;
+  editingCard = null; photoTarget = null; replaceTarget = null;
+  $('#cardInfoModal').classList.remove('show');
 }
 
 /* =========================================================
@@ -1760,6 +1857,40 @@ function scorePct(sc) {
   if (!total) return 0;
   return Math.round(got / total * 100);
 }
+// 玩家是否已选完全部属性 + 全部 CP 连线（用于进入批改模式前的把关）
+function playerProgress(p) {
+  const totalAttrs = state.cards.length;
+  let attrDone = 0;
+  if (p) state.cards.forEach(c => {
+    const v = p.attrs ? p.attrs[c.id] : undefined;
+    if (v !== undefined && v !== null) attrDone++;
+  });
+  const pairTotal = Math.max(0, Number(state.pairCount) || 0);
+  const pairDone = p && Array.isArray(p.pairs) ? p.pairs.length : 0;
+  const covered = new Set();
+  if (p && Array.isArray(p.pairs)) p.pairs.forEach(pr => { covered.add(pr[0]); covered.add(pr[1]); });
+  return {
+    totalAttrs, attrDone, pairTotal, pairDone,
+    complete: !!p && attrDone >= totalAttrs && pairDone >= pairTotal && covered.size >= totalAttrs
+  };
+}
+function syncLayoutBtn() {
+  const btn = $('#btnToggleLayout');
+  if (!btn) return;
+  btn.style.display = state.mode === 'global' ? '' : 'none';
+  const single = state.globalPhotoMode === 'single';
+  btn.textContent = single ? '⊞' : '▣';
+  btn.title = single ? '统一切换为多宫格' : '统一切换为单图';
+}
+function toggleGlobalLayout() {
+  if (state.mode !== 'global') return;
+  const target = state.globalPhotoMode === 'single' ? 'grid' : 'single';
+  state.globalPhotoMode = target;
+  state.cards.forEach(c => { if (photoSlots(c).length > 1) c.photoMode = target; });
+  renderAll();
+  triggerAutoSave();
+  toast(target === 'grid' ? '已统一切换为多宫格' : '已统一切换为单图');
+}
 function renderScores() {
   const panel = $('#scorePanel');
   panel.innerHTML = '';
@@ -1790,6 +1921,7 @@ function renderScores() {
   $('#btnToggleStats').textContent = innerWidth <= 1100
     ? (statsVisible ? '🙈' : '👁️')
     : (statsVisible ? '🙈 隐藏统计' : '👁️ 显示统计');
+  syncLayoutBtn();
 }
 /* =========================================================
    照片 & 卡片
@@ -1818,6 +1950,8 @@ function makePhotoBox(card, override) {
     box.classList.add('single');
     const img = noRefImg(document.createElement('img'));
     setPhotoImgSrc(img, photos[idx]);
+    img.dataset.cardId = String(card.id);
+    img.dataset.photoIdx = String(slots[idx] ? slots[idx].idx : idx);
     img.alt = card.name || '';
     box.appendChild(img);
     if (photos.length > 1) {
@@ -1841,6 +1975,8 @@ function makePhotoBox(card, override) {
       if (src) {
         const im = noRefImg(document.createElement('img'));
         setPhotoImgSrc(im, src);
+        im.dataset.cardId = String(card.id);
+        im.dataset.photoIdx = String(slot.idx);
         im.alt = '';
         if (slots.length === 3 && i === 2) im.style.gridColumn = 'span 2';
         im.addEventListener('click', e => {
@@ -1952,13 +2088,17 @@ function setPhotoIdx(card, newIdx, override) {
 
 function makeLockBtn(card) {
   const store = pairStore();
-  const isPaired = store.pairs.some(pr => pr[0] === card.id || pr[1] === card.id);
-  const selecting = globalPairingRef === card.id;
+  const hideAns = answersHidden();
+  const isPaired = !hideAns && store.pairs.some(pr => pr[0] === card.id || pr[1] === card.id);
+  const selecting = !hideAns && globalPairingRef === card.id;
   const btn = document.createElement('button');
   btn.className = 'lock-btn' + (isPaired ? ' paired' : '') + (selecting ? ' selecting' : '');
   btn.title = isPaired ? '点击解绑这对 CP' : (selecting ? '请再点一张卡片完成配对' : '建立 CP 配对');
   btn.innerHTML = isPaired ? ICON_HEART : (selecting ? ICON_TARGET : ICON_LINK);
-  if (state.role === 'author' && state.locked) {
+  if (hideAns) {
+    btn.disabled = true;
+    btn.title = '答案已隐藏：点「公开」或解锁后查看 CP 连线';
+  } else if (state.role === 'author' && state.locked) {
     btn.disabled = true;
     btn.title = '项目已加密：解锁后才能配对';
   }
@@ -1977,7 +2117,8 @@ function makeCard(card, opts) {
   el.dataset.id = card.id;
 
   const p = currentPlayer();
-  const attrVal = state.role === 'author' ? state.answers.attrs[card.id] : (p ? p.attrs[card.id] : undefined);
+  const hideAns = answersHidden();
+  const attrVal = hideAns ? undefined : (state.role === 'author' ? state.answers.attrs[card.id] : (p ? p.attrs[card.id] : undefined));
   if (attrVal !== undefined && attrVal !== null) el.dataset.attr = String(attrVal);
 
   // 编号
@@ -2047,10 +2188,10 @@ function makeCard(card, opts) {
     const vb = document.createElement('button');
     vb.className = 'video-btn' + (card.videoUrl ? ' has' : '');
     vb.textContent = '▶';
-    vb.title = card.videoUrl ? '打开个人视频介绍' : '暂无视频链接';
+    vb.title = card.videoUrl ? '播放个人视频介绍' : '暂无视频链接';
     vb.addEventListener('click', e => {
       e.stopPropagation();
-      if (card.videoUrl) window.open(card.videoUrl, '_blank', 'noopener');
+      if (card.videoUrl) openVideoView(videoEmbed(card.videoUrl), card.videoUrl);
       else if (canEdit()) { toast('还没有填写视频链接'); openCardInfoModal(card, false); }
       else toast('暂无视频');
     });
@@ -2122,7 +2263,7 @@ function makeCard(card, opts) {
     if (state.role === 'author' && state.locked) {
       b1.disabled = true; b0.disabled = true;
       b1.style.cursor = 'default'; b0.style.cursor = 'default';
-      b1.title = b0.title = '项目已加密：解锁后才能修改';
+      b1.title = b0.title = hideAns ? '答案已隐藏：点「公开」或解锁后查看' : '项目已加密：解锁后才能修改';
     }
     b1.addEventListener('click', e => { e.stopPropagation(); setAttr(card.id, 1); });
     b0.addEventListener('click', e => {
@@ -2146,6 +2287,7 @@ function rerenderCard(id) {
     el.parentNode.replaceChild(fresh, el);
     requestAnimationFrame(drawLines);
   }
+  syncLayoutBtn();
 }
 
 /* =========================================================
@@ -2261,6 +2403,7 @@ function renderGlobal() {
 function buildLines() {
   const lines = [];
   if (state.role === 'author') {
+    if (answersHidden()) return lines;   // 加密只读且未公开时不画答案线
     state.answers.pairs.forEach(pr => {
       lines.push({ a: pr[0], b: pr[1], color: '#ef4444', width: 3, opacity: 1, dashed: false,
         store: state.answers.pairOffsets, source: 'answers', lane: 0, badge: true });
@@ -2780,7 +2923,13 @@ let ORIG_CACHE = {};
 (function () {
   try { ORIG_CACHE = JSON.parse(localStorage.getItem(ORIG_CACHE_KEY) || '{}') || {}; } catch (e) { ORIG_CACHE = {}; }
 })();
-function origCacheKey(card, idx) { return String(card.id) + ':' + idx; }
+function origCacheKey(card, idx) {
+  // 缓存键必须绑定项目 + 卡片 + 位次 + 当前本地照片指纹；
+  // 这样同一项目文件被替换照片/换成本地纯文字项目时，不会误用旧原图缓存。
+  const local = card && card.photos && card.photos[idx] ? String(card.photos[idx]) : '';
+  const tag = local ? (local.length + '-' + local.slice(0, 18) + '-' + local.slice(-18)) : 'none';
+  return String(state.projectId || '') + ':' + String(card.id) + ':' + idx + ':' + tag;
+}
 function saveOrigCache() {
   try { localStorage.setItem(ORIG_CACHE_KEY, JSON.stringify(ORIG_CACHE)); } catch (e) {}
 }
@@ -2802,21 +2951,35 @@ function isMobileLike() {
   if (innerWidth <= 760) return true;
   return !!(window.matchMedia && matchMedia('(pointer:coarse)').matches && innerWidth <= 1180);
 }
-function detectMeteredNetwork() {
+function detectNetworkKind() {
   const c = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
   if (c) {
-    if (c.saveData) return true;
-    if (c.type) return String(c.type).toLowerCase() === 'cellular';
-    if (c.effectiveType && /^(slow-2g|2g|3g)$/.test(String(c.effectiveType))) return true;
+    if (c.saveData) return 'metered';
+    const type = c.type ? String(c.type).toLowerCase() : '';
+    if (type === 'wifi') return 'wifi';
+    if (type === 'cellular') return 'metered';
+    if (type === 'ethernet') return 'wired';
+    if (c.effectiveType && /^(slow-2g|2g|3g)$/.test(String(c.effectiveType))) return 'metered';
   }
-  // 识别不到 WiFi/流量类型时，手机默认按流量省流；电脑默认按 WiFi
-  return isMobileLike();
+  // 识别不到类型时：手机默认按流量省流；电脑默认视为 WiFi
+  return isMobileLike() ? 'metered' : 'wifi';
 }
-let NET_METERED = detectMeteredNetwork();
+function detectMeteredNetwork() { return detectNetworkKind() === 'metered'; }
+function netAllowsAutoOrig() { return NET_KIND === 'wifi'; }
+let NET_KIND = detectNetworkKind();
+let NET_METERED = NET_KIND === 'metered';
+function syncAutoOrigChk() {
+  const chk = document.getElementById('autoOrigChk');
+  if (chk) chk.checked = AUTO_ORIG && netAllowsAutoOrig();
+}
+syncAutoOrigChk();
 function refreshNetworkMode() {
-  const next = detectMeteredNetwork();
-  if (next === NET_METERED) return;
-  NET_METERED = next;
+  const nextKind = detectNetworkKind();
+  const nextMetered = nextKind === 'metered';
+  if (nextKind === NET_KIND && nextMetered === NET_METERED) return;
+  NET_KIND = nextKind;
+  NET_METERED = nextMetered;
+  syncAutoOrigChk();
   renderAll();
 }
 function absoluteHttpUrl(url) {
@@ -2931,14 +3094,20 @@ function applyOrigCache() {
   // 原图缓存只用于「查看原图」加速；显示降级走 photoSrcAt，绝不把 URL 写回 photos
 }
 function originalOf(card, idx) {
-  if (!card || !card.photos) return '';
-  if (card.originals && card.originals[idx]) return card.originals[idx];
+  if (!card) return '';
+  const local = card.photos && card.photos[idx];
+  const explicitOrig = card.originals && card.originals[idx];
+  // 纯文字项目（photos / originals 都为空）绝不能借用上一项目的原图缓存
+  if (!local && !explicitOrig) return '';
+  if (explicitOrig) return explicitOrig;
   const hit = ORIG_CACHE[origCacheKey(card, idx)];
   if (hit) return hit;
+  // ORIGINALS 只作为本地照片的补充映射，不参与空卡片的降级
+  if (!local) return '';
   const entry = ORIGINALS[String(card.id + 1)];
   if (Array.isArray(entry)) return entry[idx] || entry[0] || '';
   if (typeof entry === 'string') return entry;
-  const bySrc = card.photos[idx] ? ORIGINALS[card.photos[idx]] : '';
+  const bySrc = ORIGINALS[local] || '';
   return typeof bySrc === 'string' ? bySrc : '';
 }
 function closeOriginal() {
@@ -3035,12 +3204,39 @@ function resetCiPlayer(card) {
     }
   }
 }
-function openVideoView(emb) {
+function videoFallbackNode(url, text) {
+  const box = document.createElement('div');
+  box.className = 'vv-fallback';
+  const tip = document.createElement('span');
+  tip.className = 'vv-tip';
+  tip.textContent = text || '播放失败，可尝试跳转到标签页打开';
+  box.appendChild(tip);
+  if (url) {
+    const a = document.createElement('a');
+    a.href = url;
+    a.target = '_blank';
+    a.rel = 'noopener';
+    a.textContent = '在新标签页打开';
+    box.appendChild(a);
+  }
+  return box;
+}
+function showVideoFallback(url, text) {
+  const v = $('#videoView'), w = $('#videoWrap');
+  if (!v || !w) return;
+  w.innerHTML = '';
+  const box = videoFallbackNode(url, text || '该链接不支持内嵌播放，可尝试跳转到标签页打开');
+  box.classList.add('show', 'only');
+  w.appendChild(box);
+  v.classList.add('show');
+}
+function openVideoView(emb, fallbackUrl) {
   if (typeof emb === 'string') emb = videoEmbed(emb);
   const v = $('#videoView'), w = $('#videoWrap');
   if (!v || !w) return;
-  if (!emb) { toast('该链接不支持内嵌播放'); return; }
+  if (!emb) { showVideoFallback(fallbackUrl); return; }
   w.innerHTML = '';
+  const fb = videoFallbackNode(fallbackUrl || emb.url);
   if (emb.type === 'iframe') {
     const f = document.createElement('iframe');
     f.src = emb.url;
@@ -3048,11 +3244,17 @@ function openVideoView(emb) {
     f.allowFullscreen = true;
     f.referrerPolicy = 'no-referrer';
     w.appendChild(f);
+    // 跨域 iframe 无法读取真实错误：超时未加载或加载失败时给出跳转提示
+    const timer = setTimeout(() => fb.classList.add('show'), 8000);
+    f.addEventListener('load', () => clearTimeout(timer));
+    f.addEventListener('error', () => { clearTimeout(timer); fb.classList.add('show'); });
   } else {
     const vid = document.createElement('video');
     vid.src = emb.url; vid.controls = true; vid.autoplay = true; vid.playsInline = true;
+    vid.addEventListener('error', () => fb.classList.add('show'));
     w.appendChild(vid);
   }
+  w.appendChild(fb);
   v.classList.add('show');
 }
 function closeVideoView() {
@@ -3310,7 +3512,10 @@ function saveCardInfo() {
   c.name = $('#info_name').value.trim();
   c.height = cleanNum($('#info_height').value);
   c.weight = cleanNum($('#info_weight').value);
-  c.birthday = $('#info_birthday').value;
+  const bdRaw = $('#info_birthday').value.trim();
+  const bd = normalizeBirthday(bdRaw);
+  if (bdRaw && !bd) { toast('生日格式不对：可输入 1998/01/18、1998年01月18日 或 19980118'); $('#info_birthday').focus(); return; }
+  c.birthday = bd;
   c.school = $('#info_school').value.trim();
   c.company = $('#info_company').value.trim();
   c.videoUrl = $('#info_videoUrl').value.trim();
@@ -3330,7 +3535,7 @@ function saveCardInfo() {
   renderAll();
   triggerAutoSave(true);
   toast('个人信息已保存');
-  if (AUTO_ORIG && !NET_METERED) setTimeout(() => pullAllOriginals(true), 300);
+  if (AUTO_ORIG && netAllowsAutoOrig()) setTimeout(() => pullAllOriginals(true), 300);
 }
 
 /* =========================================================
@@ -3408,14 +3613,15 @@ function renderMatch() {
     return;
   }
   const store = pairStore();
-  const pairs = store.pairs;
+  const hideAns = answersHidden();
+  const pairs = hideAns ? [] : store.pairs;   // 加密未公开时，不把标准配对带到列表 / 展示框
 
   const head = document.createElement('div');
   head.className = 'm-head';
   if (state.role === 'author') {
     head.innerHTML = '<span>👑 出题模式 · 标准答案配对</span>' +
       (state.locked ? '<span class="ref">🔐 已加密 · 只读</span>' : '') +
-      '<span class="ref">已设 ' + pairs.length + ' 对</span>';
+      '<span class="ref">' + (hideAns ? '🙈 答案已隐藏' : '已设 ' + pairs.length + ' 对') + '</span>';
   } else if (state.role === 'player') {
     head.innerHTML = '<span>🎮 ' + esc(p ? p.name : '') + '</span><span class="ref">已连 ' + pairs.length + ' 对</span>';
   } else {
@@ -3454,6 +3660,8 @@ function renderMatch() {
       if (thumbSrc) {
         const im = noRefImg(document.createElement('img'));
         setPhotoImgSrc(im, thumbSrc);
+        im.dataset.cardId = String(card.id);
+        im.dataset.photoIdx = String(i);
         im.alt = '';
         im.loading = 'lazy';
         cell.appendChild(im);
@@ -3866,8 +4074,7 @@ function renderPlayerList() {
   });
 }
 function openSettings() {
-  const chk = $('#autoOrigChk');
-  if (chk) chk.checked = AUTO_ORIG;
+  syncAutoOrigChk();
   renderPlayerList();
   $('#pairCountInput').value = state.pairCount;
   refreshFilterSelects();
@@ -3882,6 +4089,7 @@ function projectData() {
     projectId: state.projectId,
     projectName: state.projectName,
     pairCount: state.pairCount,
+    globalPhotoMode: state.globalPhotoMode === 'grid' ? 'grid' : 'single',
     cards: state.cards.map(c => {
       // 导出前再兜底一次：photos 只放本地 base64，originals 只放在线 URL
       const photos = (c.photos || []).slice(0, 4);
@@ -3944,38 +4152,65 @@ function saveFile(name, text, type) {
 function exportQuestion() {
   if (!state.named) { ensureNamed(); return; }
   const saveIt = () => saveFile('CP题库_' + state.projectName + '_' + stamp() + '.json', JSON.stringify(projectData(), null, 2));
-  if (state.locked && state.lock) {
-    saveIt();
-    toast('已导出（保留原密码，打开后出题模式仅读）；要改密码请先输原密码解锁');
+
+  // 已带密码的项目：导出题库必须先验证原密码；失败不导出，只允许导出答题记录
+  if (state.lock) {
+    openInput('导出题库 · 输入项目密码', '', async v => {
+      const pw = String(v || '').trim();
+      if (!pw) { toast('未输入密码，题库未导出；可导出答题记录（含评分）'); return; }
+      if (!(await checkProjectLock(pw))) {
+        toast('密码不正确：题库未导出。只能导出「答题记录（含评分）」，不含属性与连线答案');
+        return;
+      }
+      saveIt();
+      lockAfterExport();  // 不靠 F5：导出后当前界面立即回到只读/隐藏答案
+      toast('已导出题库；当前界面已锁住，重新打开也需解锁才能编辑');
+    }, { password: true, placeholder: '原密码' });
     return;
   }
-  const hasLock = !!state.lock;
-  openInput(hasLock
-    ? '导出项目 · 输入密码（留空 = 导出无密码文件）'
-    : '导出项目 · 设置密码？留空 = 不设密码（他人可直接修改）',
-    '', async v => {
-      const pw = String(v || '').trim();
-      if (pw && pw.length < 4) { toast('密码至少 4 位，请重新导出'); return; }
-      if (pw) await setProjectLock(pw);
-      else state.lock = null;
-      state.locked = false;
-      state.lockDirty = false;
+
+  // 未设密码的项目：导出时可选择设置密码
+  openInput('导出项目 · 设置密码？留空 = 不设密码（他人可直接修改）', '', async v => {
+    const pw = String(v || '').trim();
+    if (pw && pw.length < 4) { toast('密码至少 4 位，请重新导出'); return; }
+    if (pw) await setProjectLock(pw);
+    else state.lock = null;
+    // 先按导出前的状态生成文件，再由 lockAfterExport 切换当前界面
+    state.locked = false;
+    state.revealed = true;
+    state.lockDirty = false;
+    saveIt();
+    if (pw) {
+      lockAfterExport();
+    } else {
       triggerAutoSave(true);
       renderAll();
-      saveIt();
-      toast(pw
-        ? '已导出：文件带密码，打开后出题模式只读，需输密码解锁才能改'
-        : '已导出：未设密码，任何人打开都能修改');
-    }, {
-      password: true,
-      placeholder: hasLock ? '新密码（留空=导出无密码文件）' : '密码（≥4 位，可留空）'
-    });
+    }
+    toast(pw
+      ? '已导出：文件带密码，当前界面已锁住，需输密码解锁才能改'
+      : '已导出：未设密码，任何人打开都能修改');
+  }, {
+    password: true,
+    placeholder: '密码（≥4 位，可留空）'
+  });
+}
+function lockAfterExport() {
+  if (!state.lock) return;
+  state.locked = true;          // 立即生效，不再需要用户手动 F5
+  state.revealed = false;       // 隐藏属性和 CP 连线答案
+  state.lockDirty = false;
+  state.role = 'author';
+  state.mode = 'global';
+  matchSlotA = null; matchSlotB = null;
+  triggerAutoSave(true);
+  renderAll();
+  updateRoleButtons();
 }
 function exportResult() {
   const data = {
     projectName: state.projectName,
     exportedAt: new Date().toISOString(),
-    answers: { attrs: state.answers.attrs, pairs: state.answers.pairs },
+    // 只导出玩家作答与评分，不携带属性 / 连线标准答案
     players: state.players.map(p => {
       const sc = computeScore(p);
       return {
@@ -3990,22 +4225,39 @@ function exportResult() {
 
 function loadProject(data) {
   if (!data || typeof data !== 'object') return false;
-  if (data.projectId) state.projectId = data.projectId;
+  // 没有 projectId 的旧文件/纯文字文件必须分配新身份，避免沿用上一项目的缓存
+  state.projectId = (typeof data.projectId === 'string' && data.projectId.trim())
+    ? data.projectId.trim()
+    : ('proj_' + Date.now() + '_' + Math.random().toString(36).slice(2, 7));
   state.projectName = data.projectName || '未命名项目';
   const au = data.author || {};
   state.author = { name: String(au.name || '').slice(0, 24), url: String(au.url || '') };
   const lk = data.lock;
   state.lock = (lk && lk.hash && lk.salt) ? { v: 1, salt: String(lk.salt), hash: String(lk.hash) } : null;
   state.locked = !!state.lock;          // 带密码的项目默认只读，需在出题模式输密码解锁
+  state.revealed = false;               // 每次打开加密项目默认隐藏答案
+  if (state.lock) state.role = 'author'; // 打开加密项目先回到出题模式，避免批改视角直接露答案
   state.lockDirty = false;
   state.named = data.named === true || (data.named === undefined && state.projectName !== '未命名项目');
-  if (data.projectId) state.projectId = data.projectId;
+  // 打开项目时清理上一个项目的视图态，避免旧卡片/旧图片残留在弹窗里
+  state.role = 'author';
+  state.mode = 'global';
+  editingCard = null; photoTarget = null; replaceTarget = null;
+  $('#cardInfoModal').classList.remove('show');
+  $('#origView').classList.remove('show');
   $('#projName').textContent = state.projectName;
 
   // 卡片：完整归一化，旧数据自动补默认值
   const rawCards = Array.isArray(data.cards) ? data.cards : [];
   state.cards = rawCards.map((c, i) => normalizeCard(c, i));
   state.pairCount = Math.max(1, Math.min(10, data.pairCount || Math.ceil(state.cards.length / 2) || 10));
+  if (data.globalPhotoMode === 'grid' || data.globalPhotoMode === 'single') {
+    state.globalPhotoMode = data.globalPhotoMode;
+  } else {
+    // 旧项目没有全局布局字段：按新默认统一成单图，点击工具条图标再切多宫格
+    state.globalPhotoMode = 'single';
+    state.cards.forEach(c => { if (photoSlots(c).length > 1) c.photoMode = 'single'; });
+  }
 
   const ans = data.answers || {};
   state.answers = {
@@ -4014,8 +4266,8 @@ function loadProject(data) {
     pairOffsets: normalizeOffsets(ans.pairOffsets),
     pairPhotos: normalizePairPhotos(ans.pairPhotos)
   };
-  // 属性缺失时补默认值，避免卡片没有边框状态（加密只读项目除外，不擅自生成答案）
-  if (!state.locked) {
+  // 只补齐“已有答案”的缺失项；空白新项目不要凭空生成答案（否则会像复制了旧答案）
+  if (!state.locked && Object.keys(state.answers.attrs || {}).length) {
     state.cards.forEach((c, i) => {
       if (state.answers.attrs[c.id] === undefined) state.answers.attrs[c.id] = i % 2 === 0 ? 1 : 0;
     });
@@ -4227,33 +4479,33 @@ async function switchProject(id, name) {
 
 async function newProject(name, quiet) {
   name = (name || '').trim();
-  if (!name) {
-    // 只保留一个空白「未命名项目」：已有就直接打开它，不再重复生成
-    const list = await listProjects();
-    const un = list.find(p => p.projectId !== state.projectId && !projectIsNamed(p));
-    if (un) {
-      await switchProject(un.projectId, un.projectName);
-      toast('已打开空白项目：请先给项目命名再编辑');
-      return;
-    }
-    name = '未命名项目';
-  }
+  // 新建必须是一张真正的白纸：不再复用任何“未命名项目”，
+  // 否则会把上一份（可能带密码/照片/答案）的存档当成空白项打开，造成泄密。
+  if (!name) name = '未命名项目';
   state.projectId = 'proj_' + Date.now();
   state.projectName = name;
   state.named = name !== '未命名项目';
   $('#projName').textContent = name;
   state.pairCount = 10;
+  state.globalPhotoMode = 'single';
+  state.cards = [];
+  state.answers = { attrs: {}, pairs: [] };
   buildCards(10, true);                     // 卡片、属性答案、连线全部清空
   state.players = [newPlayer('玩家1', 0)];
   state.currentPlayerId = state.players[0].id;
+  state.role = 'author';
+  state.mode = 'global';
   state.author = { name: '', url: '' };
   state.lock = null;
   state.locked = false;
+  state.revealed = false;
   state.lockDirty = false;
   state.annot = { author: { strokes: [], texts: [] }, player: { strokes: [], texts: [] }, grade: { strokes: [], texts: [] } };
   matchSlotA = null; matchSlotB = null; globalPairingRef = null;
   lockTip = null;
   filterPlayerId = ''; filterCardId = ''; statsVisible = false;
+  editingCard = null; photoTarget = null; replaceTarget = null;
+  $('#cardInfoModal').classList.remove('show');
   renderAll();
   updateRoleButtons();
   triggerAutoSave(true);
@@ -4426,14 +4678,25 @@ async function loadRemoteEntry(e, opts) {
   if (remoteBusy) return false;
   remoteBusy = true;
   try {
+    // 手动拉取会替换当前面板：先把当前项目存档，避免切换时丢失未保存内容
+    if (opts.manual) triggerAutoSave(true);
     if (!opts.force) {
       const cache = await loadFromDB(REMOTE_CACHE_PREFIX + e.url);
-      if (cache && cache.data && loadProject(cache.data)) {
+      let useCache = !!(cache && cache.data);
+      // 手动「拉取项目」：先轻量 HEAD 对比，没有更新就沿用缓存；有更新才重新下载
+      if (useCache && opts.manual) {
+        const head = await remoteHead(e.url);
+        if (head && remoteMetaChanged(cache, head)) {
+          useCache = false;
+          toast('检测到「' + (e.sub || e.name || '远程项目') + '」有更新，正在拉取最新版本…');
+        }
+      }
+      if (useCache && cache && loadProject(cache.data)) {
         renderAll(); triggerAutoSave(true);
         $('#projPicker').classList.remove('show');
         toast('⚡ 已从本地缓存载入：' + state.projectName + '（无需重复下载）');
         remoteBusy = false;
-        checkRemoteFreshness(e, cache);
+        if (!opts.manual) checkRemoteFreshness(e, cache);
         return true;
       }
     }
@@ -4453,7 +4716,8 @@ async function loadRemoteEntry(e, opts) {
     remoteBusy = false;
   }
 }
-async function openRemoteProject(remote, preloaded, quiet) {
+async function openRemoteProject(remote, preloaded, quiet, opts) {
+  opts = opts || {};
   try {
     let data = preloaded;
     if (!data) {
@@ -4489,20 +4753,22 @@ async function openRemoteProject(remote, preloaded, quiet) {
       const cached = await loadFromDB(REMOTE_CACHE_PREFIX + e.url);
       e.cached = !!(cached && cached.data);
     }
-    if (entries.length === 1) {                         // 清单里只有一个，直接开
+    if (entries.length === 1 && !opts.alwaysPicker) {  // 正常启动：只有一个直接开；手动拉取仍展示选择面板
       return await loadRemoteEntry(entries[0]);
     }
     if (!state.cards.length) { initDefault(); renderAll(); }
     showPicker({
       title: '📂 选择要打开的项目',
-      hint: '远程清单里有 ' + entries.length + ' 个项目，点选一个打开；⚡ 已缓存的项目会秒开，不重复下载；不选则自己出题',
+      hint: opts.keepCurrent
+        ? '远程清单里有 ' + entries.length + ' 个项目，点选一个载入当前面板；⚡ 已缓存且未改动的项目会直接沿用本地缓存，不重复下载；取消则保持当前项目'
+        : '远程清单里有 ' + entries.length + ' 个项目，点选一个打开；⚡ 已缓存的项目会秒开，不重复下载；不选则自己出题',
       items: entries.map(e => ({
         title: e.name, sub: e.sub || fileNameOf(e.url),
         meta: (e.pairs ? (e.pairs + ' 对') : '') + (e.cached ? ((e.pairs ? ' · ' : '') + '⚡ 已缓存') : ''),
-        action: async () => { await loadRemoteEntry(e); }
+        action: async () => { await loadRemoteEntry(e, { manual: !!opts.keepCurrent }); }
       })),
-      skipText: '不选，自己出题',
-      onSkip: () => {
+      skipText: opts.keepCurrent ? '' : '不选，自己出题',
+      onSkip: opts.keepCurrent ? null : () => {
         state.projectId = 'proj_' + Date.now();
         initDefault(); renderAll(); updateRoleButtons(); triggerAutoSave(true);
         toast('已进入空白界面，做好后请在「设置 → 文件 & 导出」导出项目文件，避免数据遗失');
@@ -4517,7 +4783,7 @@ async function openRemoteProject(remote, preloaded, quiet) {
 }
 
 // 自动发现同目录下的项目清单（配合 GitHub Pages 仓库使用）
-async function autoLoadManifest() {
+async function autoLoadManifest(opts) {
   if (!/^https?:/i.test(location.protocol)) return false;   // file:// 无法 fetch
   for (const name of ['projects.json', 'manifest.json']) {
     let url;
@@ -4527,11 +4793,26 @@ async function autoLoadManifest() {
       if (!res.ok) continue;                                  // 没有清单就继续本地存档
       const data = await res.json();
       if (!data) continue;
-      const handled = await openRemoteProject(url, data, true);
+      const handled = await openRemoteProject(url, data, true, opts);
       if (handled) return true;
     } catch (e) { console.warn('清单读取失败', url, e); }
   }
   return false;
+}
+
+// 手动从远程清单拉取 / 切换项目：未改动沿用缓存；取消不改变当前项目
+async function openRemotePicker() {
+  const remote = new URLSearchParams(location.search).get('project');
+  if (remote) {
+    await openRemoteProject(remote, null, false, { keepCurrent: true, alwaysPicker: true });
+    return;
+  }
+  if (!/^https?:/i.test(location.protocol)) {
+    toast('本地文件模式无法读取 projects.json；请用 http(s) 地址打开，或改用「导入项目」');
+    return;
+  }
+  const handled = await autoLoadManifest({ keepCurrent: true, alwaysPicker: true });
+  if (!handled) toast('未找到 projects.json / manifest.json，或远程清单读取失败');
 }
 
 /* =========================================================
@@ -4795,6 +5076,40 @@ function withShotLib(cb) {
     else if (waited >= 8000) { done = true; clearInterval(timer); toast('截图库加载失败，请检查网络后重试'); }
   }, 400);
 }
+
+// 截图前把在线原图临时换成本地 base64：跨域 URL 会让 canvas 被污染（黑屏）
+function localPhotoForShot(cardId, idx) {
+  if (!state || !Array.isArray(state.cards)) return '';
+  const card = state.cards.find(c => String(c.id) === String(cardId));
+  if (!card || !Array.isArray(card.photos)) return '';
+  const v = card.photos[Number(idx)];
+  return typeof v === 'string' ? v : '';
+}
+function prepareShotPhotoFallback(root) {
+  const changed = [];
+  if (!root) return changed;
+  root.querySelectorAll('img').forEach(img => {
+    if (img.dataset.cardId === undefined || img.dataset.photoIdx === undefined) return;
+    const local = localPhotoForShot(img.dataset.cardId, img.dataset.photoIdx);
+    if (!local) return;
+    const prev = img.getAttribute('src') || '';
+    if (prev === local) return;
+    changed.push([img, prev]);
+    img.setAttribute('src', local);
+  });
+  return changed;
+}
+function waitShotImages(imgs) {
+  return Promise.all(imgs.map(([img]) => {
+    if (img.complete) return Promise.resolve();
+    return new Promise(res => {
+      const done = () => res();
+      img.addEventListener('load', done, { once: true });
+      img.addEventListener('error', done, { once: true });
+      setTimeout(done, 1200);
+    });
+  }));
+}
 // 空闲时预载截图库，点击「截图」时更快
 function preloadShotLib() {
   if (typeof window.html2canvas === 'function') return;
@@ -4810,10 +5125,14 @@ function exportImage() {
     const scale = Math.min(2, window.devicePixelRatio || 1);
     const opt = { backgroundColor: '#0b1120', scale, useCORS: true, logging: false };
     const hasScore = !!(scoreEl && scoreEl.children.length);
-    const jobs = [];
-    if (hasScore) jobs.push(html2canvas(scoreEl, opt));
-    jobs.push(html2canvas(mainEl, opt));
-    Promise.all(jobs).then(list => {
+    const changed = prepareShotPhotoFallback(mainEl);
+    const restoreShot = () => changed.forEach(([img, prev]) => { img.setAttribute('src', prev); });
+    waitShotImages(changed).then(() => {
+      const jobs = [];
+      if (hasScore) jobs.push(html2canvas(scoreEl, opt));
+      jobs.push(html2canvas(mainEl, opt));
+      return Promise.all(jobs);
+    }).then(list => {
       const mainCv = list[list.length - 1];
       const rawScore = hasScore ? list[0] : null;
       const scoreCv = (rawScore && rawScore.width > 1 && rawScore.height > 1) ? rawScore : null;
@@ -4862,7 +5181,7 @@ function exportImage() {
       a.download = 'CP连线_' + stamp() + '.png';
       a.click();
       toast('截图已保存（含玩家分数栏）');
-    }).catch(() => toast('截图失败，请重试'));
+    }).catch(() => toast('截图失败，请重试')).finally(restoreShot);
   };
   withShotLib(run);
 }
@@ -4945,6 +5264,17 @@ function bindEvents() {
     btn.addEventListener('click', () => {
       const role = btn.dataset.role;
       if (role === state.role) return;
+      if (role === 'grade') {
+        if (answersHidden()) { toast('加密项目答案已隐藏：请先点「公开」显示答案，或解锁项目后再批改'); return; }
+        if (state.role === 'player') {
+          const pg = playerProgress(currentPlayer());
+          if (!pg.complete) {
+            toast('玩家模式尚未完成：属性 ' + pg.attrDone + '/' + pg.totalAttrs +
+              '，CP ' + pg.pairDone + '/' + pg.pairTotal + '；全部选完才能进入批改模式');
+            return;
+          }
+        }
+      }
       state.role = role;
       globalPairingRef = null;
       lockTip = null;
@@ -4978,13 +5308,18 @@ function bindEvents() {
   });
   $('#lmChange').addEventListener('click', () => {
     $('#lockMenu').classList.remove('show');
-    if (state.locked) askOriginalPassword(() => askNewPassword(true));
-    else askNewPassword(true);
+    if (state.lock) askOriginalPassword(() => askNewPassword(true));
+    else askNewPassword(false);
   });
   $('#psNew').addEventListener('click', () => { $('#projSwitch').classList.remove('show'); promptNewProject(); });
   $('#psImport').addEventListener('click', () => {
     $('#projSwitch').classList.remove('show');
     const f = $('#importFile'); f.value = ''; f.click();
+  });
+  const psPull = $('#psPull');
+  if (psPull) psPull.addEventListener('click', () => {
+    $('#projSwitch').classList.remove('show');
+    openRemotePicker();
   });
   $('#psExportQ').addEventListener('click', () => exportQuestion());
   $('#psRename').addEventListener('click', renameProject);
@@ -5029,6 +5364,20 @@ function bindEvents() {
     if (e.key === 'Enter') { e.preventDefault(); $('#inputOk').click(); }
   });
 
+  // 生日输入：8 位数字即时格式化，失焦时兼容中文/斜杠写法
+  const bdInput = $('#info_birthday');
+  if (bdInput) {
+    bdInput.addEventListener('input', () => {
+      if (/^\d{8}$/.test(bdInput.value.trim())) {
+        const nd = normalizeBirthday(bdInput.value);
+        if (nd) bdInput.value = nd;
+      }
+    });
+    bdInput.addEventListener('blur', () => {
+      const nd = normalizeBirthday(bdInput.value);
+      if (nd) bdInput.value = nd;
+    });
+  }
   // 卡片信息保存
   $('#btnSaveCardInfo').addEventListener('click', saveCardInfo);
   $('#info_zodiac').addEventListener('change', e => { $('#zcIco1').textContent = zodiacGlyph(e.target.value); });
@@ -5255,7 +5604,15 @@ function bindEvents() {
   if (chkAuto) chkAuto.addEventListener('change', () => {
     AUTO_ORIG = chkAuto.checked;
     try { localStorage.setItem(AUTO_ORIG_KEY, AUTO_ORIG ? '1' : '0'); } catch (e) {}
-    if (AUTO_ORIG) pullAllOriginals();
+    if (AUTO_ORIG) {
+      if (netAllowsAutoOrig()) pullAllOriginals();
+      else toast('当前不是 WiFi，已勾选但不会自动拉取；可点「一键拉取」手动加载');
+    }
+  });
+  const btnPullProject = $('#btnPullProject');
+  if (btnPullProject) btnPullProject.addEventListener('click', () => {
+    $('#settingsModal').classList.remove('show');
+    openRemotePicker();
   });
   const btnPull = $('#btnPullOrig');
   if (btnPull) btnPull.addEventListener('click', () => pullAllOriginals());
@@ -5306,6 +5663,8 @@ function bindEvents() {
   });
 
   // 统计 / 截图 / 录屏 / 全屏
+  const layoutBtn = $('#btnToggleLayout');
+  if (layoutBtn) layoutBtn.addEventListener('click', toggleGlobalLayout);
   $('#btnToggleStats').addEventListener('click', () => {
     statsVisible = !statsVisible;
     renderScores();
