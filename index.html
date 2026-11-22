@@ -4656,9 +4656,11 @@ async function remoteHead(url) {
 }
 function remoteMetaChanged(oldMeta, newMeta) {
   if (!oldMeta || !newMeta) return false;
-  if (oldMeta.etag && newMeta.etag) return oldMeta.etag !== newMeta.etag;
+  // 只用 HTTP 强校验（ETag / Last-Modified）判断更新。
+  // content-length 不能用：GET 常是压缩后的长度，HEAD 是原始长度，比较会永久误报“有更新”。
+  const tag = v => String(v || '').trim().replace(/^W\//i, '');
+  if (oldMeta.etag && newMeta.etag) return tag(oldMeta.etag) !== tag(newMeta.etag);
   if (oldMeta.lastModified && newMeta.lastModified) return oldMeta.lastModified !== newMeta.lastModified;
-  if (oldMeta.length && newMeta.length) return oldMeta.length !== newMeta.length;
   return false;
 }
 function checkRemoteFreshness(e, cache) {
