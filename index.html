@@ -2643,6 +2643,20 @@ function makePhotoBox(card, override) {
 
   }
 
+  // 单图切图后，工具条按钮闭包里捕获的 idx 会过期；点击时以当前显示的图为唯一准绳
+  const currentPhotoIdx = () => {
+    if (mode === 'single') {
+      const curImg = box.querySelector('img[data-photo-idx]');
+      if (curImg && curImg.dataset.photoIdx !== undefined) {
+        const n = Number(curImg.dataset.photoIdx);
+        if (Number.isFinite(n)) return n;
+      }
+    }
+    const nowSlots = photoSlots(card);
+    const pos = (override && typeof override.idx === 'number') ? override.idx : (card.photoIdx || 0);
+    return nowSlots[pos] ? nowSlots[pos].idx : pos;
+  };
+
   // 工具条：所有模式都能切换「单图滑动 / 四宫格」并查看原图
   if (photos.length > 1 || (canEdit() && !readonly && !override.slot)) {
     const tools = document.createElement('div');
@@ -2661,7 +2675,7 @@ function makePhotoBox(card, override) {
       const oBtn = document.createElement('button');
       oBtn.textContent = '⤢';
       oBtn.title = '查看原图（点击才拉取）';
-      oBtn.addEventListener('click', e => { e.stopPropagation(); viewOriginal(card, slots[idx] ? slots[idx].idx : idx); });
+      oBtn.addEventListener('click', e => { e.stopPropagation(); viewOriginal(card, currentPhotoIdx()); });
       tools.appendChild(oBtn);
     }
     if (canEdit() && !readonly && !override.slot) {
@@ -2669,8 +2683,8 @@ function makePhotoBox(card, override) {
         const dBtn = document.createElement('button');
         dBtn.className = 'del';
         dBtn.textContent = '✕';
-        dBtn.title = '删除当前这张（' + (idx + 1) + '/' + photos.length + '）';
-        dBtn.addEventListener('click', e => { e.stopPropagation(); removePhotoAt(card.id, slots[idx] ? slots[idx].idx : idx); });
+        dBtn.title = '删除当前显示的这张';
+        dBtn.addEventListener('click', e => { e.stopPropagation(); removePhotoAt(card.id, currentPhotoIdx()); });
         tools.appendChild(dBtn);
       }
       const aBtn = document.createElement('button');
@@ -4162,7 +4176,10 @@ function renderCiPhoto(card) {
   const slots = photoSlots(card);
   let idx = card.photoIdx || 0;
   if (idx >= slots.length) idx = 0;
-  const grid = slots.length > 1 && ciViewGrid;
+  // 原图直链已切到第 3/4 位、但该位还没有照片或直链时，预览必须显示空槽，而不是退回前两张
+  const emptyOrigIdx = (card === editingCard && slots.length && ciOrigIdx >= 0 && !slots.some(s => s.idx === ciOrigIdx))
+    ? ciOrigIdx : -1;
+  const grid = slots.length > 1 && ciViewGrid && emptyOrigIdx < 0;
 
   if (!slots.length) {
     const ph = document.createElement('div');
@@ -4194,6 +4211,13 @@ function renderCiPhoto(card) {
       });
       box.appendChild(im);
     });
+  } else if (emptyOrigIdx >= 0) {
+    const ph = document.createElement('div');
+    ph.className = 'ph-empty';
+    ph.innerHTML = '<span class="big">🖼️</span><span>第 ' + (emptyOrigIdx + 1) + ' 张 · 空白卡槽</span>' +
+      (canEdit() ? '<span style="font-size:11px;color:#64748b">点此上传照片，或在右侧填写原图直链</span>' : '');
+    if (canEdit()) ph.addEventListener('click', e => { e.stopPropagation(); pickPhoto(card.id); });
+    box.appendChild(ph);
   } else {
     const cur = slots[idx];
     const img = noRefImg(document.createElement('img'));
@@ -4249,7 +4273,11 @@ function renderCiPhoto(card) {
   oBtn.className = 'ci-orig';
   oBtn.textContent = '⤢ 查看原图';
   oBtn.title = '按需拉取原图直链';
-  oBtn.addEventListener('click', e => { e.stopPropagation(); viewOriginal(card, grid ? slots[0].idx : slots[idx].idx); });
+  oBtn.addEventListener('click', e => {
+    e.stopPropagation();
+    const previewIdx = emptyOrigIdx >= 0 ? emptyOrigIdx : (grid ? slots[0].idx : slots[idx].idx);
+    viewOriginal(card, previewIdx);
+  });
   box.appendChild(oBtn);
 
   if (editingCard === card) syncOrigInput(card);
@@ -4302,7 +4330,10 @@ function syncOrigInput(card) {
   if (!inp) return;
   const idx = Math.max(0, Math.min(3, ciOrigIdx));
   inp.value = ciOrigDraft[idx] || '';
-  if (hint) hint.textContent = '第 ' + (idx + 1) + ' 张图';
+  if (hint) {
+    const missing = card && !photoSlots(card).some(s => s.idx === idx);
+    hint.textContent = '第 ' + (idx + 1) + ' 张图' + (missing ? ' · 空槽' : '');
+  }
 }
 // 切换原图直链对应的位次，并同步预览该位图片（先保存已填内容，避免覆盖）
 function stepOrigIdx(d) {
@@ -6684,6 +6715,7 @@ function bindEvents() {
       const oPos = oSlots.findIndex(s => s.idx === ciOrigIdx);
       if (oPos >= 0) { c.photoIdx = oPos; ciViewGrid = false; }
       renderCiPhoto(c);
+      syncOrigInput(c);
       renderAll();
       triggerAutoSave();
     });
