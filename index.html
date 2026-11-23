@@ -74,11 +74,36 @@ input,select{font-family:inherit}
 .ps-actions{display:flex;flex-wrap:wrap;gap:8px}
 .ps-row{display:flex;align-items:stretch;gap:6px}
 .ps-row .ps-item{flex:1;min-width:0}
+.ps-check{
+  flex:none;align-self:center;width:15px;height:15px;margin:0 1px 0 2px;
+  accent-color:#22d3ee;cursor:pointer;border-radius:4px;
+}
 .ps-del{
   flex:none;width:36px;border:1px solid #3a2634;border-radius:12px;background:#1a1522;
   color:#fb7185;font-size:12px;line-height:1;transition:.15s;
 }
 .ps-del:hover{background:#2a1622;border-color:#fb7185;box-shadow:0 0 14px -4px #fb7185}
+.ps-move{
+  flex:none;width:36px;border:1px solid #24344c;border-radius:12px;background:#111d30;
+  color:#7dd3fc;font-size:14px;line-height:1;transition:.15s;
+}
+.ps-move:hover{background:#0b253c;border-color:#38bdf8;box-shadow:0 0 14px -4px #38bdf8}
+.ps-folder-block{display:flex;flex-direction:column;gap:6px}
+.ps-folder-head{display:flex;align-items:stretch;gap:6px}
+.ps-folder-head .ps-folder{flex:1;min-width:0}
+.ps-add{
+  flex:none;width:36px;border:1px solid #24344c;border-radius:12px;background:#111d30;
+  color:#67e8f9;font-size:16px;line-height:1;transition:.15s;
+}
+.ps-add:hover{background:#0b253c;border-color:#22d3ee;box-shadow:0 0 14px -4px #22d3ee}
+.ps-folder{background:linear-gradient(180deg,#182a42,#101b2c)}
+.ps-folder .ps-arrow{margin-left:auto;font-size:11px;color:#7dd3fc;transition:.15s}
+.ps-folder.open .ps-arrow{transform:rotate(90deg)}
+.ps-children{display:flex;flex-direction:column;gap:6px;margin-left:16px;padding-left:10px;border-left:1px dashed #2b3b55}
+.ps-children[hidden]{display:none}
+.ps-row.child .ps-item{padding:7px 10px;border-radius:10px}
+.ps-row.child .ps-item b{font-size:12.5px}
+.ps-row.child .ps-del,.ps-row.child .ps-move{width:30px;border-radius:10px}
 #projSwitch .proj-switch-modal{position:relative}
 #projSwitch .proj-switch-modal h2{padding-right:46px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .ps-pull{
@@ -130,6 +155,8 @@ input,select{font-family:inherit}
 .score-card .sitem em{font-style:normal;font-size:10px;color:#64748b}
 .score-card .sitem b{font-size:11.5px;font-weight:800}
 .score-card .sitem + .sitem{border-left:1px solid #334155;padding-left:8px;margin-left:1px}
+.score-card .sitem.gift em{color:#fbbf24}
+.score-card .sitem.gift .pct{color:#fbbf24}
 .score-card .sitem .pct{font-size:11px}
 
 /* =========================================================
@@ -231,6 +258,15 @@ main{
 .photo-box.empty{display:flex;align-items:center;justify-content:center;font-size:22px;color:#334155;cursor:pointer}
 .photo-box.single{display:block}
 .photo-box.single img{width:100%;height:100%;object-fit:cover;display:block}
+.photo-load{
+  width:100%;height:100%;min-height:58px;display:flex;align-items:center;justify-content:center;
+  flex-direction:column;gap:3px;padding:6px;text-align:center;cursor:pointer;
+  color:#93c5fd;background:linear-gradient(180deg,#111d31,#0a1424);border:1px dashed #334155;
+  font-size:11px;line-height:1.3;
+}
+.photo-load span{font-size:17px;line-height:1}
+.photo-load b{font-weight:700;color:#bfdbfe}
+.photo-load:hover{border-color:#38bdf8;background:linear-gradient(180deg,#15263e,#0d1a2c)}
 .photo-box.grid4{grid-template-columns:repeat(2,minmax(0,1fr));grid-template-rows:repeat(2,minmax(0,1fr))}
 .photo-box.grid4 img{width:100%;height:100%;object-fit:cover;display:block;min-height:0;min-width:0;cursor:pointer}
 .photo-nav{
@@ -707,9 +743,17 @@ main{
 .modal section{display:flex;flex-direction:column;gap:8px;border-top:1px solid #1e293b;padding-top:12px}
 .modal h3{margin:0;font-size:11px;color:#64748b;font-weight:700;letter-spacing:.5px}
 .modal .row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
-.pp-list{display:flex;flex-direction:column;gap:8px}
+.pp-list{display:flex;flex-direction:column;gap:8px;max-height:52vh;overflow-y:auto}
 .pp-item{display:flex;align-items:center;gap:10px;padding:10px 12px;border:1px solid #24344c;border-radius:12px;
   background:linear-gradient(180deg,#16233a,#0f1a2c);cursor:pointer;transition:.18s;text-align:left}
+.pp-folder-block{display:flex;flex-direction:column;gap:6px}
+.pp-folder{background:linear-gradient(180deg,#182a42,#101b2c)}
+.pp-folder.open{border-color:#38bdf8}
+.pp-folder .pp-meta{color:#7dd3fc}
+.pp-children{display:flex;flex-direction:column;gap:6px;margin-left:14px;padding-left:10px;border-left:1px dashed #2b3b55}
+.pp-children[hidden]{display:none}
+.pp-item.pp-child{padding:8px 10px;border-radius:10px}
+.pp-item.pp-child b{font-size:12.5px}
 .pp-item:hover{border-color:#38bdf8;box-shadow:0 0 16px #38bdf844;transform:translateY(-1px)}
 .pp-item .pp-ico{font-size:16px;filter:drop-shadow(0 0 6px #38bdf866)}
 .pp-item b{font-size:13px;color:#e2e8f0;font-weight:800}
@@ -903,6 +947,12 @@ body[data-role="grade"] #globalView .card{height:calc(100% - 54px)}
 .cp-gift{cursor:grab}
 .cp-gift:active{cursor:grabbing}
 .cp-gift:hover{transform:translateY(-3px) scale(1.06);box-shadow:0 14px 38px #0009,0 0 42px 2px #fb7185}
+/* 出题模式未设置礼包：灰色可编辑入口，仅出题匹配视角出现 */
+.cp-gift.empty{border-color:#64748b;background:radial-gradient(circle at 38% 28%,#475569,#334155 55%,#1e293b 100%);
+  box-shadow:0 10px 30px #0007,inset 0 1px 0 #ffffff14;filter:grayscale(1);opacity:.92}
+.cp-gift.empty::after{border-color:#cbd5e155;box-shadow:none}
+.cp-gift.empty .gift-ico{filter:none;animation:none;opacity:.9}
+.cp-gift.empty:hover{filter:grayscale(.65) brightness(1.16);opacity:1;box-shadow:0 12px 34px #0009,0 0 20px -6px #94a3b8}
 .cp-gift .gift-ico{font-size:clamp(48px,6.2vw,72px);line-height:1;
   filter:drop-shadow(0 0 10px #fbbf24cc) drop-shadow(0 0 24px #f472b688);
   animation:giftSwingBig 2.2s ease-in-out infinite}
@@ -1063,6 +1113,10 @@ body[data-role="grade"] #globalView .card{height:calc(100% - 54px)}
         <button class="btn-ghost" id="clearAttrs">清空当前玩家属性</button>
         <button class="btn-ghost" id="clearAnnot">🧽 清空本模式批注</button>
       </div>
+      <label class="chk" style="margin-top:8px" title="仅出题模式可设置；开启后隐藏所有 1/0 属性按钮、属性评分与批改属性判定">
+        <input type="checkbox" id="hideAttrsChk"> 隐藏属性面板（只按 CP 连线判定）
+      </label>
+      <div class="ps-note">开启后卡片属性、属性评分与批改属性判定全部隐藏，适合 BG / 二次元等纯连线项目。</div>
     </section>
     <div class="row" style="justify-content:flex-end">
       <button class="btn-primary" id="btnCloseSettings">完成</button>
@@ -1081,9 +1135,11 @@ body[data-role="grade"] #globalView .card{height:calc(100% - 54px)}
     <h2>📁 当前项目：<span id="psCurName">未命名项目</span></h2>
     <h3>点选其他项目即切换，各自数据独立保存，互不混淆</h3>
     <div class="ps-list" id="psList"></div>
-    <div class="ps-note">📌 可到「设置」面板导出 题库项目/玩家答题 文件；改名请点「重命名」。</div>
+    <div class="ps-note">📌 文件夹用于归类同系列项目（如 GL_泰百CP-01/02/03）；导出文件名 = 项目名.json，JSON 内保留 folder 归属。可勾选多个项目批量归入。</div>
     <div class="ps-actions">
       <button class="btn-ghost" id="psNew">＋ 新建项目</button>
+      <button class="btn-ghost" id="psNewFolder">📁 新建文件夹项目</button>
+      <button class="btn-ghost" id="psBatchFolder">📦 批量归入文件夹</button>
       <button class="btn-ghost" id="psImport">📥 导入本地项目</button>
       <button class="btn-ghost" id="psExportQ">📤 导出项目（含答案）</button>
       <button class="btn-ghost" id="psRename">✏️ 重命名</button>
@@ -1296,6 +1352,7 @@ body[data-role="grade"] #globalView .card{height:calc(100% - 54px)}
       <input type="text" id="giftUrl3" placeholder="视频链接 3（可留空）">
     </div>
     <div class="gift-setup-actions">
+      <button class="btn-ghost preview" id="giftPreview" type="button" title="用当前填写的链接预览播放界面">▶ 预览</button>
       <button class="btn-ghost clear" id="giftClear" type="button">清除该 CP 大礼包</button>
       <button class="btn-ghost" id="giftNo" type="button" data-close="giftSetup">否，暂不设置</button>
       <button class="btn-primary" id="giftYes" type="button">是，保存</button>
@@ -1384,8 +1441,8 @@ function makeAuthorBar() {
   if (state.lock) {
     const hideAns = answersHidden();
     html += '<button class="ab-lock reveal ' + (hideAns ? 'hidden' : 'public') + '" data-ab="reveal" title="' +
-      (hideAns ? '答案已隐藏：点击「公开」图标显示属性 / CP 连线答案'
-        : state.locked ? '答案已公开：点击重新隐藏属性 / CP 连线答案'
+      (hideAns ? ('答案已隐藏：点击「公开」图标显示' + (state.hideAttrs ? ' CP 连线答案' : '属性 / CP 连线答案'))
+        : state.locked ? ('答案已公开：点击重新隐藏' + (state.hideAttrs ? ' CP 连线答案' : '属性 / CP 连线答案'))
           : '项目已解锁：答案已公开') + '">' +
       (hideAns ? '🙈' : '👁️') + '</button>';
   }
@@ -1439,10 +1496,12 @@ const state = {
   currentPlayerId: null,
   mode: 'global',          // global | match
   globalPhotoMode: 'single', // 全局卡片统一照片布局：默认 single | grid
+  hideAttrs: false,        // 隐藏属性面板：纯 CP 连线项目（BG / 二次元等）
   role: 'author',          // author | player | grade
   annot: { author: { strokes: [], texts: [] }, player: { strokes: [], texts: [] }, grade: { strokes: [], texts: [] } },
   projectId: 'proj_' + Date.now(),
   projectName: '未命名项目',
+  projectFolder: '',                   // 虚拟文件夹 / 大项目分组；单文件为空
   named: false,                         // 未命名项目禁止编辑（先命名再改）
   author: { name: '', url: '' },       // 出题人署名 + 个人主页链接
   lock: null,                          // {alg,salt,hash} 项目密码（存哈希，导出随 JSON 走）
@@ -1486,6 +1545,8 @@ let filterPlayerId = '';
 let filterCardId = '';
 let statsVisible = false;
 let editingCard = null;
+let openProjFolders = new Set();
+let selectedProjIds = new Set();
 
 /* =========================================================
    工具
@@ -1531,12 +1592,30 @@ function setGiftVideos(a, b, urls) {
   const list = (urls || []).map(v => String(v || '').trim()).filter(Boolean).slice(0, 3);
   if (list.length) state.answers.gifts[key] = list;
   else delete state.answers.gifts[key];
+  renderScores();
   triggerAutoSave(true);
 }
 function giftPairTitle(a, b) {
   const ca = state.cards.find(c => c.id === a);
   const cb = state.cards.find(c => c.id === b);
   return 'NO.' + (a + 1) + (ca && ca.name ? ' ' + ca.name : '') + ' × NO.' + (b + 1) + (cb && cb.name ? ' ' + cb.name : '');
+}
+// 出题人从全局切到匹配视角时，自动带出最近锁死的那对 CP；
+// 这样不用先手点卡片，就能看到该对 CP 的灰色/彩色大礼包入口。
+function focusAuthorPairInMatch() {
+  if (state.role !== 'author' || state.mode !== 'match') return;
+  if (state.locked || answersHidden() || matchSlotA !== null || matchSlotB !== null) return;
+  const pairs = (state.answers && state.answers.pairs) || [];
+  if (!pairs.length) return;
+  const pr = pairs[pairs.length - 1];
+  const ca = state.cards.find(c => c.id === pr[0]);
+  const cb = state.cards.find(c => c.id === pr[1]);
+  if (!ca || !cb) return;
+  const info = (state.answers.pairPhotos && state.answers.pairPhotos[getPairKey(pr[0], pr[1])]) || {};
+  matchSlotA = pr[0]; matchSlotB = pr[1];
+  matchSlotA_photoIdx = typeof info[pr[0]] === 'number' ? info[pr[0]] : firstPhotoIdx(ca);
+  matchSlotB_photoIdx = typeof info[pr[1]] === 'number' ? info[pr[1]] : firstPhotoIdx(cb);
+  matchSlotA_mode = 'single'; matchSlotB_mode = 'single';
 }
 function maybePromptGift(a, b) {
   if (state.role !== 'author' || state.locked || !state.named) return;
@@ -1558,6 +1637,21 @@ function openGiftSetup(a, b) {
 function closeGiftSetup() {
   $('#giftSetup').classList.remove('show');
   giftSetupPair = null;
+  // 关闭设置窗后立即刷新出题匹配视角：保存→彩色，取消/清空→灰色
+  if (state.mode === 'match') renderMatch();
+}
+function giftSetupUrls() {
+  return ['#giftUrl1', '#giftUrl2', '#giftUrl3']
+    .map(sel => { const el = $(sel); return el ? el.value.trim() : ''; })
+    .filter(Boolean).slice(0, 3);
+}
+function previewGiftSetup() {
+  if (!giftSetupPair) return;
+  const urls = giftSetupUrls();
+  if (!urls.length) { toast('请先填写至少一个视频链接再预览'); return; }
+  // 不关闭设置窗，播放层临时置顶；关闭播放后仍可继续修改/保存
+  $('#giftModal').classList.add('mask-top');
+  openGiftModal({ key: getPairKey(giftSetupPair.a, giftSetupPair.b), a: giftSetupPair.a, b: giftSetupPair.b, urls });
 }
 function saveGiftSetup() {
   if (!giftSetupPair) return;
@@ -1576,16 +1670,25 @@ function clearGiftSetup() {
   toast('已清除该 CP 的大礼包');
 }
 function giftForSelection() {
-  if (state.mode !== 'match' || state.role !== 'player') return null;
+  if (state.mode !== 'match') return null;
   if (matchSlotA === null || matchSlotB === null) return null;
-  // 必须已经锁死为玩家的正式 CP，避免只点两张卡就泄露答案 / 提前弹出礼包
+  const a = matchSlotA, b = matchSlotB, key = getPairKey(a, b);
+  // 出题模式：正确/已锁死的 CP 都显示礼包入口；未设置时灰色，点击可编辑
+  if (state.role === 'author') {
+    if (state.locked || answersHidden() || !state.named) return null;
+    const ansPairs = (state.answers && state.answers.pairs) || [];
+    if (!ansPairs.some(pr => (pr[0] === a && pr[1] === b) || (pr[0] === b && pr[1] === a))) return null;
+    const urls = giftVideosFor(a, b);
+    return { key, a, b, urls, editable: true };
+  }
+  // 玩家模式：必须已经锁死为玩家的正式 CP，且只显示已设置礼包的彩色入口
+  if (state.role !== 'player') return null;
   const cur = currentPlayer();
-  if (!cur || !(cur.pairs || []).some(pr => (pr[0] === matchSlotA && pr[1] === matchSlotB) || (pr[0] === matchSlotB && pr[1] === matchSlotA))) return null;
-  if (!isCorrectPair(matchSlotA, matchSlotB)) return null;
-  const key = getPairKey(matchSlotA, matchSlotB);
-  const urls = giftVideosFor(matchSlotA, matchSlotB);
+  if (!cur || !(cur.pairs || []).some(pr => (pr[0] === a && pr[1] === b) || (pr[0] === b && pr[1] === a))) return null;
+  if (!isCorrectPair(a, b)) return null;
+  const urls = giftVideosFor(a, b);
   if (!urls.length) return null;
-  return { key, a: matchSlotA, b: matchSlotB, urls };
+  return { key, a, b, urls, editable: false };
 }
 function playGiftSound() {
   try {
@@ -1609,13 +1712,18 @@ function playGiftSound() {
 function makeGiftCorner(gift) {
   const wrap = document.createElement('div');
   wrap.className = 'cp-gift-wrap';
-  const fresh = lastGiftKey !== gift.key;
+  const urls = Array.isArray(gift.urls) ? gift.urls.filter(Boolean) : [];
+  const filled = urls.length > 0;
+  const fresh = filled && lastGiftKey !== gift.key;
+  if (!filled) lastGiftKey = null; // 灰色未设置入口不预占动画，保存成彩色后重新撒花
   if (fresh) { lastGiftKey = gift.key; wrap.classList.add('fresh'); playGiftSound(); }
   const btn = document.createElement('button');
-  btn.className = 'cp-gift';
+  btn.className = 'cp-gift' + (filled ? '' : ' empty');
   btn.type = 'button';
-  btn.title = '打开 ' + giftPairTitle(gift.a, gift.b) + ' 的年度最佳 CP 大礼包';
-  btn.setAttribute('aria-label', '打开年度最佳 CP 大礼包：' + giftPairTitle(gift.a, gift.b));
+  btn.title = gift.editable
+    ? (filled ? '编辑 ' + giftPairTitle(gift.a, gift.b) + ' 的大礼包视频' : '为 ' + giftPairTitle(gift.a, gift.b) + ' 设置大礼包视频')
+    : '打开 ' + giftPairTitle(gift.a, gift.b) + ' 的年度最佳 CP 大礼包';
+  btn.setAttribute('aria-label', gift.editable ? (filled ? '编辑大礼包：' : '设置大礼包：') + giftPairTitle(gift.a, gift.b) : '打开年度最佳 CP 大礼包：' + giftPairTitle(gift.a, gift.b));
   btn.innerHTML = '<span class="gift-ico">🎁</span>';
   // 悬浮窗拖动：拖到任意位置，避免固定占住左下角（尤其小屏）
   if (giftFloatPos) {
@@ -1662,7 +1770,12 @@ function makeGiftCorner(gift) {
   btn.addEventListener('click', e => {
     e.stopPropagation();
     if (giftSuppressClick) { giftSuppressClick = false; e.preventDefault(); return; }
-    openGiftModal(gift);
+    if (gift.editable) {
+      if (!requireEdit()) return;
+      openGiftSetup(gift.a, gift.b);
+      return;
+    }
+    openGiftModal({ key: gift.key, a: gift.a, b: gift.b, urls });
   });
   wrap.appendChild(btn);
   if (fresh) {
@@ -1770,7 +1883,11 @@ function openGiftModal(gift) {
 }
 function closeGiftModal() {
   clearGiftAutoTimer();
-  $('#giftModal').classList.remove('show');
+  const mask = $('#giftModal');
+  if (mask) {
+    mask.classList.remove('show');
+    mask.classList.remove('mask-top'); // 预览播放层恢复普通层级，下面仍保留设置窗
+  }
   const stage = $('#giftStage');
   if (stage) stage.innerHTML = '';
   currentGift = null;
@@ -1788,12 +1905,18 @@ function gradeCardStatus(card) {
   const playerPartner = pairPartnerOf(p.pairs || [], card.id);
   let cp = null;
   if (ansPartner !== null || playerPartner !== null) cp = (ansPartner !== null && playerPartner === ansPartner);
+  if (state.hideAttrs) return cp === null ? 'none' : (cp ? 'ok' : 'bad');
   if (attr === null && cp === null) return 'none';
   if (attr === null) return cp ? 'ok' : 'bad';
   if (cp === null) return attr ? 'ok' : 'bad';
   return attr === cp ? (attr ? 'ok' : 'bad') : 'half';
 }
 function gradeStatusTitle(status) {
+  if (state.hideAttrs) {
+    if (status === 'ok') return 'CP 连线正确';
+    if (status === 'bad') return 'CP 连线错误';
+    return '未判定：CP 连线未作答';
+  }
   if (status === 'ok') return '属性与连线全对';
   if (status === 'bad') return '属性与连线全错';
   if (status === 'half') return '半对：属性与连线一对一错';
@@ -1889,13 +2012,13 @@ function toggleAnswerReveal() {
     state.revealed = false;
     matchSlotA = null; matchSlotB = null;
     renderAll();
-    toast('已隐藏属性与 CP 连线答案（仍可点锁图标解锁后查看）');
+    toast('已隐藏' + (state.hideAttrs ? ' CP 连线答案' : '属性与 CP 连线答案') + '（仍可点锁图标解锁后查看）');
     return;
   }
   state.revealed = true;
   matchSlotA = null; matchSlotB = null;
   renderAll();
-  toast('已公开属性与 CP 连线答案：仅查看，编辑仍需解锁项目');
+  toast('已公开' + (state.hideAttrs ? ' CP 连线答案' : '属性与 CP 连线答案') + '：仅查看，编辑仍需解锁项目');
 }
 
 // 只解锁：不再弹新密码框
@@ -1983,6 +2106,7 @@ function snapshot() {
   return {
     projectId: state.projectId,
     projectName: state.projectName,
+    projectFolder: state.projectFolder || '',
     project: projectData(),
     players: state.players,
     currentPlayerId: state.currentPlayerId,
@@ -2045,6 +2169,7 @@ function restoreSnapshot(saved) {
   if (saved.lastMode === 'match' || saved.lastMode === 'global') state.mode = saved.lastMode;
   state.role = 'author';
   state.projectName = saved.projectName || state.projectName;
+  state.projectFolder = cleanFolderName(saved.projectFolder || (saved.project && (saved.project.folder || saved.project.folderName)) || '');
   $('#projName').textContent = state.projectName;
   return true;
 }
@@ -2099,7 +2224,7 @@ function setPhotoImgSrc(img, src) {
       if (local && img.getAttribute('src') !== local) img.src = local;
     }, { once: true });
   }
-  img.src = src;
+  if (img.getAttribute('src') !== src && img.src !== src) img.src = src;
 }
 // 生日：兼容 1998/01/18、1998年01月18日、19980118 等写法，统一输出 YYYY/MM/DD
 function normalizeBirthday(v) {
@@ -2241,7 +2366,7 @@ function buildCards(n, fresh) {
   state.cards = arr;
 
   const attrs = {};
-  if (!fresh) state.cards.forEach((c, i) => { attrs[c.id] = i % 2 === 0 ? 1 : 0; });  // 新建项目留空，由出题人自己设答案
+  if (!fresh && !state.hideAttrs) state.cards.forEach((c, i) => { attrs[c.id] = i % 2 === 0 ? 1 : 0; });  // 新建项目留空；隐藏属性时也不生成
   const gifts = fresh ? {} : ((state.answers && state.answers.gifts) || {});
   state.answers = { attrs, pairs: [], pairOffsets: {}, pairPhotos: {}, gifts: normalizeGifts(gifts) };
 
@@ -2267,10 +2392,12 @@ function initDefault() {
   // 彻底清空成白纸：绝不能沿用上一份 state.cards（包括照片/答案/密码）
   state.projectId = 'proj_' + Date.now();
   state.projectName = '未命名项目';
+  state.projectFolder = '';
   state.named = false;
   $('#projName').textContent = state.projectName;
   state.pairCount = 10;
   state.globalPhotoMode = 'single';
+  state.hideAttrs = false;
   state.cards = [];
   state.answers = { attrs: {}, pairs: [], pairOffsets: {}, pairPhotos: {}, gifts: {} };
   buildCards(10, true);
@@ -2296,18 +2423,18 @@ function initDefault() {
    ========================================================= */
 function statsReady(player) {
   if (!player) return false;
-  const keys = Object.keys(state.answers.attrs || {});
+  const keys = state.hideAttrs ? [] : Object.keys(state.answers.attrs || {});
   const ansPairs = state.answers.pairs || [];
   if (!keys.length && !ansPairs.length) return false;
-  const attrOk = keys.every(k => player.attrs && player.attrs[k] !== undefined);
+  const attrOk = !keys.length || keys.every(k => player.attrs && player.attrs[k] !== undefined);
   const pairOk = !ansPairs.length || (player.pairs || []).length >= ansPairs.length;
   return attrOk && pairOk;
 }
 
 function computeScore(player) {
-  if (!player) return { attrCorrect: 0, attrTotal: 0, pairCorrect: 0, pairTotal: 0 };
+  if (!player) return { attrCorrect: 0, attrTotal: 0, pairCorrect: 0, pairTotal: 0, giftGot: 0, giftTotal: 0 };
   let attrCorrect = 0, attrTotal = 0;
-  state.cards.forEach(c => {
+  if (!state.hideAttrs) state.cards.forEach(c => {
     const key = state.answers.attrs[c.id];
     if (key === undefined) return;
     attrTotal++;
@@ -2318,7 +2445,16 @@ function computeScore(player) {
   const pairTotal = ansPairs.length;
   let pairCorrect = 0;
   ansPairs.forEach(pr => { if (player.pairs.some(q => (q[0] === pr[0] && q[1] === pr[1]) || (q[0] === pr[1] && q[1] === pr[0]))) pairCorrect++; });
-  return { attrCorrect, attrTotal, pairCorrect, pairTotal };
+  // 大礼包只统计设了视频的正式正确答案 CP；玩家连中该 CP 才算获得
+  const giftKeys = Object.keys(state.answers.gifts || {}).filter(k => {
+    const list = state.answers.gifts[k];
+    return Array.isArray(list) && list.some(v => String(v || '').trim());
+  });
+  const ansPairKeys = new Set(ansPairs.map(pr => getPairKey(pr[0], pr[1])));
+  const eligibleGiftKeys = giftKeys.filter(k => ansPairKeys.has(k));
+  const playerPairKeys = new Set((player.pairs || []).map(pr => getPairKey(pr[0], pr[1])));
+  const giftGot = eligibleGiftKeys.filter(k => playerPairKeys.has(k)).length;
+  return { attrCorrect, attrTotal, pairCorrect, pairTotal, giftGot, giftTotal: eligibleGiftKeys.length };
 }
 function scorePct(sc) {
   const total = sc.attrTotal + sc.pairTotal;
@@ -2328,9 +2464,10 @@ function scorePct(sc) {
 }
 // 玩家是否已选完全部属性 + 全部 CP 连线（用于进入批改模式前的把关）
 function playerProgress(p) {
-  const totalAttrs = state.cards.length;
+  const totalCards = state.cards.length;
+  const totalAttrs = state.hideAttrs ? 0 : totalCards;
   let attrDone = 0;
-  if (p) state.cards.forEach(c => {
+  if (p && !state.hideAttrs) state.cards.forEach(c => {
     const v = p.attrs ? p.attrs[c.id] : undefined;
     if (v !== undefined && v !== null) attrDone++;
   });
@@ -2340,7 +2477,7 @@ function playerProgress(p) {
   if (p && Array.isArray(p.pairs)) p.pairs.forEach(pr => { covered.add(pr[0]); covered.add(pr[1]); });
   return {
     totalAttrs, attrDone, pairTotal, pairDone,
-    complete: !!p && attrDone >= totalAttrs && pairDone >= pairTotal && covered.size >= totalAttrs
+    complete: !!p && attrDone >= totalAttrs && pairDone >= pairTotal && covered.size >= totalCards
   };
 }
 function syncLayoutBtn() {
@@ -2371,22 +2508,24 @@ function renderScores() {
     const sc = computeScore(p);
     const attrPct = sc.attrTotal ? Math.round(sc.attrCorrect / sc.attrTotal * 100) : 0;
     const pairPct = sc.pairTotal ? Math.round(sc.pairCorrect / sc.pairTotal * 100) : 0;
+    const giftPct = sc.giftTotal ? Math.round(sc.giftGot / sc.giftTotal * 100) : 0;
     const card = document.createElement('div');
     card.className = 'score-card' + (p.id === state.currentPlayerId ? ' active' : '');
     card.style.setProperty('--c', p.color);
     // 隐藏统计时只显示昵称；显示统计时按当前作答实时计算，不等全部答完
     card.innerHTML = '<span class="dot"></span><span class="pname">' + esc(p.name) + '</span>' +
       (statsVisible
-        ? '<span class="sitem"><em>属性</em><b>' + sc.attrCorrect + '/' + sc.attrTotal + '</b>' +
-          '<span class="pct">' + attrPct + '%</span></span>' +
+        ? (state.hideAttrs ? '' : '<span class="sitem"><em>属性</em><b>' + sc.attrCorrect + '/' + sc.attrTotal + '</b>' +
+          '<span class="pct">' + attrPct + '%</span></span>') +
           '<span class="sitem"><em>CP</em><b>' + sc.pairCorrect + '/' + sc.pairTotal + '</b>' +
-          '<span class="pct">' + pairPct + '%</span></span>'
+          '<span class="pct">' + pairPct + '%</span></span>' +
+          (sc.giftTotal > 0
+            ? '<span class="sitem gift"><em>礼包</em><b>' + sc.giftGot + '/' + sc.giftTotal + '</b>' +
+              '<span class="pct">' + giftPct + '%</span></span>'
+            : '')
         : '');
     card.addEventListener('click', () => {
-      state.currentPlayerId = p.id;
-      refreshFilterSelects();
-      renderAll();
-      triggerAutoSave();
+      switchPlayerLight(p.id);
     });
     panel.appendChild(card);
   });
@@ -2421,22 +2560,41 @@ function makePhotoBox(card, override) {
 
   if (mode === 'single') {
     box.classList.add('single');
-    const img = noRefImg(document.createElement('img'));
-    setPhotoImgSrc(img, photos[idx]);
-    img.dataset.cardId = String(card.id);
-    img.dataset.photoIdx = String(slots[idx] ? slots[idx].idx : idx);
-    img.alt = card.name || '';
-    box.appendChild(img);
+    const slot = slots[idx];
+    const info = displayPhotoInfo(card, slot.idx);
+    if (info.src) {
+      const img = noRefImg(document.createElement('img'));
+      setPhotoImgSrc(img, info.src);
+      if (info.key) img.dataset.thumbKey = info.key;
+      img.dataset.cardId = String(card.id);
+      img.dataset.photoIdx = String(slot.idx);
+      img.alt = card.name || '';
+      img.loading = 'lazy';
+      img.decoding = 'async';
+      img.addEventListener('click', e => {
+        e.stopPropagation();
+        const di = Number(img.dataset.photoIdx);
+        const raw = (card.photos && card.photos[di]) || originalOf(card, di) || img.src;
+        openPhotoFull(card, di, raw);
+      });
+      box.appendChild(img);
+    } else {
+      const ph = document.createElement('div');
+      ph.className = 'photo-load';
+      ph.innerHTML = '<span>🖼️</span><b>点按加载原图</b>';
+      ph.title = '手机流量模式：点击后才加载这张原图';
+      ph.addEventListener('click', e => { e.stopPropagation(); openPhotoFull(card, slot.idx, slot.src); });
+      box.appendChild(ph);
+    }
     if (photos.length > 1) {
       const prev = document.createElement('div');
       prev.className = 'photo-nav prev'; prev.textContent = '‹';
       const next = document.createElement('div');
       next.className = 'photo-nav next'; next.textContent = '›';
-      prev.addEventListener('click', e => { e.stopPropagation(); setPhotoIdx(card, (idx + photos.length - 1) % photos.length, override); });
-      next.addEventListener('click', e => { e.stopPropagation(); setPhotoIdx(card, (idx + 1) % photos.length, override); });
+      prev.addEventListener('click', e => { e.stopPropagation(); const cur = Number(card.photoIdx) || 0; setPhotoIdx(card, (cur + photos.length - 1) % photos.length, override); });
+      next.addEventListener('click', e => { e.stopPropagation(); const cur = Number(card.photoIdx) || 0; setPhotoIdx(card, (cur + 1) % photos.length, override); });
       box.appendChild(prev); box.appendChild(next);
     }
-    img.addEventListener('click', e => { e.stopPropagation(); showPreview(img.src); });
   } else {
     box.classList.add('grid4');
     const n = Math.min(photos.length, 4);
@@ -2444,22 +2602,37 @@ function makePhotoBox(card, override) {
     box.style.gridTemplateRows = (n === 1 ? 'minmax(0,1fr)' : 'repeat(2,minmax(0,1fr))');
     for (let i = 0; i < Math.min(slots.length, 4); i++) {
       const slot = slots[i];
-      const src = slot.src;
-      if (src) {
+      const info = displayPhotoInfo(card, slot.idx);
+      if (info.src) {
         const im = noRefImg(document.createElement('img'));
-        setPhotoImgSrc(im, src);
+        setPhotoImgSrc(im, info.src);
+        if (info.key) im.dataset.thumbKey = info.key;
         im.dataset.cardId = String(card.id);
         im.dataset.photoIdx = String(slot.idx);
         im.alt = '';
+        im.loading = 'lazy';
+        im.decoding = 'async';
         if (slots.length === 3 && i === 2) im.style.gridColumn = 'span 2';
         im.addEventListener('click', e => {
           e.stopPropagation();
           if (override.onIdx) { override.onIdx(slot.idx); return; }
           if (canEdit() && !readonly) replacePhoto(card.id, slot.idx);
-          else showPreview(src);
+          else openPhotoFull(card, slot.idx, slot.src);
         });
         im.title = override.onIdx ? '选这张作为 CP 合照' : '';
         box.appendChild(im);
+      } else if (slot.src) {
+        const ph = document.createElement('div');
+        ph.className = 'photo-load';
+        ph.innerHTML = '<span>🖼️</span><b>' + (override.onIdx ? '点按选择' : '点按加载原图') + '</b>';
+        ph.title = '手机流量模式：点击后才加载这张原图';
+        if (slots.length === 3 && i === 2) ph.style.gridColumn = 'span 2';
+        ph.addEventListener('click', e => {
+          e.stopPropagation();
+          if (override.onIdx) { override.onIdx(slot.idx); return; }
+          openPhotoFull(card, slot.idx, slot.src);
+        });
+        box.appendChild(ph);
       } else {
         const ph = document.createElement('div');
         ph.style.cssText = 'background:#0a1424;display:flex;align-items:center;justify-content:center;color:#1e293b;font-size:12px';
@@ -2555,7 +2728,21 @@ function setPhotoIdx(card, newIdx, override) {
   if (override && override.onIdx) { override.onIdx(newIdx); return; }
   card.photoIdx = newIdx;
   card.photoMode = 'single';
-  rerenderCard(card.id);
+  // 单图切图只换当前卡片的图片，不重建整张卡
+  const el = document.querySelector('#globalView .card[data-id="' + card.id + '"]');
+  const box = el && el.querySelector('.photo-box.single');
+  const img = box && box.querySelector('img');
+  const slot = photoSlots(card)[card.photoIdx];
+  const info = slot ? displayPhotoInfo(card, slot.idx) : { src: '', key: '' };
+  if (img && info.src) {
+    setPhotoImgSrc(img, info.src);
+    if (info.key) img.dataset.thumbKey = info.key;
+    else delete img.dataset.thumbKey;
+    img.dataset.photoIdx = String(slot.idx);
+    img.alt = card.name || '';
+  } else {
+    rerenderCard(card.id);
+  }
   triggerAutoSave();
 }
 
@@ -2592,7 +2779,7 @@ function makeCard(card, opts) {
   const p = currentPlayer();
   const hideAns = answersHidden();
   const attrVal = hideAns ? undefined : (state.role === 'author' ? state.answers.attrs[card.id] : (p ? p.attrs[card.id] : undefined));
-  if (attrVal !== undefined && attrVal !== null) el.dataset.attr = String(attrVal);
+  if (!state.hideAttrs && attrVal !== undefined && attrVal !== null) el.dataset.attr = String(attrVal);
 
   // 编号
   const num = document.createElement('div');
@@ -2672,6 +2859,9 @@ function makeCard(card, opts) {
     info.appendChild(links);
   }
   el.appendChild(info);
+
+  // 隐藏属性面板：整张卡不渲染属性按钮，只保留照片 / 姓名 / CP 交互
+  if (state.hideAttrs) return el;
 
   // 属性按钮：1 / 0 两个框（对 0 连点第二次 = 0.5）
   const keyVal = state.answers.attrs[card.id];
@@ -2872,6 +3062,82 @@ function renderGlobal() {
   svg.id = 'lineLayer';
   gv.appendChild(svg);
   requestAnimationFrame(() => { syncCardMax(); drawLines(); });
+}
+
+// 全局视角只更新 CP 状态，不重建卡片和图片
+function refreshGlobalPairUI() {
+  const cards = state.cards;
+  document.querySelectorAll('#globalView .card').forEach(el => {
+    const id = Number(el.dataset.id);
+    const card = cards.find(c => c.id === id);
+    if (!card) return;
+    const oldBtn = el.querySelector('.lock-btn');
+    if (oldBtn) oldBtn.replaceWith(makeLockBtn(card));
+  });
+  renderScores();
+  requestAnimationFrame(drawLines);
+}
+
+// 只换一张卡的属性按钮，不重建照片
+function refreshGlobalCardAttr(cardId, val) {
+  const el = document.querySelector('#globalView .card[data-id="' + cardId + '"]');
+  if (!el) return;
+  if (state.hideAttrs) {
+    delete el.dataset.attr;
+    const oldRow = el.querySelector('.attr-row');
+    if (oldRow) oldRow.remove();
+    return;
+  }
+  if (val !== undefined && val !== null) el.dataset.attr = String(val);
+  else delete el.dataset.attr;
+  const row = el.querySelector('.attr-row');
+  if (!row) return;
+  const btns = row.querySelectorAll('.attr-btn');
+  if (btns.length < 2) return;
+  const b1 = btns[0], b0 = btns[1];
+  b1.className = 'attr-btn'; b1.dataset.a = '1'; b1.textContent = '1';
+  b0.className = 'attr-btn'; b0.dataset.a = '0'; b0.textContent = '0';
+  b1.disabled = b0.disabled = false;
+  b1.style.cursor = b0.style.cursor = '';
+  if (val !== undefined && val !== null) {
+    const chosen = Number(val) === 1 ? b1 : b0;
+    chosen.dataset.a = String(val);
+    chosen.textContent = Number(val) === 0.5 ? '0.5' : String(val);
+    chosen.classList.add('active');
+  }
+}
+
+// 玩家模式切换当前玩家：只更新属性按钮和连线高亮，不重建照片
+function refreshGlobalPlayerAttrs() {
+  if (state.role !== 'player') return;
+  const p = currentPlayer();
+  if (!p) return;
+  document.querySelectorAll('#globalView .card').forEach(el => {
+    const id = Number(el.dataset.id);
+    refreshGlobalCardAttr(id, p.attrs ? p.attrs[id] : undefined);
+    const card = state.cards.find(c => c.id === id);
+    const oldBtn = el.querySelector('.lock-btn');
+    if (card && oldBtn) oldBtn.replaceWith(makeLockBtn(card));
+  });
+}
+
+function switchPlayerLight(playerId) {
+  state.currentPlayerId = playerId;
+  refreshFilterSelects();
+  renderScores();
+  if (state.mode === 'global') {
+    if (state.role === 'player') {
+      refreshGlobalPlayerAttrs();
+      requestAnimationFrame(drawLines);
+    } else {
+      renderAll();
+    }
+  } else if (state.role === 'player') {
+    renderMatch({ light: true });
+  } else {
+    renderMatch();
+  }
+  triggerAutoSave();
 }
 
 /* 组装当前角色要画的线 */
@@ -3087,12 +3353,13 @@ function setPairOffset(source, key, val) {
    属性 & 配对操作
    ========================================================= */
 function setAttr(cardId, val) {
+  if (state.hideAttrs) { toast('属性面板已隐藏，本项目只按 CP 连线判定'); return; }
   if (!state.named) { state.role === 'author' ? ensureNamed() : toast('项目尚未命名，暂不能作答'); return; }
   if (state.role === 'grade') { toast('批改模式为只读'); return; }
   if (state.role === 'author' && !requireEdit()) return;
   if (state.role === 'author') {
     state.answers.attrs[cardId] = val;
-    rerenderCard(cardId);
+    refreshGlobalCardAttr(cardId, val);
     renderScores();
     triggerAutoSave();
     return;
@@ -3100,7 +3367,7 @@ function setAttr(cardId, val) {
   const p = currentPlayer();
   if (!p) { toast('请先添加玩家'); return; }
   p.attrs[cardId] = val;
-  rerenderCard(cardId);
+  refreshGlobalCardAttr(cardId, val);
   renderScores();
   triggerAutoSave();
 }
@@ -3119,18 +3386,18 @@ function toggleGlobalPair(cardId) {
     delete store.offsets[getPairKey(pr[0], pr[1])];
       if (store.photos) delete store.photos[getPairKey(pr[0], pr[1])];
     globalPairingRef = null;
-    renderAll();
+    refreshGlobalPairUI();
     triggerAutoSave();
     return;
   }
   if (globalPairingRef === null) {
     globalPairingRef = cardId;
-    renderAll();
+    refreshGlobalPairUI();
     return;
   }
   if (globalPairingRef === cardId) {
     globalPairingRef = null;
-    renderAll();
+    refreshGlobalPairUI();
     return;
   }
   const a = globalPairingRef, b = cardId;
@@ -3146,10 +3413,22 @@ function toggleGlobalPair(cardId) {
     }
   });
   pairs.push([a, b]);
+  // 全局连线时把当前单图位置锁定为这组 CP 的合照；四宫格按第一张。
+  // 之后在全局正常切图不会改动它，需回匹配视角「更新 CP 合照」才会覆盖。
+  const gA = state.cards.find(c => c.id === a), gB = state.cards.find(c => c.id === b);
+  const pairIdx = c => {
+    if (!c || !photoSlots(c).length) return 0;
+    return c.photoMode === 'single' ? effectivePhotoIdx(c, c.photoIdx) : firstPhotoIdx(c);
+  };
+  const gIdxA = pairIdx(gA), gIdxB = pairIdx(gB);
+  store.photos = store.photos || {};
+  store.photos[getPairKey(a, b)] = { [a]: gIdxA, [b]: gIdxB };
+  // 同步全局单图展示，保证切到匹配视角看到的是锁定时的那张
+  if (gA) gA.photoIdx = gIdxA;
+  if (gB) gB.photoIdx = gIdxB;
   globalPairingRef = null;
-  renderAll();
+  refreshGlobalPairUI();
   triggerAutoSave();
-  if (state.role === 'author') maybePromptGift(a, b);
 }
 
 /* =========================================================
@@ -3421,6 +3700,84 @@ let AUTO_ORIG = (function () {
 const IMG_CACHE_NAME = 'cpOrigImagesV1';
 let IMG_OBJ_URLS = {};       // 原图 URL -> 本地 blob URL（本次会话）
 let ORIG_HYDRATING = null;
+/* 缩略图缓存：小图只解码一次；WiFi 才允许为远程图生成缩略图，流量模式不主动拉大图 */
+let THUMB_CACHE = Object.create(null);
+let THUMB_WARMING = Object.create(null);
+let THUMB_FAILED = Object.create(null);
+let THUMB_QUEUE = [];
+let THUMB_ACTIVE = 0;
+
+function thumbCacheKey(card, idx, src) {
+  if (!card || !src) return '';
+  const tag = isHttpUrl(src)
+    ? 'u:' + src
+    : 'l:' + String(src.length) + ':' + src.slice(0, 24) + ':' + src.slice(-24);
+  return String(state.projectId || '') + ':' + card.id + ':' + idx + ':' + tag;
+}
+function refreshThumbImg(key, data) {
+  if (!key || !data) return;
+  document.querySelectorAll('img[data-thumb-key]').forEach(img => {
+    if (img.dataset.thumbKey === key && img.getAttribute('src') !== data) img.src = data;
+  });
+}
+function runThumbJob(key, src) {
+  THUMB_ACTIVE++;
+  const img = new Image();
+  if (isHttpUrl(src) && !/^blob:/i.test(src)) img.crossOrigin = 'anonymous';
+  img.decoding = 'async';
+  img.referrerPolicy = 'no-referrer';
+  const finish = (data) => {
+    if (data) {
+      THUMB_CACHE[key] = data;
+      refreshThumbImg(key, data);
+    } else {
+      THUMB_FAILED[key] = 1;
+    }
+    delete THUMB_WARMING[key];
+    THUMB_ACTIVE = Math.max(0, THUMB_ACTIVE - 1);
+    const next = THUMB_QUEUE.shift();
+    if (next) runThumbJob(next[0], next[1]);
+  };
+  img.onload = () => {
+    try {
+      const w = img.naturalWidth || img.width || 1;
+      const h = img.naturalHeight || img.height || 1;
+      const scale = Math.min(1, 180 / Math.max(w, h));
+      const cv = document.createElement('canvas');
+      cv.width = Math.max(1, Math.round(w * scale));
+      cv.height = Math.max(1, Math.round(h * scale));
+      const ctx = cv.getContext('2d');
+      ctx.drawImage(img, 0, 0, cv.width, cv.height);
+      finish(cv.toDataURL('image/jpeg', 0.62));
+    } catch (e) { finish(''); }
+  };
+  img.onerror = () => finish('');
+  img.src = src;
+}
+function warmThumb(key, src) {
+  if (!key || !src || THUMB_CACHE[key] || THUMB_WARMING[key] || THUMB_FAILED[key]) return;
+  THUMB_WARMING[key] = true;
+  if (THUMB_ACTIVE >= 2) THUMB_QUEUE.push([key, src]);
+  else runThumbJob(key, src);
+}
+function thumbInfo(card, idx) {
+  const src = photoSrcAt(card, idx);
+  if (!src) return { src: '', key: '' };
+  const key = thumbCacheKey(card, idx, src);
+  if (THUMB_CACHE[key]) return { src: THUMB_CACHE[key], key };
+  if (THUMB_FAILED[key]) return { src: (NET_METERED && isHttpUrl(src)) ? '' : src, key: '' };
+  if (NET_METERED && isHttpUrl(src)) return { src: '', key }; // 手机流量：不主动下载远程大图
+  warmThumb(key, src);
+  return { src: src, key };
+}
+function displayPhotoInfo(card, idx) {
+  const src = photoSrcAt(card, idx);
+  if (!src) return { src: '', key: '' };
+  // WiFi / 电脑：主图直接加载大图；流量 / 手机：优先小缩略图，点开才拉原图
+  if (!NET_METERED) return { src: src, key: '' };
+  return thumbInfo(card, idx);
+}
+
 function isMobileLike() {
   const ua = navigator.userAgent || '';
   if (/Android|iPhone|iPad|iPod|Mobile/i.test(ua)) return true;
@@ -3497,6 +3854,7 @@ async function fetchOriginalToCache(url) {
   } catch (e) { return ''; }
 }
 let ORIG_WARMING = {};
+let ORIG_PULLING = null;
 function warmOriginalSrc(url) {
   if (!isHttpUrl(url) || IMG_OBJ_URLS[url] || ORIG_WARMING[url] || !('caches' in window)) return;
   ORIG_WARMING[url] = true;
@@ -3523,16 +3881,18 @@ window.addEventListener('offline', refreshNetworkMode);
 
 /* 一键拉取：把填了「原图直链」但还没拉过的图下载下来，写入 Cache API */
 function pullAllOriginals(quiet) {
+  if (ORIG_PULLING) return ORIG_PULLING;
   const jobs = [];
   state.cards.forEach(c => {
     (c.originals || []).forEach((u, i) => {
       if (!u) return;
+      if (IMG_OBJ_URLS[u]) return; // 本次会话已有 blob，不必再拉
       if (ORIG_CACHE[origCacheKey(c, i)]) return;
       jobs.push({ card: c, idx: i, url: u });
     });
   });
   if (!jobs.length) { if (!quiet) toast('没有待拉取的原图地址'); return Promise.resolve(0); }
-  toast('开始拉取 ' + jobs.length + ' 张原图…');
+  if (!quiet) toast('开始拉取 ' + jobs.length + ' 张原图…');
   let done = 0, fail = 0, cursor = 0;
   const worker = () => new Promise(resolve => {
     const step = async () => {
@@ -3558,13 +3918,15 @@ function pullAllOriginals(quiet) {
   });
   const pool = [];
   for (let i = 0; i < Math.min(3, jobs.length); i++) pool.push(worker());
-  return Promise.all(pool).then(() => {
+  ORIG_PULLING = Promise.all(pool).then(() => {
     saveOrigCache();
-    renderAll();
+    // 静默拉取（保存/加载后的自动补图）不整页重绘，避免把小图标全部重新加载一遍
+    if (!quiet) renderAll();
     triggerAutoSave(true);
-    toast('原图拉取完成：成功 ' + done + ' 张' + (fail ? '，失败 ' + fail + ' 张' : ''));
+    if (!quiet) toast('原图拉取完成：成功 ' + done + ' 张' + (fail ? '，失败 ' + fail + ' 张' : ''));
     return done;
-  });
+  }).finally(() => { ORIG_PULLING = null; });
+  return ORIG_PULLING;
 }
 function applyOrigCache() {
   // 原图缓存只用于「查看原图」加速；显示降级走 photoSrcAt，绝不把 URL 写回 photos
@@ -3585,6 +3947,21 @@ function originalOf(card, idx) {
   if (typeof entry === 'string') return entry;
   const bySrc = ORIGINALS[local] || '';
   return typeof bySrc === 'string' ? bySrc : '';
+}
+function openPhotoFull(card, idx, fallbackSrc) {
+  // 点大图优先走原图；有 Cache API 缓存时 viewOriginal 直接复用，不再重复拉取
+  if (originalOf(card, idx)) { viewOriginal(card, idx); return; }
+  const fallback = fallbackSrc || photoSrcAt(card, idx);
+  if (fallback) showFullImage(fallback);
+}
+function showFullImage(src) {
+  if (!src) return;
+  const v = $('#origView'), img = $('#origImg'), msg = $('#origMsg');
+  if (!v || !img || !msg) return;
+  msg.style.display = 'none';
+  img.style.display = 'block';
+  if (img.getAttribute('src') !== src) img.src = src;
+  v.classList.add('show');
 }
 function closeOriginal() {
   const v = $('#origView');
@@ -3982,9 +4359,40 @@ function openCardInfoModal(card, readonly) {
   mask.classList.add('show');
 }
 
+function refreshMatchOne(card) {
+  // 保存卡片信息时只刷新这一张 mini 卡，不重建整张匹配列表
+  const item = document.querySelector('.match-mini[data-card-id="' + card.id + '"]');
+  if (!item) { renderMatch(); return; }
+  const nm = item.querySelector('.name');
+  if (nm) nm.textContent = card.name || ('NO.' + (card.id + 1));
+  item.classList.toggle('paired', pairStore().pairs.some(pr => pr[0] === card.id || pr[1] === card.id));
+  const thumb = item.querySelector('.thumb');
+  if (!thumb) return;
+  thumb.innerHTML = '';
+  const compact = window.matchMedia('(max-width:900px)').matches;
+  const thumbIdxs = compact ? [firstPhotoIdx(card)] : [0, 1, 2, 3];
+  thumbIdxs.forEach(i => {
+    const cell = document.createElement('div');
+    cell.className = 'thumb-cell';
+    const tinfo = thumbInfo(card, i);
+    if (tinfo.src) {
+      const im = noRefImg(document.createElement('img'));
+      setPhotoImgSrc(im, tinfo.src);
+      if (tinfo.key) im.dataset.thumbKey = tinfo.key;
+      im.dataset.cardId = String(card.id);
+      im.dataset.photoIdx = String(i);
+      im.alt = '';
+      im.loading = 'lazy';
+      im.decoding = 'async';
+      cell.appendChild(im);
+    }
+    thumb.appendChild(cell);
+  });
+}
 function saveCardInfo() {
   if (!editingCard || !canEdit()) return;
   const c = editingCard;
+  const origBefore = (c.originals || []).slice(0, 4).join('\u0001');
   c.name = $('#info_name').value.trim();
   c.height = cleanNum($('#info_height').value);
   c.weight = cleanNum($('#info_weight').value);
@@ -4000,6 +4408,7 @@ function saveCardInfo() {
     ciOrigDraft[Math.max(0, Math.min(3, ciOrigIdx))] = oi.value;
     commitOrigDraft(c, true);
   }
+  const origChanged = (c.originals || []).slice(0, 4).join('\u0001') !== origBefore;
   c.zodiac = $('#info_zodiac').value;
   c.zodiacThai = $('#info_zodiacThai').value;
   c.lineage = selLineage.slice();
@@ -4008,10 +4417,14 @@ function saveCardInfo() {
 
   $('#cardInfoModal').classList.remove('show');
   editingCard = null;
-  renderAll();
+  // 只重绘当前卡片，避免保存一次就把全部图片/缩略图重新加载一遍
+  if (state.mode === 'match') refreshMatchOne(c);
+  else rerenderCard(c.id);
+  renderScores();
   triggerAutoSave(true);
   toast('个人信息已保存');
-  if (AUTO_ORIG && netAllowsAutoOrig()) setTimeout(() => pullAllOriginals(true), 300);
+  // 只有原图地址真正变化时，WiFi 才补拉缺失原图；普通保存不再触发全量拉取
+  if (origChanged && AUTO_ORIG && netAllowsAutoOrig()) setTimeout(() => pullAllOriginals(true), 300);
 }
 
 /* =========================================================
@@ -4023,7 +4436,7 @@ function renderMatchSlot(which) {
   wrap.className = 'slot-wrapper';
   const title = document.createElement('div');
   title.className = 'slot-title';
-  title.textContent = which === 'A' ? '① 参照对象' : '② 预想 CP';
+  title.textContent = state.role === 'player' ? (which === 'A' ? '① 参照对象' : '② 预想 CP') : (which === 'A' ? '参照对象' : '预想 CP');
   wrap.appendChild(title);
 
   const box = document.createElement('div');
@@ -4032,7 +4445,9 @@ function renderMatchSlot(which) {
     box.classList.add('empty');
     const ph = document.createElement('div');
     ph.className = 'placeholder';
-    ph.textContent = which === 'A' ? '先点左侧卡片选参照对象' : (matchSlotA === null ? '选好参照后再点卡片' : '点任意其它卡片切换预想 CP');
+    ph.textContent = state.role === 'player'
+      ? (which === 'A' ? '先点左侧卡片选参照对象' : (matchSlotA === null ? '选好参照后再点卡片' : '点任意其它卡片切换预想 CP'))
+      : (which === 'A' ? '点击左侧卡片选择' : '再选一张凑成 CP');
     box.appendChild(ph);
   } else {
     const card = state.cards.find(c => c.id === id);
@@ -4071,13 +4486,9 @@ function renderMatchSlot(which) {
       clr.title = '清空该槽';
       clr.addEventListener('click', e => {
         e.stopPropagation();
-        if (which === 'A') {
-          matchSlotA = null; matchSlotB = null;
-          matchSlotA_photoIdx = 0; matchSlotB_photoIdx = 0;
-          matchSlotA_mode = 'single'; matchSlotB_mode = 'single';
-        } else {
-          matchSlotB = null; matchSlotB_photoIdx = 0; matchSlotB_mode = 'single';
-        }
+        if (which === 'A') matchSlotA = null; else matchSlotB = null;
+        if (which === 'A') matchSlotA_photoIdx = 0; else matchSlotB_photoIdx = 0;
+        if (which === 'A') matchSlotA_mode = 'single'; else matchSlotB_mode = 'single';
         lockTip = null;
         renderMatch({ light: true });
       });
@@ -4088,25 +4499,63 @@ function renderMatchSlot(which) {
   return wrap;
 }
 
-function updateMatchListSelection(list) {
+function updateMatchListSelection(list, pairs) {
   if (!list) return;
   list.querySelectorAll('.match-mini').forEach(el => {
     const id = Number(el.dataset.cardId);
     const isRef = id === matchSlotA;
     const isCand = id === matchSlotB && !isRef;
     el.classList.toggle('selected', isRef || isCand);
-    el.classList.toggle('ref', isRef);
-    el.classList.toggle('cand', isCand);
+    el.classList.toggle('ref', state.role === 'player' && isRef);
+    el.classList.toggle('cand', state.role === 'player' && isCand);
+    if (pairs) el.classList.toggle('paired', pairs.some(pr => pr[0] === id || pr[1] === id));
   });
 }
 
-// 匹配视角选卡顺序：先锁定左边参照对象；之后所有点选只切换右边预想 CP。
-function handleMatchCardSelect(card) {
+// 匹配视角选卡：
+// 玩家模式采用「先锁左侧参照、之后只换右侧预想」；出题/批改保持原有选卡逻辑。
+function handleMatchCardSelect(card, pairedId, pairs, store) {
   lockTip = null;
   clearLockHintTimer();
   const oldHint = $('#matchView .lock-hint.float');
   if (oldHint) oldHint.remove();
 
+  // 非玩家模式：恢复原有逻辑（点已锁死卡带出原 CP；两槽都有卡时再点会改左侧）
+  if (state.role !== 'player') {
+    if (pairedId !== null) {
+      const info = (store.photos && store.photos[getPairKey(card.id, pairedId)]) || {};
+      matchSlotA = card.id;
+      matchSlotB = pairedId;
+      matchSlotA_photoIdx = typeof info[card.id] === 'number' ? info[card.id] : firstPhotoIdx(card);
+      const pairedCard = state.cards.find(c => c.id === pairedId);
+      matchSlotB_photoIdx = typeof info[pairedId] === 'number' ? info[pairedId] : firstPhotoIdx(pairedCard);
+      matchSlotA_mode = 'single'; matchSlotB_mode = 'single';
+    } else {
+      const busyWith = (id) => {
+        if (id === null) return null;
+        const pr = pairs.find(x => x[0] === id || x[1] === id);
+        if (!pr) return null;
+        const other = pr[0] === id ? pr[1] : pr[0];
+        return other === card.id ? null : other;
+      };
+      const busyA = busyWith(matchSlotA);
+      if (busyA !== null) { toast('第 ' + (matchSlotA + 1) + ' 号已与第 ' + (busyA + 1) + ' 号锁死，请先点「🔓 解绑 CP」再换人'); return; }
+      const busyB = busyWith(matchSlotB);
+      if (busyB !== null) { toast('第 ' + (matchSlotB + 1) + ' 号已与第 ' + (busyB + 1) + ' 号锁死，请先点「🔓 解绑 CP」再换人'); return; }
+      if (matchSlotA === null) {
+        matchSlotA = card.id; matchSlotA_photoIdx = firstPhotoIdx(card); matchSlotA_mode = 'single';
+      } else if (matchSlotA === card.id) {
+        matchSlotA = null;
+      } else {
+        if (matchSlotB === null) { matchSlotB = card.id; matchSlotB_photoIdx = firstPhotoIdx(card); matchSlotB_mode = 'single'; }
+        else { matchSlotA = card.id; matchSlotA_photoIdx = firstPhotoIdx(card); matchSlotA_mode = 'single'; }
+      }
+    }
+    renderMatch({ light: true });
+    return;
+  }
+
+  // 玩家模式：左边参照一旦选定就固定；之后点其它卡只切换右边预想 CP
   if (matchSlotA === null) {
     matchSlotA = card.id;
     matchSlotA_photoIdx = firstPhotoIdx(card);
@@ -4114,13 +4563,31 @@ function handleMatchCardSelect(card) {
     matchSlotB = null;
     matchSlotB_photoIdx = 0;
     matchSlotB_mode = 'single';
-    toast('已锁定参照第 ' + (card.id + 1) + ' 号；现在点其它卡片切换预想 CP', 1500, true);
+    if (pairedId !== null) {
+      const info = (store.photos && store.photos[getPairKey(card.id, pairedId)]) || {};
+      const pairedCard = state.cards.find(c => c.id === pairedId);
+      matchSlotB = pairedId;
+      matchSlotB_photoIdx = typeof info[pairedId] === 'number' ? info[pairedId] : firstPhotoIdx(pairedCard);
+      toast('第 ' + (card.id + 1) + ' 号已与第 ' + (pairedId + 1) + ' 号锁死，已带出原 CP；要换人请先解绑', 1600, true);
+    } else {
+      toast('已锁定参照第 ' + (card.id + 1) + ' 号；现在点其它卡片切换预想 CP', 1500, true);
+    }
     renderMatch({ light: true });
     return;
   }
 
   if (card.id === matchSlotA) {
     toast('参照对象已固定；要换参照，请先点「✕ 清空展示」', 1500, true);
+    return;
+  }
+
+  const aPartner = pairPartnerOf(pairs, matchSlotA);
+  if (aPartner !== null && card.id !== aPartner) {
+    toast('第 ' + (matchSlotA + 1) + ' 号已与第 ' + (aPartner + 1) + ' 号锁死，请先点「🔓 解绑 CP」再换人', 1600, true);
+    return;
+  }
+  if (pairedId !== null && pairedId !== matchSlotA) {
+    toast('第 ' + (card.id + 1) + ' 号已与第 ' + (pairedId + 1) + ' 号锁死，请先点「🔓 解绑 CP」再换人', 1600, true);
     return;
   }
 
@@ -4134,7 +4601,7 @@ function handleMatchCardSelect(card) {
 function renderMatch(opts) {
   opts = opts || {};
   const mv = $('#matchView');
-  const light = !!opts.light && state.role !== 'grade' && state.mode === 'match';
+  const light = !!opts.light && state.mode === 'match';
   let oldList = null, oldScroll = 0;
   if (light) {
     oldList = mv.querySelector('.match-list-wrap');
@@ -4166,7 +4633,7 @@ function renderMatch(opts) {
       '<span class="ref">CP 正确 ' + sc.pairCorrect + '/' + sc.pairTotal + '</span>';
   }
   mv.appendChild(head);
-  if (state.role !== 'grade') {
+  if (state.role === 'player') {
     const guide = document.createElement('div');
     guide.className = 'match-guide';
     guide.innerHTML = '<b>① 点一张卡定为参照（锁定）</b> → ② 再点其它卡切换预想 CP → ③ 锁死 CP → ④ 清空展示换参照';
@@ -4190,8 +4657,9 @@ function renderMatch(opts) {
     const pairedId = partner ? (partner[0] === card.id ? partner[1] : partner[0]) : null;
     const item = document.createElement('div');
     const isRef = matchSlotA === card.id, isCand = matchSlotB === card.id && !isRef;
+    const markOrder = state.role === 'player';
     item.className = 'match-mini' + (pairedId !== null ? ' paired' : '') +
-      ((isRef || isCand) ? ' selected' : '') + (isRef ? ' ref' : isCand ? ' cand' : '');
+      ((isRef || isCand) ? ' selected' : '') + (markOrder && isRef ? ' ref' : markOrder && isCand ? ' cand' : '');
     item.dataset.cardId = String(card.id);
 
     const num = document.createElement('div');
@@ -4205,10 +4673,11 @@ function renderMatch(opts) {
     thumbIdxs.forEach(i => {
       const cell = document.createElement('div');
       cell.className = 'thumb-cell';
-      const thumbSrc = photoSrcAt(card, i);
-      if (thumbSrc) {
+      const tinfo = thumbInfo(card, i);
+      if (tinfo.src) {
         const im = noRefImg(document.createElement('img'));
-        setPhotoImgSrc(im, thumbSrc);
+        setPhotoImgSrc(im, tinfo.src);
+        if (tinfo.key) im.dataset.thumbKey = tinfo.key;
         im.dataset.cardId = String(card.id);
         im.dataset.photoIdx = String(i);
         im.alt = '';
@@ -4236,13 +4705,13 @@ function renderMatch(opts) {
       }
     }
 
-    item.addEventListener('click', () => handleMatchCardSelect(card));
+    item.addEventListener('click', () => handleMatchCardSelect(card, pairedId, pairs, store));
     grid.appendChild(item);
   });
   listWrap.appendChild(grid);
   }
   body.appendChild(listWrap);
-  if (oldList) updateMatchListSelection(listWrap);
+  if (oldList) updateMatchListSelection(listWrap, pairs);
 
   // 右侧工作区
   const ws = document.createElement('div');
@@ -4315,8 +4784,10 @@ function renderMatch(opts) {
       const sIdxA = effectivePhotoIdx(ca0, matchSlotA_photoIdx);
       const sIdxB = effectivePhotoIdx(cb0, matchSlotB_photoIdx);
       store.photos[getPairKey(a, b)] = { [a]: sIdxA, [b]: sIdxB };
+      // 匹配视角确认的 CP 合照同步到全局单图，正常切图不会反向覆盖
+      if (ca0) ca0.photoIdx = sIdxA;
+      if (cb0) cb0.photoIdx = sIdxB;
       globalPairingRef = null;
-      renderAll();
       triggerAutoSave(true);
       const ca = state.cards.find(c => c.id === a), cb = state.cards.find(c => c.id === b);
       const nA = (ca && photoSlots(ca).length > 1) ? '第' + (sIdxA + 1) + '张' : '单图';
@@ -4327,7 +4798,8 @@ function renderMatch(opts) {
               '<br>请继续下一步：可「🔒 更新 CP 合照」换合照，或点「✕ 清空展示」再组合新的 CP',
         short: '（' + (a + 1) + '号' + nA + ' × ' + (b + 1) + '号' + nB + '）· 可更新合照或清空展示'
       };
-      renderMatch();
+      renderMatch({ light: true });
+      renderScores();
       if (!stillPaired && state.role === 'author') maybePromptGift(a, b);
     });
     const unlockBtn = document.createElement('button');
@@ -4350,7 +4822,8 @@ function renderMatch(opts) {
       matchSlotA = null; matchSlotB = null;
       matchSlotA_photoIdx = 0; matchSlotB_photoIdx = 0;
       matchSlotA_mode = 'single'; matchSlotB_mode = 'single';
-      renderAll();
+      renderMatch({ light: true });
+      renderScores();
       triggerAutoSave();
       toast('已解绑该 CP，可重新选卡配对');
     });
@@ -4600,6 +5073,13 @@ function openSettings() {
   renderPlayerList();
   $('#pairCountInput').value = state.pairCount;
   refreshFilterSelects();
+  const hc = $('#hideAttrsChk');
+  if (hc) {
+    hc.checked = !!state.hideAttrs;
+    hc.disabled = state.role !== 'author' || state.locked;
+  }
+  const ca = $('#clearAttrs');
+  if (ca) ca.style.display = state.hideAttrs ? 'none' : '';
   $('#settingsModal').classList.add('show');
 }
 
@@ -4610,8 +5090,11 @@ function projectData() {
   return {
     projectId: state.projectId,
     projectName: state.projectName,
+    folder: state.projectFolder || '',
+    fileName: exportProjectFileName(),
     pairCount: state.pairCount,
     globalPhotoMode: state.globalPhotoMode === 'grid' ? 'grid' : 'single',
+    hideAttrs: !!state.hideAttrs,
     cards: state.cards.map(c => {
       // 导出前再兜底一次：photos 只放本地 base64，originals 只放在线 URL
       const photos = (c.photos || []).slice(0, 4);
@@ -4666,6 +5149,19 @@ function stamp() {
   const pad = n => String(n).padStart(2, '0');
   return d.getFullYear() + pad(d.getMonth() + 1) + pad(d.getDate()) + '_' + pad(d.getHours()) + pad(d.getMinutes());
 }
+function cleanProjectName(v) {
+  return String(v || '').trim().replace(/\.json$/i, '').trim();
+}
+function cleanFolderName(v) {
+  return String(v || '').trim().replace(/\\/g, '/').replace(/^\/+|\/+$/g, '').replace(/\/{2,}/g, '/');
+}
+function projectFileBase() {
+  const base = cleanProjectName(state.projectName || '未命名项目') || '未命名项目';
+  return base.replace(/[\\/:*?"<>|]/g, '-') || '未命名项目';
+}
+function exportProjectFileName() {
+  return projectFileBase() + '.json';
+}
 function saveFile(name, text, type) {
   const blob = new Blob([text], { type: type || 'application/json' });
   const url = URL.createObjectURL(blob);
@@ -4677,7 +5173,7 @@ function saveFile(name, text, type) {
 }
 function exportQuestion() {
   if (!state.named) { ensureNamed(); return; }
-  const saveIt = () => saveFile('CP题库_' + state.projectName + '_' + stamp() + '.json', JSON.stringify(projectData(), null, 2));
+  const saveIt = () => saveFile(exportProjectFileName(), JSON.stringify(projectData(), null, 2));
 
   // 已带密码的项目：导出题库必须先验证原密码；失败不导出，只允许导出答题记录
   if (state.lock) {
@@ -4757,6 +5253,7 @@ function loadProject(data) {
     ? data.projectId.trim()
     : ('proj_' + Date.now() + '_' + Math.random().toString(36).slice(2, 7));
   state.projectName = data.projectName || '未命名项目';
+  state.projectFolder = cleanFolderName(data.folder || data.folderName || '');
   const au = data.author || {};
   state.author = { name: String(au.name || '').slice(0, 24), url: String(au.url || '') };
   const lk = data.lock;
@@ -4766,6 +5263,7 @@ function loadProject(data) {
   if (state.lock) state.role = 'author'; // 打开加密项目先回到出题模式，避免批改视角直接露答案
   state.lockDirty = false;
   state.named = data.named === true || (data.named === undefined && state.projectName !== '未命名项目');
+  state.hideAttrs = data.hideAttrs === true;
   // 打开项目时清理上一个项目的视图态，避免旧卡片/旧图片残留在弹窗里
   state.role = 'author';
   state.mode = 'global';
@@ -4868,17 +5366,44 @@ function showPicker(opts) {
   $('#ppHint').textContent = opts.hint || '';
   const list = $('#ppList');
   list.innerHTML = '';
-  (opts.items || []).forEach(it => {
-    const btn = document.createElement('button');
-    btn.type = 'button';
-    btn.className = 'pp-item';
-    btn.innerHTML = '<span class="pp-ico">' + (it.icon || '💞') + '</span>' +
-      '<span><b>' + esc(it.title || '') + '</b>' +
-      (it.sub ? '<span class="pp-sub">' + esc(it.sub) + '</span>' : '') + '</span>' +
-      '<span class="pp-meta">' + esc(it.meta || '') + '</span>';
-    btn.addEventListener('click', () => { if (it.action) it.action(btn); });
-    list.appendChild(btn);
-  });
+  const renderItems = (items, box, depth) => {
+    (items || []).forEach(it => {
+      if (it && Array.isArray(it.children) && it.children.length) {
+        const group = document.createElement('div');
+        group.className = 'pp-folder-block';
+        const head = document.createElement('button');
+        head.type = 'button';
+        head.className = 'pp-item pp-folder' + (depth ? ' pp-child' : '');
+        head.innerHTML = '<span class="pp-ico">📁</span><span><b>' + esc(it.title || '文件夹') + '</b>' +
+          '<span class="pp-sub">' + esc(it.sub || (it.children.length + ' 个项目 · 点击展开')) + '</span></span>' +
+          '<span class="pp-meta">展开 ▸</span>';
+        const children = document.createElement('div');
+        children.className = 'pp-children';
+        children.hidden = true;
+        renderItems(it.children, children, depth + 1);
+        head.addEventListener('click', () => {
+          const now = children.hidden;
+          children.hidden = !now;
+          head.classList.toggle('open', now);
+          head.querySelector('.pp-meta').textContent = now ? '收起 ▾' : '展开 ▸';
+        });
+        group.appendChild(head);
+        group.appendChild(children);
+        box.appendChild(group);
+        return;
+      }
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'pp-item' + (depth ? ' pp-child' : '');
+      btn.innerHTML = '<span class="pp-ico">' + (it.icon || '💞') + '</span>' +
+        '<span><b>' + esc(it.title || '') + '</b>' +
+        (it.sub ? '<span class="pp-sub">' + esc(it.sub) + '</span>' : '') + '</span>' +
+        '<span class="pp-meta">' + esc(it.meta || '') + '</span>';
+      btn.addEventListener('click', () => { if (it.action) it.action(btn); });
+      box.appendChild(btn);
+    });
+  };
+  renderItems(opts.items, list, 0);
   const skip = $('#ppSkip');
   if (opts.skipText) {
     skip.style.display = '';
@@ -4902,8 +5427,62 @@ function projectIsNamed(p) {
   return !!(p.projectName && p.projectName !== '未命名项目');
 }
 
+function projFolderOf(p) {
+  if (!p) return '';
+  return String((p.project && (p.project.folder || p.project.folderName)) || p.projectFolder || '').trim();
+}
+function projectFileLabel(pOrName) {
+  const name = cleanProjectName(typeof pOrName === 'string' ? pOrName : (pOrName && pOrName.projectName));
+  return (name || '未命名项目') + '.json';
+}
+function projectPathLabel(folder, name) {
+  folder = cleanFolderName(folder);
+  const file = projectFileLabel(name);
+  return folder ? folder + ' / ' + file : file;
+}
+function makeProjectRow(p, child) {
+  const cur = p.projectId === state.projectId;
+  const cards = p.project && Array.isArray(p.project.cards) ? p.project.cards.length : 0;
+  const pairs = p.project ? (p.project.pairCount || Math.ceil(cards / 2)) : 0;
+  const row = document.createElement('div');
+  row.className = 'ps-row' + (child ? ' child' : '');
+  const check = document.createElement('input');
+  check.type = 'checkbox';
+  check.className = 'ps-check';
+  check.title = '勾选后可批量归入文件夹';
+  check.checked = selectedProjIds.has(p.projectId);
+  check.addEventListener('click', e => e.stopPropagation());
+  check.addEventListener('change', () => {
+    if (check.checked) selectedProjIds.add(p.projectId);
+    else selectedProjIds.delete(p.projectId);
+  });
+  const btn = document.createElement('button');
+  btn.type = 'button';
+  btn.className = 'ps-item' + (cur ? ' cur' : '');
+  btn.innerHTML = '<span class="pp-ico">' + (child ? '📄' : '💞') + '</span><span><b>' +
+    esc(projectFileLabel(p)) + '</b><span class="ps-sub">' + cards + ' 张卡 · ' + pairs + ' 对</span></span>' +
+    (cur ? '<span class="ps-cur">当前</span>' : '<span class="ps-meta">' + esc(fmtSavedAt(p.savedAt)) + '</span>');
+  btn.addEventListener('click', () => switchProject(p.projectId, p.projectName));
+  const move = document.createElement('button');
+  move.type = 'button';
+  move.className = 'ps-move';
+  move.title = '归入文件夹 / 移出文件夹';
+  move.textContent = '📁';
+  move.addEventListener('click', e => { e.stopPropagation(); promptMoveProject(p); });
+  const del = document.createElement('button');
+  del.type = 'button';
+  del.className = 'ps-del';
+  del.title = '删除项目（同时清掉本地存档）';
+  del.textContent = '🗑';
+  del.addEventListener('click', e => { e.stopPropagation(); deleteProject(p.projectId, p.projectName); });
+  row.appendChild(check);
+  row.appendChild(btn);
+  row.appendChild(move);
+  row.appendChild(del);
+  return row;
+}
 async function renderProjSwitch() {
-  $('#psCurName').textContent = state.projectName;
+  $('#psCurName').textContent = projectPathLabel(state.projectFolder, state.projectName);
   const list = $('#psList');
   list.innerHTML = '<div class="ps-note">读取中…</div>';
   let projects = await listProjects();
@@ -4919,33 +5498,63 @@ async function renderProjSwitch() {
     list.innerHTML = '<div class="ps-note">本地还没有已保存的项目，点下方「＋ 新建项目」开始。</div>';
     return;
   }
+  const folders = new Map();
+  const singles = [];
   projects.forEach(p => {
-    const cur = p.projectId === state.projectId;
-    const cards = p.project && Array.isArray(p.project.cards) ? p.project.cards.length : 0;
-    const pairs = p.project ? (p.project.pairCount || Math.ceil(cards / 2)) : 0;
-    const row = document.createElement('div');
-    row.className = 'ps-row';
-    const btn = document.createElement('button');
-    btn.type = 'button';
-    btn.className = 'ps-item' + (cur ? ' cur' : '');
-    btn.innerHTML = '<span class="pp-ico">💞</span><span><b>' + esc(p.projectName || '未命名项目') + '</b>' +
-      '<span class="ps-sub">' + cards + ' 张卡 · ' + pairs + ' 对</span></span>' +
-      (cur ? '<span class="ps-cur">当前</span>' : '<span class="ps-meta">' + esc(fmtSavedAt(p.savedAt)) + '</span>');
-    btn.addEventListener('click', () => switchProject(p.projectId, p.projectName));
-    const del = document.createElement('button');
-    del.type = 'button';
-    del.className = 'ps-del';
-    del.title = '删除项目（同时清掉本地存档）';
-    del.textContent = '🗑';
-    del.addEventListener('click', e => { e.stopPropagation(); deleteProject(p.projectId, p.projectName); });
-    row.appendChild(btn);
-    row.appendChild(del);
-    list.appendChild(row);
+    const f = projFolderOf(p);
+    if (!f) { singles.push(p); return; }
+    if (!folders.has(f)) folders.set(f, []);
+    folders.get(f).push(p);
+  });
+  const folderNames = Array.from(folders.keys()).sort((a, b) => a.localeCompare(b, 'zh-Hans-CN', { numeric: true }));
+  folderNames.forEach(folder => {
+    const items = folders.get(folder).slice().sort((a, b) =>
+      String(a.projectName || '').localeCompare(String(b.projectName || ''), 'zh-Hans-CN', { numeric: true }));
+    const isCurFolder = state.projectFolder === folder;
+    if (isCurFolder) openProjFolders.add(folder);
+    const open = openProjFolders.has(folder);
+    const block = document.createElement('div');
+    block.className = 'ps-folder-block';
+    const head = document.createElement('button');
+    head.type = 'button';
+    head.className = 'ps-item ps-folder' + (open ? ' open' : '') + (isCurFolder ? ' cur' : '');
+    head.innerHTML = '<span class="pp-ico">📁</span><span><b>' + esc(folder) + '</b>' +
+      '<span class="ps-sub">' + items.length + ' 个小项目 · 点击展开</span></span>' +
+      '<span class="ps-arrow">▸</span>';
+    const children = document.createElement('div');
+    children.className = 'ps-children';
+    children.hidden = !open;
+    items.forEach(p => children.appendChild(makeProjectRow(p, true)));
+    head.addEventListener('click', () => {
+      const now = children.hidden;
+      children.hidden = !now;
+      head.classList.toggle('open', now);
+      if (now) openProjFolders.add(folder); else openProjFolders.delete(folder);
+    });
+    const headRow = document.createElement('div');
+    headRow.className = 'ps-folder-head';
+    headRow.appendChild(head);
+    const add = document.createElement('button');
+    add.type = 'button';
+    add.className = 'ps-add';
+    add.title = '在这个文件夹内新建一个子项目';
+    add.textContent = '＋';
+    add.addEventListener('click', e => { e.stopPropagation(); promptAddChildToFolder(folder); });
+    headRow.appendChild(add);
+    block.appendChild(headRow);
+    block.appendChild(children);
+    list.appendChild(block);
+  });
+  singles.slice().sort((a, b) => String(b.savedAt || '').localeCompare(String(a.savedAt || ''))).forEach(p => {
+    list.appendChild(makeProjectRow(p, false));
   });
 }
 
+
 async function openProjectSwitch() {
+  selectedProjIds.clear();
   $('#projSwitch').classList.add('show');
+  triggerAutoSave(true);                  // 先把当前项目（含所在文件夹）落盘，列表立即一致
   await renderProjSwitch();
 }
 
@@ -5007,17 +5616,20 @@ async function switchProject(id, name) {
   toast('已切换到项目：' + (name || state.projectName));
 }
 
-async function newProject(name, quiet) {
-  name = (name || '').trim();
+async function newProject(name, quiet, folder) {
+  name = cleanProjectName(name) || '未命名项目';
+  folder = cleanFolderName(folder);
   // 新建必须是一张真正的白纸：不再复用任何“未命名项目”，
   // 否则会把上一份（可能带密码/照片/答案）的存档当成空白项打开，造成泄密。
   if (!name) name = '未命名项目';
   state.projectId = 'proj_' + Date.now();
   state.projectName = name;
+  state.projectFolder = folder;
   state.named = name !== '未命名项目';
   $('#projName').textContent = name;
   state.pairCount = 10;
   state.globalPhotoMode = 'single';
+  state.hideAttrs = false;
   state.cards = [];
   state.answers = { attrs: {}, pairs: [], gifts: {} };
   buildCards(10, true);                     // 卡片、属性答案、连线全部清空
@@ -5044,9 +5656,96 @@ async function newProject(name, quiet) {
 function promptNewProject() {
   openInput('新建项目（会重置当前卡片与连线）· 建好后请导出项目文件备份', '', v => newProject(v));
 }
+async function suggestFolderChildName(folder) {
+  const base = cleanFolderName(folder).split('/').pop() || '项目';
+  let max = 0;
+  try {
+    const items = (await listProjects()).filter(p => projFolderOf(p) === folder);
+    items.forEach(p => {
+      const m = String(p.projectName || '').match(/(\d+)$/);
+      if (m) max = Math.max(max, Number(m[1]));
+    });
+  } catch (e) {}
+  return base + '-' + String(max + 1).padStart(2, '0');
+}
+function promptAddChildToFolder(folder) {
+  folder = cleanFolderName(folder);
+  if (!folder) return;
+  suggestFolderChildName(folder).then(suggested => {
+    openInput('在文件夹「' + folder + '」新建子项目 · 导出为文件名.json', suggested, async name => {
+      const nm = cleanProjectName(name);
+      if (!nm) { toast('项目名不能为空'); return; }
+      await newProject(nm, false, folder);
+      openProjFolders.add(folder);
+      $('#projSwitch').classList.remove('show');
+      toast('已在「' + folder + '」创建「' + nm + '.json」');
+    });
+  });
+}
+function promptNewFolderProject() {
+  openInput('新建文件夹（如 GL_泰百CP）· 之后可在文件夹内继续新建子项目', '', v => {
+    const folder = cleanFolderName(v);
+    if (!folder) { toast('文件夹名不能为空'); return; }
+    suggestFolderChildName(folder).then(suggested => {
+      openInput('文件夹「' + folder + '」的第一个项目名（导出为文件名.json）', suggested, async name => {
+        const nm = cleanProjectName(name);
+        if (!nm) { toast('项目名不能为空'); return; }
+        await newProject(nm, false, folder);
+        openProjFolders.add(folder);
+        $('#projSwitch').classList.remove('show');
+        toast('已建立文件夹「' + folder + '」并创建「' + nm + '.json」');
+      });
+    });
+  });
+}
+function promptBatchMoveToFolder() {
+  const ids = Array.from(selectedProjIds);
+  if (!ids.length) { toast('请先勾选要整理的项目（左侧小方框）'); return; }
+  if (state.locked && ids.includes(state.projectId)) { toast('当前项目已加密：解锁后才能整理文件夹'); return; }
+  openInput('批量归入文件夹（留空 = 移出文件夹）· ' + ids.length + ' 个项目', '', async v => {
+    const folder = cleanFolderName(v);
+    const all = await listProjects();
+    let moved = 0;
+    for (const p of all) {
+      if (!ids.includes(p.projectId)) continue;
+      if (!p.project) p.project = {};
+      p.project.folder = folder;
+      p.projectFolder = folder;
+      await saveToDB('proj:' + p.projectId, p);
+      moved++;
+    }
+    if (ids.includes(state.projectId)) {
+      state.projectFolder = folder;
+      triggerAutoSave(true);
+    }
+    if (folder) openProjFolders.add(folder);
+    selectedProjIds.clear();
+    await renderProjSwitch();
+    toast(folder ? ('已将 ' + moved + ' 个项目归入文件夹「' + folder + '」') : ('已将 ' + moved + ' 个项目移出文件夹'));
+  });
+}
+function promptMoveProject(p) {
+  if (!p || !p.projectId) return;
+  if (p.projectId === state.projectId && state.locked) { toast('项目已加密：解锁后才能整理文件夹'); return; }
+  const cur = projFolderOf(p);
+  openInput('归入文件夹（留空 = 作为独立单文件）· 可输入已有文件夹名', cur, async v => {
+    const folder = cleanFolderName(v);
+    if (!p.project) p.project = {};
+    p.project.folder = folder;
+    p.projectFolder = folder;
+    await saveToDB('proj:' + p.projectId, p);
+    if (p.projectId === state.projectId) {
+      state.projectFolder = folder;
+      triggerAutoSave(true);
+    }
+    if (folder) openProjFolders.add(folder);
+    await renderProjSwitch();
+    toast(folder ? ('已将「' + projectFileLabel(p) + '」归入文件夹「' + folder + '」') : ('已将「' + projectFileLabel(p) + '」移出文件夹'));
+  });
+}
 function renameProject() {
   openInput('重命名项目（导出文件名会随之变化）', state.projectName === '未命名项目' ? '' : state.projectName, async v => {
-    const name = (v || '').trim();
+    const name = cleanProjectName(v);
     if (!name) { toast('项目名不能为空'); return; }
     state.projectName = name;
     state.named = true;
@@ -5224,6 +5923,7 @@ async function loadRemoteEntry(e, opts) {
         }
       }
       if (useCache && cache && loadProject(cache.data)) {
+        if (!state.projectFolder && e.folder) state.projectFolder = e.folder;
         renderAll(); triggerAutoSave(true);
         $('#projPicker').classList.remove('show');
         toast('⚡ 已从本地缓存载入：' + state.projectName + '（无需重复下载）');
@@ -5235,6 +5935,7 @@ async function loadRemoteEntry(e, opts) {
     const r = await fetchRemoteData(e.url, e.sub || e.name);
     await cacheRemote(e.url, r);
     if (!loadProject(r.data)) { toast('该项目读取失败'); return false; }
+    if (!state.projectFolder && e.folder) state.projectFolder = e.folder;
     renderAll(); triggerAutoSave(true);
     $('#projPicker').classList.remove('show');
     toast((opts.force ? '✅ 已更新：' : '已载入：') + state.projectName);
@@ -5262,7 +5963,9 @@ async function openRemoteProject(remote, preloaded, quiet, opts) {
       if (loadProject(data)) { renderAll(); triggerAutoSave(true); return true; }
       return false;
     }
-    const list = Array.isArray(data) ? data : (data && Array.isArray(data.projects) ? data.projects : null);
+    const list = Array.isArray(data) ? data
+      : (data && Array.isArray(data.projects) ? data.projects
+        : (data && Array.isArray(data.folders) ? data.folders : null));
     if (!list || !list.length) return false;
     const base = new URL(remote, location.href);
     const fileNameOf = p => {
@@ -5270,17 +5973,55 @@ async function openRemoteProject(remote, preloaded, quiet, opts) {
       try { dec = decodeURIComponent(dec); } catch (e) {}
       return (dec.split('?')[0].split('#')[0].split('/').pop() || String(p || ''));
     };
-    const entries = list.map(x => {
+    const toEntry = (x, inheritedFolder, inheritedPath) => {
       if (typeof x === 'string') {
         const fn = fileNameOf(x);
-        return { name: fn, sub: fn, url: new URL(x, base).href };
+        const folder = cleanFolderName(inheritedFolder || '');
+        const file = (inheritedPath && !/[\\/]/.test(x)) ? (inheritedPath + '/' + x) : x;
+        return { name: cleanProjectName(fn) || fn, sub: fn, url: new URL(file, base).href, folder };
       }
-      const file = x.url || x.file || x.path || x.project || '';
+      if (!x || typeof x !== 'object') return null;
+      let file = x.url || x.file || x.path || x.project || '';
+      if (!file) return null;
+      if (inheritedPath && !/[\\/]/.test(file) && !/^[a-z][a-z0-9+.-]*:/i.test(file)) file = inheritedPath + '/' + file;
       const fn = fileNameOf(file);
-      return { name: x.name || x.title || fn || '未命名项目',
-               sub: fn, url: file ? new URL(file, base).href : '', pairs: x.pairs };
-    }).filter(e => e.url);
+      return {
+        name: cleanProjectName(x.name || x.title || fn) || '未命名项目',
+        sub: fn,
+        url: new URL(file, base).href,
+        pairs: x.pairs,
+        folder: cleanFolderName(x.folder || inheritedFolder || '')
+      };
+    };
+    const groups = [];
+    const entries = [];
+    list.forEach(x => {
+      if (typeof x === 'string') {
+        const e = toEntry(x, '');
+        if (e) { entries.push(e); groups.push({ name: '', isFolder: false, items: [e] }); }
+        return;
+      }
+      if (!x || typeof x !== 'object') return;
+      const kids = x.files || x.children || x.items || x.projects;
+      if (Array.isArray(kids) && kids.length) {
+        const folder = cleanFolderName(x.folder || x.name || x.title || '');
+        const folderPath = cleanFolderName(x.path || '');
+        const items = kids.map(c => toEntry(c, folder, folderPath)).filter(e => e && e.url);
+        if (!items.length) return;
+        const groupName = String(x.name || x.title || folder || '未命名文件夹').trim();
+        entries.push(...items);
+        groups.push({ name: groupName, folder, isFolder: true, items });
+        return;
+      }
+      const e = toEntry(x, x.folder);
+      if (e) { entries.push(e); groups.push({ name: '', isFolder: false, items: [e] }); }
+    });
     if (!entries.length) return false;
+    const pickerItem = e => ({
+      icon: '📄', title: e.name, sub: e.sub || fileNameOf(e.url),
+      meta: (e.pairs ? (e.pairs + ' 对') : '') + (e.cached ? ((e.pairs ? ' · ' : '') + '⚡ 已缓存') : ''),
+      action: async () => { await loadRemoteEntry(e, { manual: !!opts.keepCurrent }); }
+    });
     for (const e of entries) {
       const cached = await loadFromDB(REMOTE_CACHE_PREFIX + e.url);
       e.cached = !!(cached && cached.data);
@@ -5289,16 +6030,23 @@ async function openRemoteProject(remote, preloaded, quiet, opts) {
       return await loadRemoteEntry(entries[0]);
     }
     if (!state.cards.length) { initDefault(); renderAll(); }
+    const folderCount = groups.filter(g => g.isFolder).length;
+    const pickerItems = groups.map(g => {
+      if (!g.isFolder) return pickerItem(g.items[0]);
+      return {
+        title: g.name || g.folder || '未命名文件夹',
+        sub: (g.items.length + ' 个项目 · 点击展开'),
+        children: g.items.map(pickerItem)
+      };
+    });
     showPicker({
       title: '📂 选择要打开的项目',
       hint: opts.keepCurrent
-        ? '远程清单里有 ' + entries.length + ' 个项目，点选一个载入当前面板；⚡ 已缓存且未改动的项目会直接沿用本地缓存，不重复下载；取消则保持当前项目'
-        : '远程清单里有 ' + entries.length + ' 个项目，点选一个打开；⚡ 已缓存的项目会秒开，不重复下载；不选则自己出题',
-      items: entries.map(e => ({
-        title: e.name, sub: e.sub || fileNameOf(e.url),
-        meta: (e.pairs ? (e.pairs + ' 对') : '') + (e.cached ? ((e.pairs ? ' · ' : '') + '⚡ 已缓存') : ''),
-        action: async () => { await loadRemoteEntry(e, { manual: !!opts.keepCurrent }); }
-      })),
+        ? '远程清单里有 ' + entries.length + ' 个项目' + (folderCount ? ('、' + folderCount + ' 个文件夹') : '') +
+          '，点选一个载入当前面板；⚡ 已缓存且未改动的项目会直接沿用本地缓存，不重复下载；取消则保持当前项目'
+        : '远程清单里有 ' + entries.length + ' 个项目' + (folderCount ? ('、' + folderCount + ' 个文件夹') : '') +
+          '，点选一个打开；⚡ 已缓存的项目会秒开，不重复下载；不选则自己出题',
+      items: pickerItems,
       skipText: opts.keepCurrent ? '' : '不选，自己出题',
       onSkip: opts.keepCurrent ? null : () => {
         state.projectId = 'proj_' + Date.now();
@@ -5812,6 +6560,7 @@ function bindEvents() {
       lockTip = null;
       matchSlotA = null; matchSlotB = null;
       annot.tool = null;
+      if (role === 'author' && state.mode === 'match') focusAuthorPairInMatch();
       document.body.dataset.role = role;
       document.body.dataset.mode = state.mode;
       renderAll();
@@ -5824,7 +6573,7 @@ function bindEvents() {
   $$('[data-mode]').forEach(btn => {
     btn.addEventListener('click', () => {
       state.mode = btn.dataset.mode;
-      state.mode === 'global' ? (globalPairingRef = null) : null;
+      state.mode === 'global' ? (globalPairingRef = null) : focusAuthorPairInMatch();
       renderAll();
       triggerAutoSave();
     });
@@ -5844,6 +6593,10 @@ function bindEvents() {
     else askNewPassword(false);
   });
   $('#psNew').addEventListener('click', () => { $('#projSwitch').classList.remove('show'); promptNewProject(); });
+  const psNewFolder = $('#psNewFolder');
+  if (psNewFolder) psNewFolder.addEventListener('click', () => { $('#projSwitch').classList.remove('show'); promptNewFolderProject(); });
+  const psBatchFolder = $('#psBatchFolder');
+  if (psBatchFolder) psBatchFolder.addEventListener('click', promptBatchMoveToFolder);
   $('#psImport').addEventListener('click', () => {
     $('#projSwitch').classList.remove('show');
     const f = $('#importFile'); f.value = ''; f.click();
@@ -6193,10 +6946,24 @@ function bindEvents() {
     triggerAutoSave();
     toast('已清空本模式批注');
   });
+  const hideAttrsChk = $('#hideAttrsChk');
+  if (hideAttrsChk) hideAttrsChk.addEventListener('change', () => {
+    const on = !!hideAttrsChk.checked;
+    if (state.role !== 'author') { hideAttrsChk.checked = !on; toast('请在出题模式设置「隐藏属性面板」'); return; }
+    if (state.locked) { hideAttrsChk.checked = !on; toast('项目已加密：解锁后才能修改属性显示'); return; }
+    state.hideAttrs = on;
+    const ca = $('#clearAttrs');
+    if (ca) ca.style.display = on ? 'none' : '';
+    renderAll();
+    triggerAutoSave();
+    toast(on ? '已隐藏属性面板：本项目只按 CP 连线判定' : '已显示属性面板：属性与 CP 双评分恢复');
+  });
 
   // 大礼包设置 / 播放
   const giftYes = $('#giftYes');
   if (giftYes) giftYes.addEventListener('click', saveGiftSetup);
+  const giftPreview = $('#giftPreview');
+  if (giftPreview) giftPreview.addEventListener('click', previewGiftSetup);
   const giftNo = $('#giftNo');
   if (giftNo) giftNo.addEventListener('click', closeGiftSetup);
   const giftClearBtn = $('#giftClear');

@@ -1,4 +1,20 @@
-{"projects":[
-  {"name":"项目A","file":"GL_泰百CP.json"},
-  {"name":"项目B","file":"BL_泰腐CP.json"}
-]}
+{
+  "projects": [
+    {
+      "name": "数字连线",
+      "path": "数字连线",
+      "files": [
+        { "name": "【潮州话】数字1~10连线", "file": "【潮州话】数字1~10连线.json" },
+        { "name": "【泰语】数字1~10连线", "file": "【泰语】数字1~10连线.json" }
+      ]
+    },
+    {
+      "name": "GL_泰百CP",
+      "file": "GL_泰百CP.json"
+    },
+    {
+      "name": "BL_泰腐CP",
+      "file": "BL_泰腐CP.json"
+    }
+  ]
+}
