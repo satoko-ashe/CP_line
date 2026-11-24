@@ -37,7 +37,19 @@
       "showZodiacThai": false,
       "showSchool": false,
       "showCompany": false,
-      "showVideo": true
+      "showVideo": true,
+      "infoHidden": [
+        "name",
+        "height",
+        "weight",
+        "birthday",
+        "lineage",
+        "nation",
+        "school",
+        "company",
+        "zodiac",
+        "zodiacThai"
+      ]
     },
     {
       "id": 1,
@@ -69,7 +81,19 @@
       "showZodiacThai": false,
       "showSchool": false,
       "showCompany": false,
-      "showVideo": true
+      "showVideo": true,
+      "infoHidden": [
+        "name",
+        "height",
+        "weight",
+        "birthday",
+        "lineage",
+        "nation",
+        "school",
+        "company",
+        "zodiac",
+        "zodiacThai"
+      ]
     },
     {
       "id": 2,
@@ -101,7 +125,19 @@
       "showZodiacThai": false,
       "showSchool": false,
       "showCompany": false,
-      "showVideo": true
+      "showVideo": true,
+      "infoHidden": [
+        "name",
+        "height",
+        "weight",
+        "birthday",
+        "lineage",
+        "nation",
+        "school",
+        "company",
+        "zodiac",
+        "zodiacThai"
+      ]
     },
     {
       "id": 3,
@@ -133,7 +169,19 @@
       "showZodiacThai": false,
       "showSchool": false,
       "showCompany": false,
-      "showVideo": true
+      "showVideo": true,
+      "infoHidden": [
+        "name",
+        "height",
+        "weight",
+        "birthday",
+        "lineage",
+        "nation",
+        "school",
+        "company",
+        "zodiac",
+        "zodiacThai"
+      ]
     },
     {
       "id": 4,
@@ -165,7 +213,19 @@
       "showZodiacThai": false,
       "showSchool": false,
       "showCompany": false,
-      "showVideo": true
+      "showVideo": true,
+      "infoHidden": [
+        "name",
+        "height",
+        "weight",
+        "birthday",
+        "lineage",
+        "nation",
+        "school",
+        "company",
+        "zodiac",
+        "zodiacThai"
+      ]
     },
     {
       "id": 5,
@@ -197,7 +257,19 @@
       "showZodiacThai": false,
       "showSchool": false,
       "showCompany": false,
-      "showVideo": true
+      "showVideo": true,
+      "infoHidden": [
+        "name",
+        "height",
+        "weight",
+        "birthday",
+        "lineage",
+        "nation",
+        "school",
+        "company",
+        "zodiac",
+        "zodiacThai"
+      ]
     },
     {
       "id": 6,
@@ -229,7 +301,19 @@
       "showZodiacThai": false,
       "showSchool": false,
       "showCompany": false,
-      "showVideo": true
+      "showVideo": true,
+      "infoHidden": [
+        "name",
+        "height",
+        "weight",
+        "birthday",
+        "lineage",
+        "nation",
+        "school",
+        "company",
+        "zodiac",
+        "zodiacThai"
+      ]
     },
     {
       "id": 7,
@@ -261,7 +345,19 @@
       "showZodiacThai": false,
       "showSchool": false,
       "showCompany": false,
-      "showVideo": true
+      "showVideo": true,
+      "infoHidden": [
+        "name",
+        "height",
+        "weight",
+        "birthday",
+        "lineage",
+        "nation",
+        "school",
+        "company",
+        "zodiac",
+        "zodiacThai"
+      ]
     },
     {
       "id": 8,
@@ -293,7 +389,19 @@
       "showZodiacThai": false,
       "showSchool": false,
       "showCompany": false,
-      "showVideo": true
+      "showVideo": true,
+      "infoHidden": [
+        "name",
+        "height",
+        "weight",
+        "birthday",
+        "lineage",
+        "nation",
+        "school",
+        "company",
+        "zodiac",
+        "zodiacThai"
+      ]
     },
     {
       "id": 9,
@@ -325,7 +433,19 @@
       "showZodiacThai": false,
       "showSchool": false,
       "showCompany": false,
-      "showVideo": true
+      "showVideo": true,
+      "infoHidden": [
+        "name",
+        "height",
+        "weight",
+        "birthday",
+        "lineage",
+        "nation",
+        "school",
+        "company",
+        "zodiac",
+        "zodiacThai"
+      ]
     },
     {
       "id": 10,
@@ -357,7 +477,19 @@
       "showZodiacThai": false,
       "showSchool": false,
       "showCompany": false,
-      "showVideo": true
+      "showVideo": true,
+      "infoHidden": [
+        "name",
+        "height",
+        "weight",
+        "birthday",
+        "lineage",
+        "nation",
+        "school",
+        "company",
+        "zodiac",
+        "zodiacThai"
+      ]
     },
     {
       "id": 11,
@@ -389,7 +521,19 @@
       "showZodiacThai": false,
       "showSchool": false,
       "showCompany": false,
-      "showVideo": true
+      "showVideo": true,
+      "infoHidden": [
+        "name",
+        "height",
+        "weight",
+        "birthday",
+        "lineage",
+        "nation",
+        "school",
+        "company",
+        "zodiac",
+        "zodiacThai"
+      ]
     },
     {
       "id": 12,
@@ -421,7 +565,19 @@
       "showZodiacThai": false,
       "showSchool": false,
       "showCompany": false,
-      "showVideo": true
+      "showVideo": true,
+      "infoHidden": [
+        "name",
+        "height",
+        "weight",
+        "birthday",
+        "lineage",
+        "nation",
+        "school",
+        "company",
+        "zodiac",
+        "zodiacThai"
+      ]
     },
     {
       "id": 13,
@@ -453,7 +609,19 @@
       "showZodiacThai": false,
       "showSchool": false,
       "showCompany": false,
-      "showVideo": true
+      "showVideo": true,
+      "infoHidden": [
+        "name",
+        "height",
+        "weight",
+        "birthday",
+        "lineage",
+        "nation",
+        "school",
+        "company",
+        "zodiac",
+        "zodiacThai"
+      ]
     },
     {
       "id": 14,
@@ -485,7 +653,19 @@
       "showZodiacThai": false,
       "showSchool": false,
       "showCompany": false,
-      "showVideo": true
+      "showVideo": true,
+      "infoHidden": [
+        "name",
+        "height",
+        "weight",
+        "birthday",
+        "lineage",
+        "nation",
+        "school",
+        "company",
+        "zodiac",
+        "zodiacThai"
+      ]
     },
     {
       "id": 15,
@@ -517,7 +697,19 @@
       "showZodiacThai": false,
       "showSchool": false,
       "showCompany": false,
-      "showVideo": true
+      "showVideo": true,
+      "infoHidden": [
+        "name",
+        "height",
+        "weight",
+        "birthday",
+        "lineage",
+        "nation",
+        "school",
+        "company",
+        "zodiac",
+        "zodiacThai"
+      ]
     },
     {
       "id": 16,
@@ -549,7 +741,19 @@
       "showZodiacThai": false,
       "showSchool": false,
       "showCompany": false,
-      "showVideo": true
+      "showVideo": true,
+      "infoHidden": [
+        "name",
+        "height",
+        "weight",
+        "birthday",
+        "lineage",
+        "nation",
+        "school",
+        "company",
+        "zodiac",
+        "zodiacThai"
+      ]
     },
     {
       "id": 17,
@@ -581,7 +785,19 @@
       "showZodiacThai": false,
       "showSchool": false,
       "showCompany": false,
-      "showVideo": true
+      "showVideo": true,
+      "infoHidden": [
+        "name",
+        "height",
+        "weight",
+        "birthday",
+        "lineage",
+        "nation",
+        "school",
+        "company",
+        "zodiac",
+        "zodiacThai"
+      ]
     },
     {
       "id": 18,
@@ -613,7 +829,19 @@
       "showZodiacThai": false,
       "showSchool": false,
       "showCompany": false,
-      "showVideo": true
+      "showVideo": true,
+      "infoHidden": [
+        "name",
+        "height",
+        "weight",
+        "birthday",
+        "lineage",
+        "nation",
+        "school",
+        "company",
+        "zodiac",
+        "zodiacThai"
+      ]
     },
     {
       "id": 19,
@@ -645,7 +873,19 @@
       "showZodiacThai": false,
       "showSchool": false,
       "showCompany": false,
-      "showVideo": true
+      "showVideo": true,
+      "infoHidden": [
+        "name",
+        "height",
+        "weight",
+        "birthday",
+        "lineage",
+        "nation",
+        "school",
+        "company",
+        "zodiac",
+        "zodiacThai"
+      ]
     }
   ],
   "answers": {
@@ -772,5 +1012,5 @@
       "texts": []
     }
   },
-  "savedAt": "2026-11-23T16:21:21.294Z"
+  "savedAt": "2026-11-24T16:56:27.830Z"
 }

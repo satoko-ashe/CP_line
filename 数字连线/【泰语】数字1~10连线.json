@@ -37,7 +37,19 @@
       "showZodiacThai": false,
       "showSchool": false,
       "showCompany": false,
-      "showVideo": true
+      "showVideo": true,
+      "infoHidden": [
+        "name",
+        "height",
+        "weight",
+        "birthday",
+        "lineage",
+        "nation",
+        "school",
+        "company",
+        "zodiac",
+        "zodiacThai"
+      ]
     },
     {
       "id": 1,
@@ -69,7 +81,19 @@
       "showZodiacThai": false,
       "showSchool": false,
       "showCompany": false,
-      "showVideo": true
+      "showVideo": true,
+      "infoHidden": [
+        "name",
+        "height",
+        "weight",
+        "birthday",
+        "lineage",
+        "nation",
+        "school",
+        "company",
+        "zodiac",
+        "zodiacThai"
+      ]
     },
     {
       "id": 2,
@@ -101,7 +125,19 @@
       "showZodiacThai": false,
       "showSchool": false,
       "showCompany": false,
-      "showVideo": true
+      "showVideo": true,
+      "infoHidden": [
+        "name",
+        "height",
+        "weight",
+        "birthday",
+        "lineage",
+        "nation",
+        "school",
+        "company",
+        "zodiac",
+        "zodiacThai"
+      ]
     },
     {
       "id": 3,
@@ -133,7 +169,19 @@
       "showZodiacThai": false,
       "showSchool": false,
       "showCompany": false,
-      "showVideo": true
+      "showVideo": true,
+      "infoHidden": [
+        "name",
+        "height",
+        "weight",
+        "birthday",
+        "lineage",
+        "nation",
+        "school",
+        "company",
+        "zodiac",
+        "zodiacThai"
+      ]
     },
     {
       "id": 4,
@@ -165,7 +213,19 @@
       "showZodiacThai": false,
       "showSchool": false,
       "showCompany": false,
-      "showVideo": true
+      "showVideo": true,
+      "infoHidden": [
+        "name",
+        "height",
+        "weight",
+        "birthday",
+        "lineage",
+        "nation",
+        "school",
+        "company",
+        "zodiac",
+        "zodiacThai"
+      ]
     },
     {
       "id": 5,
@@ -197,7 +257,19 @@
       "showZodiacThai": false,
       "showSchool": false,
       "showCompany": false,
-      "showVideo": true
+      "showVideo": true,
+      "infoHidden": [
+        "name",
+        "height",
+        "weight",
+        "birthday",
+        "lineage",
+        "nation",
+        "school",
+        "company",
+        "zodiac",
+        "zodiacThai"
+      ]
     },
     {
       "id": 6,
@@ -229,7 +301,19 @@
       "showZodiacThai": false,
       "showSchool": false,
       "showCompany": false,
-      "showVideo": true
+      "showVideo": true,
+      "infoHidden": [
+        "name",
+        "height",
+        "weight",
+        "birthday",
+        "lineage",
+        "nation",
+        "school",
+        "company",
+        "zodiac",
+        "zodiacThai"
+      ]
     },
     {
       "id": 7,
@@ -261,7 +345,19 @@
       "showZodiacThai": false,
       "showSchool": false,
       "showCompany": false,
-      "showVideo": true
+      "showVideo": true,
+      "infoHidden": [
+        "name",
+        "height",
+        "weight",
+        "birthday",
+        "lineage",
+        "nation",
+        "school",
+        "company",
+        "zodiac",
+        "zodiacThai"
+      ]
     },
     {
       "id": 8,
@@ -293,7 +389,19 @@
       "showZodiacThai": false,
       "showSchool": false,
       "showCompany": false,
-      "showVideo": true
+      "showVideo": true,
+      "infoHidden": [
+        "name",
+        "height",
+        "weight",
+        "birthday",
+        "lineage",
+        "nation",
+        "school",
+        "company",
+        "zodiac",
+        "zodiacThai"
+      ]
     },
     {
       "id": 9,
@@ -325,7 +433,19 @@
       "showZodiacThai": false,
       "showSchool": false,
       "showCompany": false,
-      "showVideo": true
+      "showVideo": true,
+      "infoHidden": [
+        "name",
+        "height",
+        "weight",
+        "birthday",
+        "lineage",
+        "nation",
+        "school",
+        "company",
+        "zodiac",
+        "zodiacThai"
+      ]
     },
     {
       "id": 10,
@@ -359,7 +479,19 @@
       "showZodiacThai": false,
       "showSchool": false,
       "showCompany": false,
-      "showVideo": true
+      "showVideo": true,
+      "infoHidden": [
+        "name",
+        "height",
+        "weight",
+        "birthday",
+        "lineage",
+        "nation",
+        "school",
+        "company",
+        "zodiac",
+        "zodiacThai"
+      ]
     },
     {
       "id": 11,
@@ -391,7 +523,19 @@
       "showZodiacThai": false,
       "showSchool": false,
       "showCompany": false,
-      "showVideo": true
+      "showVideo": true,
+      "infoHidden": [
+        "name",
+        "height",
+        "weight",
+        "birthday",
+        "lineage",
+        "nation",
+        "school",
+        "company",
+        "zodiac",
+        "zodiacThai"
+      ]
     },
     {
       "id": 12,
@@ -425,7 +569,19 @@
       "showZodiacThai": false,
       "showSchool": false,
       "showCompany": false,
-      "showVideo": true
+      "showVideo": true,
+      "infoHidden": [
+        "name",
+        "height",
+        "weight",
+        "birthday",
+        "lineage",
+        "nation",
+        "school",
+        "company",
+        "zodiac",
+        "zodiacThai"
+      ]
     },
     {
       "id": 13,
@@ -447,7 +603,9 @@
       "photoIdx": 0,
       "originals": [
         "http://photogzmaz.photo.store.qq.com/psc?/V52bvhQz4EkfVm2Q52lY1dAspF0mVsyn/TmEUgtj9EK6.7V8ajmQrEC*6ABEOBKePN5*AmSX1xBMeH1.uQB6sMJ4insdSvm7HJEYXQDoCSVqTFJ2p6m0ltLe580WpM7GDtkw7DSPp3rs!/b&bo=sARABrAEQAYBJwA!&rf=viewer_4&t=5",
-        "http://photogzmaz.photo.store.qq.com/psc?/V52bvhQz4EkfVm2Q52lY1dAspF0mVsyn/TmEUgtj9EK6.7V8ajmQrENut.Fadvm9HhUmGqcZVK.djhsC8nx0sOsw.TvLS1lf8M0v.5xPx1.OEFssY8iwNWcolPbNCvqomfMtszX7B2sA!/b&bo=sARABrAEQAYBNxA!&rf=viewer_4&t=5"
+        "http://photogzmaz.photo.store.qq.com/psc?/V52bvhQz4EkfVm2Q52lY1dAspF0mVsyn/TmEUgtj9EK6.7V8ajmQrENut.Fadvm9HhUmGqcZVK.djhsC8nx0sOsw.TvLS1lf8M0v.5xPx1.OEFssY8iwNWcolPbNCvqomfMtszX7B2sA!/b&bo=sARABrAEQAYBNxA!&rf=viewer_4&t=5",
+        "",
+        ""
       ],
       "videoUrl": "",
       "showName": true,
@@ -459,7 +617,19 @@
       "showZodiacThai": false,
       "showSchool": false,
       "showCompany": false,
-      "showVideo": true
+      "showVideo": true,
+      "infoHidden": [
+        "name",
+        "height",
+        "weight",
+        "birthday",
+        "lineage",
+        "nation",
+        "school",
+        "company",
+        "zodiac",
+        "zodiacThai"
+      ]
     },
     {
       "id": 14,
@@ -493,7 +663,19 @@
       "showZodiacThai": false,
       "showSchool": false,
       "showCompany": false,
-      "showVideo": true
+      "showVideo": true,
+      "infoHidden": [
+        "name",
+        "height",
+        "weight",
+        "birthday",
+        "lineage",
+        "nation",
+        "school",
+        "company",
+        "zodiac",
+        "zodiacThai"
+      ]
     },
     {
       "id": 15,
@@ -527,7 +709,19 @@
       "showZodiacThai": false,
       "showSchool": false,
       "showCompany": false,
-      "showVideo": true
+      "showVideo": true,
+      "infoHidden": [
+        "name",
+        "height",
+        "weight",
+        "birthday",
+        "lineage",
+        "nation",
+        "school",
+        "company",
+        "zodiac",
+        "zodiacThai"
+      ]
     },
     {
       "id": 16,
@@ -561,7 +755,19 @@
       "showZodiacThai": false,
       "showSchool": false,
       "showCompany": false,
-      "showVideo": true
+      "showVideo": true,
+      "infoHidden": [
+        "name",
+        "height",
+        "weight",
+        "birthday",
+        "lineage",
+        "nation",
+        "school",
+        "company",
+        "zodiac",
+        "zodiacThai"
+      ]
     },
     {
       "id": 17,
@@ -583,9 +789,7 @@
       "photoIdx": 0,
       "originals": [
         "http://photogzmaz.photo.store.qq.com/psc?/V52bvhQz4EkfVm2Q52lY1dAspF0mVsyn/TmEUgtj9EK6.7V8ajmQrEIiWGoFJWbMrIysMGY9UtXh5huer52zwbllZNvSN.PzZFXhtX0LxFgebBjEGAgNR0HDqG1n*nNf9l65yOQv0q2E!/b&bo=sARABrAEQAYBJwA!&rf=viewer_4&t=5",
-        "http://photogzmaz.photo.store.qq.com/psc?/V52bvhQz4EkfVm2Q52lY1dAspF0mVsyn/TmEUgtj9EK6.7V8ajmQrEA7DRlWH*uxcoKBwLS0AW20yvdkAIIPcfuv4G1lhYznqslSlPYhXp7NUixmVDnzB8jGEqfNC7YWVF6UrCSOYq10!/b&bo=sARABrAEQAYBFzA!&rf=viewer_4&t=5",
-        "",
-        ""
+        "http://photogzmaz.photo.store.qq.com/psc?/V52bvhQz4EkfVm2Q52lY1dAspF0mVsyn/TmEUgtj9EK6.7V8ajmQrEA7DRlWH*uxcoKBwLS0AW20yvdkAIIPcfuv4G1lhYznqslSlPYhXp7NUixmVDnzB8jGEqfNC7YWVF6UrCSOYq10!/b&bo=sARABrAEQAYBFzA!&rf=viewer_4&t=5"
       ],
       "videoUrl": "",
       "showName": true,
@@ -597,7 +801,19 @@
       "showZodiacThai": false,
       "showSchool": false,
       "showCompany": false,
-      "showVideo": true
+      "showVideo": true,
+      "infoHidden": [
+        "name",
+        "height",
+        "weight",
+        "birthday",
+        "lineage",
+        "nation",
+        "school",
+        "company",
+        "zodiac",
+        "zodiacThai"
+      ]
     },
     {
       "id": 18,
@@ -629,7 +845,19 @@
       "showZodiacThai": false,
       "showSchool": false,
       "showCompany": false,
-      "showVideo": true
+      "showVideo": true,
+      "infoHidden": [
+        "name",
+        "height",
+        "weight",
+        "birthday",
+        "lineage",
+        "nation",
+        "school",
+        "company",
+        "zodiac",
+        "zodiacThai"
+      ]
     },
     {
       "id": 19,
@@ -661,7 +889,19 @@
       "showZodiacThai": false,
       "showSchool": false,
       "showCompany": false,
-      "showVideo": true
+      "showVideo": true,
+      "infoHidden": [
+        "name",
+        "height",
+        "weight",
+        "birthday",
+        "lineage",
+        "nation",
+        "school",
+        "company",
+        "zodiac",
+        "zodiacThai"
+      ]
     }
   ],
   "answers": {
@@ -788,5 +1028,5 @@
       "texts": []
     }
   },
-  "savedAt": "2026-11-23T16:12:25.590Z"
+  "savedAt": "2026-11-24T16:54:24.774Z"
 }
