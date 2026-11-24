@@ -365,6 +365,27 @@ main{
 .ci-top{display:flex;align-items:center;gap:10px;padding:11px 16px;border-bottom:1px solid #1e293b;flex-wrap:wrap;flex:none}
 .ci-brand{font-size:14px;font-weight:800;color:#e2e8f0;display:flex;align-items:center;gap:6px}
 .ci-brand #infoIdxTag{font-size:11px;color:#64748b;font-weight:400}
+/* 个人信息隐藏配置：仅出题人可编辑 */
+.ci-hide-wrap{position:relative;display:inline-flex;align-items:center;margin-left:2px}
+.ci-hide-wrap[hidden]{display:none}
+.ci-hide-btn{position:relative;width:24px;height:24px;border-radius:8px;padding:0;border:1px solid #334155;background:#16233a;color:#94a3b8;font-size:13px;line-height:1;display:flex;align-items:center;justify-content:center;transition:.15s}
+.ci-hide-btn:hover{color:#fff;border-color:#64748b;background:#1e293b}
+.ci-hide-btn.on{border-color:#7c3aed;background:#241a3d;color:#ddd6fe;box-shadow:0 0 12px -4px #8b5cf6}
+.ci-hide-count{position:absolute;top:-5px;right:-5px;min-width:14px;height:14px;padding:0 3px;border-radius:7px;background:#7c3aed;color:#fff;font-size:9px;font-weight:800;line-height:14px;text-align:center;display:none}
+.ci-hide-btn.on .ci-hide-count{display:block}
+.ci-hide-menu{position:absolute;top:calc(100% + 8px);left:-8px;z-index:80;width:min(252px,calc(100vw - 16px));max-height:min(460px,55vh);overflow-y:auto;padding:10px;border-radius:13px;border:1px solid #3b4b63;background:linear-gradient(180deg,#18253a,#0f1a2b);box-shadow:0 18px 45px -10px #000,0 0 0 1px #ffffff08 inset;color:#e2e8f0}
+.ci-hide-menu[hidden]{display:none}
+.ci-hide-menu .hm-head{font-size:12px;font-weight:800;color:#f1f5f9;margin-bottom:7px}
+.ci-hide-menu .hm-opt{display:flex;align-items:center;gap:8px;padding:5px 4px;border-radius:7px;font-size:12px;color:#cbd5e1;cursor:pointer;user-select:none}
+.ci-hide-menu .hm-opt:hover{background:#1e293b}
+.ci-hide-menu .hm-opt input{width:15px;height:15px;accent-color:#8b5cf6;margin:0;flex:none}
+.ci-hide-menu .hm-actions{display:flex;gap:6px;margin:7px 0 2px}
+.ci-hide-menu .hm-actions button{flex:1;padding:5px 6px;border-radius:7px;border:1px solid #334155;background:#16233a;color:#94a3b8;font-size:11px;font-weight:700}
+.ci-hide-menu .hm-actions button:hover{color:#fff;border-color:#64748b}
+.ci-hide-menu .hm-apply{width:100%;margin:2px 0 6px;padding:6px 8px;border-radius:8px;border:1px solid #6d28d9;background:#241a3d;color:#ddd6fe;font-size:11.5px;font-weight:800;letter-spacing:.02em}
+.ci-hide-menu .hm-apply:hover{background:#33245a;border-color:#8b5cf6;color:#fff}
+.ci-hide-menu .hm-note{font-size:10.5px;line-height:1.5;color:#7c8aa3;border-top:1px dashed #334155;padding-top:7px;margin-top:4px}
+.ci-hide-menu .hm-note b{color:#fbbf24;font-weight:700}
 .ci-ro{display:none;font-size:10px;color:#fbbf24;border:1px solid #78350f;background:#78350f22;border-radius:8px;padding:2px 6px}
 .ci-modal.readonly .ci-ro{display:inline-block}
 .ci-zodiacs{display:flex;gap:8px;margin-left:auto}
@@ -1015,6 +1036,67 @@ body[data-role="grade"] #globalView .card{height:calc(100% - 54px)}
   .gift-modal .ci-foot{padding:9px 11px}
 }
 
+
+/* =========================================================
+   平板横屏（触屏，901–1366px）：保留电脑版结构，放大可点区域
+   不采用整体缩放，避免文字过小和连线坐标偏移
+   ========================================================= */
+@media (min-width:901px) and (max-width:1366px) and (orientation:landscape) and (pointer:coarse){
+  #topbar{padding:10px 14px 8px;gap:9px}
+  #topbar .bar{gap:9px;row-gap:8px}
+  .brand{font-size:17px}
+  .proj-name{font-size:13px;padding:4px 12px}
+  .tbtn{font-size:13px;padding:7px 12px;border-radius:10px}
+  .tbtn.layout{padding:7px 9px}
+  .tbtn.layout .layout-label{display:none}
+  .mode-btn{font-size:13px;padding:6px 13px}
+  .score-card{font-size:12.5px;padding:5px 11px}
+  .score-card .sitem em{font-size:10.5px}
+  .score-card .sitem b{font-size:12.5px}
+
+  main{padding:12px 16px 16px;gap:8px}
+  .g-row{gap:12px;justify-content:flex-start}
+  .card{
+    flex:0 0 142px;width:142px;min-width:142px;max-width:142px;
+    max-height:340px;padding:10px 9px 8px;gap:6px;
+  }
+  .card-name{font-size:14px;min-height:18px}
+  .card-meta{display:block;font-size:12px}
+  .card-num{min-width:24px;height:24px;font-size:11.5px}
+  .lock-btn{width:24px;height:24px}
+  .lock-btn svg{width:14px;height:14px}
+  .photo-nav{width:28px;height:36px;font-size:18px}
+  .photo-nav.prev{left:4px}
+  .photo-nav.next{right:4px}
+  .photo-tools{right:5px;bottom:5px;gap:4px}
+  .photo-tools button{width:27px;height:27px;border-radius:8px;font-size:12px}
+  .attr-row{gap:6px}
+  .attr-btn{height:30px;font-size:13.5px;border-radius:10px}
+  .video-btn{width:27px;height:27px}
+  .card-links{gap:6px}
+
+  .m-head{font-size:12.5px}
+  .match-guide{font-size:12px;line-height:1.6}
+  .match-list-wrap{max-width:44%;padding:3px 6px 3px 3px}
+  .card-grid{grid-template-columns:repeat(2,minmax(158px,1fr));gap:8px;padding:8px}
+  .match-mini{min-height:54px;padding:6px 8px;gap:8px;border-radius:12px}
+  .match-mini .num{width:23px;height:23px;font-size:11px}
+  .match-mini .thumb{width:42px;height:42px;border-radius:9px}
+  .match-mini .name{font-size:12px;line-height:1.3}
+  .match-mini .stat{font-size:13px}
+  .match-board{padding:14px;gap:12px}
+  .slot-title{font-size:12px}
+  .lock-action-bar{gap:12px}
+  .btn-lock-big,.btn-unlock-big{padding:12px 28px;font-size:15px}
+  .btn-clear-slot{padding:12px 20px;font-size:13px}
+  .lock-hint{font-size:13px;padding:9px 16px}
+  .heart-connector{font-size:30px}
+
+  .ci-name{font-size:20px}
+  .ci-label{font-size:12.5px}
+  .ci-block > input{font-size:13px;padding:8px 9px}
+}
+
 </style>
 </head>
 <body>
@@ -1210,9 +1292,29 @@ body[data-role="grade"] #globalView .card{height:calc(100% - 54px)}
 <div class="modal-mask" id="cardInfoModal">
   <div class="ci-modal">
     <div class="ci-top">
-      <div class="ci-brand">🪪 个人信息<span id="infoIdxTag"></span><span class="ci-ro">只读</span></div>
-      <div class="ci-zodiacs">
-        <label class="zc" title="国际公历星座">
+      <div class="ci-brand">🪪 个人信息<span id="infoIdxTag"></span>
+        <span class="ci-hide-wrap" id="infoHideWrap" hidden>
+          <button type="button" class="ci-hide-btn" id="btnInfoHide" title="隐藏本卡的个人信息项（仅出题可改）" aria-label="隐藏本卡的个人信息项" aria-expanded="false">🙈<span class="ci-hide-count" id="infoHideCount"></span></button>
+          <div class="ci-hide-menu" id="infoHideMenu" hidden>
+            <div class="hm-head">🙈 隐藏本卡展示项</div>
+            <label class="hm-opt"><input type="checkbox" data-info-hide="name">姓名</label>
+            <label class="hm-opt"><input type="checkbox" data-info-hide="height">身高</label>
+            <label class="hm-opt"><input type="checkbox" data-info-hide="weight">体重</label>
+            <label class="hm-opt"><input type="checkbox" data-info-hide="birthday">生日</label>
+            <label class="hm-opt"><input type="checkbox" data-info-hide="lineage">血统</label>
+            <label class="hm-opt"><input type="checkbox" data-info-hide="nation">国籍</label>
+            <label class="hm-opt"><input type="checkbox" data-info-hide="school">毕业院校</label>
+            <label class="hm-opt"><input type="checkbox" data-info-hide="company">经纪公司</label>
+            <label class="hm-opt"><input type="checkbox" data-info-hide="zodiac">公历星座</label>
+            <label class="hm-opt"><input type="checkbox" data-info-hide="zodiacThai">泰历星座</label>
+            <div class="hm-actions"><button type="button" id="infoHideAll">全选</button><button type="button" id="infoHideNone">清空</button></div>
+            <button type="button" class="hm-apply" id="infoHideApplyAll" title="把本卡当前勾选状态复制到本项目全部卡片">📋 应用到全部卡片</button>
+            <div class="hm-note">照片 / 原图 / 视频始终保留；仅作用于当前项目，只影响展示不删除数据。应用到全部会覆盖其他卡原有的勾选。<br><b>导出时必须设置项目密码。</b></div>
+          </div>
+        </span>
+        <span class="ci-ro">只读</span></div>
+      <div class="ci-zodiacs" id="ciZodiacs">
+        <label class="zc" id="ciZodiac1" title="国际公历星座">
           <span class="zc-ico" id="zcIco1">✧</span>
           <select id="info_zodiac">
             <option value="">公历星座</option>
@@ -1221,7 +1323,7 @@ body[data-role="grade"] #globalView .card{height:calc(100% - 54px)}
             <option>射手座</option><option>摩羯座</option><option>水瓶座</option><option>双鱼座</option>
           </select>
         </label>
-        <label class="zc th" title="泰国佛历星座">
+        <label class="zc th" id="ciZodiac2" title="泰国佛历星座">
           <span class="zc-ico" id="zcIco2">✧</span>
           <select id="info_zodiacThai">
             <option value="">泰历星座</option>
@@ -1240,16 +1342,16 @@ body[data-role="grade"] #globalView .card{height:calc(100% - 54px)}
         <div class="ci-photo" id="ciPhoto"></div>
         <div class="ci-caption">
           <input type="text" class="ci-name" id="info_name" placeholder="姓名">
-          <div class="ci-figures">
-            <label>身高<input type="number" id="info_height" min="0" max="300" step="1" placeholder="163"><span class="ci-unit">cm</span></label>
-            <label>体重<input type="number" id="info_weight" min="0" max="300" step="1" placeholder="48"><span class="ci-unit">kg</span></label>
-            <label class="birth">生日<input type="text" id="info_birthday" placeholder="1998/01/18"></label>
+          <div class="ci-figures" id="ciFigures">
+            <label id="ciFieldHeight">身高<input type="number" id="info_height" min="0" max="300" step="1" placeholder="163"><span class="ci-unit">cm</span></label>
+            <label id="ciFieldWeight">体重<input type="number" id="info_weight" min="0" max="300" step="1" placeholder="48"><span class="ci-unit">kg</span></label>
+            <label class="birth" id="ciFieldBirthday">生日<input type="text" id="info_birthday" placeholder="1998/01/18"></label>
           </div>
         </div>
       </section>
 
       <aside class="ci-col right">
-        <div class="ci-block">
+        <div class="ci-block" id="ciLineageBlock">
           <div class="ci-label"><span class="ci-ico">🩸</span>血统<span class="ci-hint">可多个 · 混血可多选</span></div>
           <div class="tag-list" id="tag_lineage"></div>
           <div class="tag-add">
@@ -1257,7 +1359,7 @@ body[data-role="grade"] #globalView .card{height:calc(100% - 54px)}
             <button type="button" data-add="lineage" title="添加">＋</button>
           </div>
         </div>
-        <div class="ci-block">
+        <div class="ci-block" id="ciNationBlock">
           <div class="ci-label"><span class="ci-ico">🛂</span>国籍<span class="ci-hint">可多个 · 双国籍可多选</span></div>
           <div class="tag-list" id="tag_nation"></div>
           <div class="tag-add">
@@ -1265,11 +1367,11 @@ body[data-role="grade"] #globalView .card{height:calc(100% - 54px)}
             <button type="button" data-add="nation" title="添加">＋</button>
           </div>
         </div>
-        <div class="ci-block">
+        <div class="ci-block" id="ciSchoolBlock">
           <div class="ci-label"><span class="ci-ico">🎓</span>毕业院校</div>
           <input type="text" id="info_school" placeholder="例如：朱拉隆功大学">
         </div>
-        <div class="ci-block">
+        <div class="ci-block" id="ciCompanyBlock">
           <div class="ci-label"><span class="ci-ico">💼</span>经纪公司</div>
           <input type="text" id="info_company" placeholder="例如：GMMTV">
         </div>
@@ -1510,6 +1612,30 @@ const state = {
   lockDirty: false                     // 密码改过但还没重新导出
 };
 
+/* 个人信息可隐藏项：只影响展示，不删除原数据；仅出题模式可改 */
+const INFO_HIDDEN_KEYS = ['name', 'height', 'weight', 'birthday', 'lineage', 'nation', 'school', 'company', 'zodiac', 'zodiacThai'];
+const INFO_HIDDEN_LABELS = {
+  name: '姓名', height: '身高', weight: '体重', birthday: '生日',
+  lineage: '血统', nation: '国籍', school: '毕业院校', company: '经纪公司',
+  zodiac: '公历星座', zodiacThai: '泰历星座'
+};
+function infoHiddenOf(card) {
+  const raw = Array.isArray(card && card.infoHidden) ? card.infoHidden : [];
+  return INFO_HIDDEN_KEYS.filter(k => raw.indexOf(k) >= 0);
+}
+function isInfoHidden(card, key) {
+  return infoHiddenOf(card).indexOf(key) >= 0;
+}
+function setInfoHidden(card, key, on) {
+  if (!card) return;
+  const list = infoHiddenOf(card).filter(k => k !== key);
+  if (on) list.push(key);
+  card.infoHidden = INFO_HIDDEN_KEYS.filter(k => list.indexOf(k) >= 0);
+}
+function hasHiddenInfo() {
+  return (state.cards || []).some(c => infoHiddenOf(c).length > 0);
+}
+
 let lockTip = null;
 let lockHintTimer = null;
 function clearLockHintTimer() {
@@ -1598,7 +1724,9 @@ function setGiftVideos(a, b, urls) {
 function giftPairTitle(a, b) {
   const ca = state.cards.find(c => c.id === a);
   const cb = state.cards.find(c => c.id === b);
-  return 'NO.' + (a + 1) + (ca && ca.name ? ' ' + ca.name : '') + ' × NO.' + (b + 1) + (cb && cb.name ? ' ' + cb.name : '');
+  const na = (ca && ca.name && !isInfoHidden(ca, 'name')) ? ' ' + ca.name : '';
+  const nb = (cb && cb.name && !isInfoHidden(cb, 'name')) ? ' ' + cb.name : '';
+  return 'NO.' + (a + 1) + na + ' × NO.' + (b + 1) + nb;
 }
 // 出题人从全局切到匹配视角时，自动带出最近锁死的那对 CP；
 // 这样不用先手点卡片，就能看到该对 CP 的灰色/彩色大礼包入口。
@@ -2278,7 +2406,8 @@ function normalizeCard(c, i) {
     showZodiacThai: !!c.showZodiacThai,
     showSchool: !!c.showSchool,
     showCompany: !!c.showCompany,
-    showVideo: c.showVideo !== false
+    showVideo: c.showVideo !== false,
+    infoHidden: infoHiddenOf(c)
   };
   compactCardPhotos(card);
   return card;
@@ -2530,7 +2659,7 @@ function renderScores() {
     panel.appendChild(card);
   });
   panel.style.display = state.role === 'author' ? 'none' : '';
-  $('#btnToggleStats').textContent = innerWidth <= 1100
+  $('#btnToggleStats').textContent = (innerWidth <= 1100 || isTabletUI())
     ? (statsVisible ? '🙈' : '👁️')
     : (statsVisible ? '🙈 隐藏统计' : '👁️ 显示统计');
   syncLayoutBtn();
@@ -2568,7 +2697,7 @@ function makePhotoBox(card, override) {
       if (info.key) img.dataset.thumbKey = info.key;
       img.dataset.cardId = String(card.id);
       img.dataset.photoIdx = String(slot.idx);
-      img.alt = card.name || '';
+      img.alt = isInfoHidden(card, 'name') ? '' : (card.name || '');
       img.loading = 'lazy';
       img.decoding = 'async';
       img.addEventListener('click', e => {
@@ -2753,7 +2882,7 @@ function setPhotoIdx(card, newIdx, override) {
     if (info.key) img.dataset.thumbKey = info.key;
     else delete img.dataset.thumbKey;
     img.dataset.photoIdx = String(slot.idx);
-    img.alt = card.name || '';
+    img.alt = isInfoHidden(card, 'name') ? '' : (card.name || '');
   } else {
     rerenderCard(card.id);
   }
@@ -2828,18 +2957,20 @@ function makeCard(card, opts) {
   };
   const editable = !opts.slot;
 
-  // 第 1 行：姓名
-  const nameEl = document.createElement('div');
-  nameEl.className = 'card-name';
-  nameEl.textContent = card.name || (canEdit() && !opts.slot ? '待填写' : '—');
-  if (!card.name) nameEl.style.color = '#475569';
-  if (editable) { nameEl.classList.add('editable'); nameEl.addEventListener('click', openInfo); }
-  info.appendChild(nameEl);
+  // 第 1 行：姓名（隐藏项只影响展示，编辑入口仍在 ✎）
+  if (!isInfoHidden(card, 'name')) {
+    const nameEl = document.createElement('div');
+    nameEl.className = 'card-name';
+    nameEl.textContent = card.name || (canEdit() && !opts.slot ? '待填写' : '—');
+    if (!card.name) nameEl.style.color = '#475569';
+    if (editable) { nameEl.classList.add('editable'); nameEl.addEventListener('click', openInfo); }
+    info.appendChild(nameEl);
+  }
 
   // 第 2 行：身高 · 体重
   const metaParts = [];
-  if (card.height) metaParts.push(fmtUnit(card.height, 'cm'));
-  if (card.weight) metaParts.push(fmtUnit(card.weight, 'kg'));
+  if (!isInfoHidden(card, 'height') && card.height) metaParts.push(fmtUnit(card.height, 'cm'));
+  if (!isInfoHidden(card, 'weight') && card.weight) metaParts.push(fmtUnit(card.weight, 'kg'));
   if (metaParts.length) {
     const meta = document.createElement('div');
     meta.className = 'card-meta';
@@ -3016,7 +3147,8 @@ function syncMatchGrid() {
 }
 
 function applyHeaderCompact() {
-  const compact = innerWidth <= 1100;
+  // 平板即使超过 1100px，也使用短标签：保留电脑版布局，但不把触屏顶栏挤成两三行
+  const compact = innerWidth <= 1100 || isTabletUI();
   const tiny = innerWidth <= 480;
   const set = (sel, txt) => { const el = document.querySelector(sel); if (el) el.textContent = txt; };
   set('#btnAuthorRole', compact ? '👑 出题' : '👑 出题模式');
@@ -4197,7 +4329,7 @@ function renderCiPhoto(card) {
     slots.slice(0, 4).forEach((slot, i) => {
       const im = noRefImg(document.createElement('img'));
       setPhotoImgSrc(im, slot.src);
-      im.alt = card.name || '';
+      im.alt = isInfoHidden(card, 'name') ? '' : (card.name || '');
       im.title = '点击查看大图';
       if (slots.length === 3 && i === 2) im.style.gridColumn = 'span 2';
       im.addEventListener('click', e => {
@@ -4222,7 +4354,7 @@ function renderCiPhoto(card) {
     const cur = slots[idx];
     const img = noRefImg(document.createElement('img'));
     setPhotoImgSrc(img, cur.src);
-    img.alt = card.name || '';
+    img.alt = isInfoHidden(card, 'name') ? '' : (card.name || '');
     box.appendChild(img);
     box.style.backgroundImage = 'linear-gradient(rgba(10,20,36,.55),rgba(10,20,36,.62)),url("' + cur.src + '")';
     box.style.backgroundSize = 'cover,cover';
@@ -4347,6 +4479,137 @@ function stepOrigIdx(d) {
   syncOrigInput(editingCard);
   triggerAutoSave();
 }
+/* ===== 个人信息隐藏项：仅出题模式可改；玩家 / 批改只按配置展示 ===== */
+function applyInfoVisibility(card, readonly) {
+  if (!card) return;
+  const h = k => isInfoHidden(card, k);
+  const setDisp = (sel, hide) => { const el = $(sel); if (el) el.style.display = hide ? 'none' : ''; };
+  setDisp('#info_name', h('name'));
+  setDisp('#ciFieldHeight', h('height'));
+  setDisp('#ciFieldWeight', h('weight'));
+  setDisp('#ciFieldBirthday', h('birthday'));
+  setDisp('#ciLineageBlock', h('lineage'));
+  setDisp('#ciNationBlock', h('nation'));
+  setDisp('#ciSchoolBlock', h('school'));
+  setDisp('#ciCompanyBlock', h('company'));
+  setDisp('#ciZodiac1', h('zodiac'));
+  setDisp('#ciZodiac2', h('zodiacThai'));
+  const figures = $('#ciFigures');
+  if (figures) figures.style.display = (h('height') && h('weight') && h('birthday')) ? 'none' : '';
+  const zodiacs = $('#ciZodiacs');
+  if (zodiacs) zodiacs.style.display = (h('zodiac') && h('zodiacThai')) ? 'none' : '';
+}
+function syncInfoHideMenu(card, readonly, keepOpen) {
+  const wrap = $('#infoHideWrap');
+  if (!wrap) return;
+  const hidden = infoHiddenOf(card);
+  wrap.hidden = !!readonly;
+  const menu = $('#infoHideMenu');
+  if (menu && !keepOpen) menu.hidden = true;
+  const btn = $('#btnInfoHide');
+  if (btn) {
+    btn.classList.toggle('on', hidden.length > 0);
+    btn.title = hidden.length
+      ? ('已隐藏 ' + hidden.length + ' 项：' + hidden.map(k => INFO_HIDDEN_LABELS[k]).join('、'))
+      : '隐藏本卡的个人信息项（仅出题可改）';
+    btn.setAttribute('aria-expanded', String(!!(menu && !menu.hidden)));
+  }
+  const cnt = $('#infoHideCount');
+  if (cnt) cnt.textContent = hidden.length ? String(hidden.length) : '';
+  document.querySelectorAll('[data-info-hide]').forEach(chk => {
+    chk.checked = hidden.indexOf(chk.dataset.infoHide) >= 0;
+    chk.disabled = !!readonly;
+  });
+}
+function refreshInfoHideUI(card, keepMenuOpen) {
+  if (!card) return;
+  applyInfoVisibility(card, false);
+  syncInfoHideMenu(card, false, keepMenuOpen);
+  if (state.mode === 'match') renderMatch({ light: true });
+  else rerenderCard(card.id);
+  refreshFilterSelects();
+  triggerAutoSave(true);
+}
+function applyHiddenToAllCards() {
+  if (!editingCard || !canEdit()) return;
+  const list = infoHiddenOf(editingCard);
+  const n = state.cards.length;
+  state.cards.forEach(c => { c.infoHidden = list.slice(); });
+  applyInfoVisibility(editingCard, false);
+  syncInfoHideMenu(editingCard, false, true);
+  if (state.mode === 'match') renderMatch();
+  else state.cards.forEach(c => rerenderCard(c.id));
+  refreshFilterSelects();
+  triggerAutoSave(true);
+  toast('已把本卡的 ' + list.length + ' 项隐藏设置应用到全部 ' + n + ' 张卡片');
+}
+function positionInfoHideMenu() {
+  const btn = $('#btnInfoHide'), menu = $('#infoHideMenu');
+  if (!btn || !menu || menu.hidden) return;
+  menu.style.position = 'fixed';
+  const br = btn.getBoundingClientRect();
+  const mw = menu.offsetWidth || 252;
+  const vw = document.documentElement.clientWidth || window.innerWidth || 390;
+  const vh = document.documentElement.clientHeight || window.innerHeight || 640;
+  const modal = document.querySelector('#cardInfoModal .ci-modal');
+  const mr = modal ? modal.getBoundingClientRect() : null;
+  const rightLimit = Math.min(vw - 8, mr ? mr.right - 8 : vw - 8);
+  const leftMin = Math.max(8, mr ? mr.left + 8 : 8);
+  let left = br.left - 8;
+  if (left + mw > rightLimit) left = rightLimit - mw;
+  if (left < leftMin) left = leftMin;
+  if (left + mw > rightLimit) left = Math.max(leftMin, rightLimit - mw);
+  const top = Math.min(vh - 80, br.bottom + 8);
+  menu.style.left = Math.round(left) + 'px';
+  menu.style.top = Math.round(top) + 'px';
+  menu.style.maxHeight = Math.min(460, Math.max(120, vh - top - 10)) + 'px';
+}
+function bindInfoHideUI() {
+  const btn = $('#btnInfoHide');
+  const menu = $('#infoHideMenu');
+  if (!btn || !menu) return;
+  btn.addEventListener('click', e => {
+    e.stopPropagation();
+    if (!editingCard || !canEdit()) return;
+    menu.hidden = !menu.hidden;
+    btn.setAttribute('aria-expanded', String(!menu.hidden));
+    if (!menu.hidden) positionInfoHideMenu();
+  });
+  menu.addEventListener('click', e => e.stopPropagation());
+  document.querySelectorAll('[data-info-hide]').forEach(chk => {
+    chk.addEventListener('change', () => {
+      if (!editingCard || !canEdit()) return;
+      setInfoHidden(editingCard, chk.dataset.infoHide, chk.checked);
+      refreshInfoHideUI(editingCard, true);
+    });
+  });
+  const all = $('#infoHideAll'), none = $('#infoHideNone');
+  if (all) all.addEventListener('click', e => {
+    e.stopPropagation();
+    if (!editingCard || !canEdit()) return;
+    editingCard.infoHidden = INFO_HIDDEN_KEYS.slice();
+    refreshInfoHideUI(editingCard, true);
+  });
+  if (none) none.addEventListener('click', e => {
+    e.stopPropagation();
+    if (!editingCard || !canEdit()) return;
+    editingCard.infoHidden = [];
+    refreshInfoHideUI(editingCard, true);
+  });
+  const applyAll = $('#infoHideApplyAll');
+  if (applyAll) applyAll.addEventListener('click', e => {
+    e.stopPropagation();
+    applyHiddenToAllCards();
+  });
+  document.addEventListener('click', e => {
+    if (!menu.hidden && !$('#infoHideWrap').contains(e.target)) {
+      menu.hidden = true;
+      btn.setAttribute('aria-expanded', 'false');
+    }
+  });
+  window.addEventListener('resize', () => { if (!menu.hidden) positionInfoHideMenu(); });
+}
+
 function openCardInfoModal(card, readonly) {
   readonly = !!readonly || !canEdit();   // 非出题可编辑状态一律强制只读
   if (readonly && !card) return;
@@ -4384,6 +4647,12 @@ function openCardInfoModal(card, readonly) {
   if (ob) ob.style.display = readonly ? 'none' : '';
   syncOrigInput(card);
 
+  // 按本卡配置隐藏展示项；隐藏菜单仅出题可编辑时显示
+  applyInfoVisibility(card, readonly);
+  syncInfoHideMenu(card, readonly, false);
+  const hm = $('#infoHideMenu');
+  if (hm) hm.hidden = true;
+
   mask.querySelectorAll('input, select').forEach(el => { el.disabled = readonly; });
   const cancel = $('#btnCancelCardInfo');
   if (cancel) cancel.textContent = readonly ? '关闭' : '取消';
@@ -4395,7 +4664,11 @@ function refreshMatchOne(card) {
   const item = document.querySelector('.match-mini[data-card-id="' + card.id + '"]');
   if (!item) { renderMatch(); return; }
   const nm = item.querySelector('.name');
-  if (nm) nm.textContent = card.name || ('NO.' + (card.id + 1));
+  if (nm) {
+    const hideName = isInfoHidden(card, 'name');
+    nm.textContent = hideName ? '' : (card.name || ('NO.' + (card.id + 1)));
+    nm.style.display = hideName ? 'none' : '';
+  }
   item.classList.toggle('paired', pairStore().pairs.some(pr => pr[0] === card.id || pr[1] === card.id));
   const thumb = item.querySelector('.thumb');
   if (!thumb) return;
@@ -4722,7 +4995,9 @@ function renderMatch(opts) {
 
     const nm = document.createElement('div');
     nm.className = 'name';
-    nm.textContent = card.name || ('NO.' + (card.id + 1));
+    const hideMiniName = isInfoHidden(card, 'name');
+    nm.textContent = hideMiniName ? '' : (card.name || ('NO.' + (card.id + 1)));
+    if (hideMiniName) nm.style.display = 'none';
     item.appendChild(nm);
 
     if (state.role === 'grade') {
@@ -4919,7 +5194,7 @@ function refreshFilterSelects() {
     state.players.map(p => '<option value="' + p.id + '">' + esc(p.name) + '</option>').join('');
   pSel.value = filterPlayerId;
   cSel.innerHTML = '<option value="">全部卡片</option>' +
-    state.cards.map(c => '<option value="' + c.id + '">NO.' + (c.id + 1) + ' ' + esc(c.name || '') + '</option>').join('');
+    state.cards.map(c => '<option value="' + c.id + '">NO.' + (c.id + 1) + ' ' + esc(isInfoHidden(c, 'name') ? '' : (c.name || '')) + '</option>').join('');
   cSel.value = filterCardId;
 }
 function renderAll() {
@@ -5150,7 +5425,8 @@ function projectData() {
       showHeight: c.showHeight, showWeight: c.showWeight,
       showBirthday: c.showBirthday, showZodiac: c.showZodiac,
       showZodiacThai: c.showZodiacThai, showSchool: c.showSchool,
-      showCompany: c.showCompany, showVideo: c.showVideo
+      showCompany: c.showCompany, showVideo: c.showVideo,
+      infoHidden: infoHiddenOf(c)
       };
     }),
     answers: {
@@ -5222,9 +5498,13 @@ function exportQuestion() {
     return;
   }
 
-  // 未设密码的项目：导出时可选择设置密码
-  openInput('导出项目 · 设置密码？留空 = 不设密码（他人可直接修改）', '', async v => {
+  // 未设密码的项目：隐藏了个人信息时强制设置密码；否则仍可选
+  const needPw = hasHiddenInfo();
+  openInput(needPw
+    ? '导出项目 · 已隐藏个人信息，必须设置密码（≥4 位）'
+    : '导出项目 · 设置密码？留空 = 不设密码（他人可直接修改）', '', async v => {
     const pw = String(v || '').trim();
+    if (needPw && !pw) { toast('已隐藏个人信息：必须设置至少 4 位密码才能导出'); return; }
     if (pw && pw.length < 4) { toast('密码至少 4 位，请重新导出'); return; }
     if (pw) await setProjectLock(pw);
     else state.lock = null;
@@ -7105,6 +7385,7 @@ function bindEvents() {
 async function initApp() {
   $('#projName').textContent = state.projectName;
   bindEvents();
+  bindInfoHideUI();
   updateRoleButtons();
   applyHeaderCompact();
   checkOrientation();
