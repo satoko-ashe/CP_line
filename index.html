@@ -503,6 +503,10 @@ main{
 .ci-orig{position:absolute;left:9px;bottom:9px;padding:4px 9px;border-radius:9px;
   background:rgba(8,18,32,.86);border:1px solid #475569;color:#e2e8f0;font-size:11px;font-weight:700;line-height:1.2;z-index:6}
 .ci-orig:hover{background:#0e7490;border-color:#22d3ee;color:#fff}
+.ci-del{position:absolute;right:9px;bottom:9px;width:30px;height:30px;border-radius:9px;
+  background:rgba(127,29,29,.88);border:1px solid #f87171;color:#fff;font-size:14px;font-weight:800;line-height:1;z-index:6}
+.ci-del:hover{background:#b91c1c;border-color:#fca5a5}
+.ci-modal.readonly .ci-del{display:none}
 /* 视频预览 */
 .ci-video-block.compact .ci-player{aspect-ratio:auto;height:38px;display:flex;align-items:center;justify-content:center}
 .ci-video-block.compact .ci-player .ph{flex-direction:row;gap:8px;padding:0 6px}
@@ -547,6 +551,15 @@ main{
 #origImg{max-width:94vw;max-height:86vh;border-radius:14px;box-shadow:0 24px 70px #000;display:none}
 #origMsg{display:flex;flex-direction:column;align-items:center;gap:10px;color:#94a3b8;font-size:13px;text-align:center}
 #origMsg a{color:#67e8f9;font-size:12px;text-decoration:underline}
+#origView .orig-view-step{position:fixed;top:50%;transform:translateY(-50%);width:46px;height:46px;border-radius:50%;
+  background:rgba(15,23,42,.88);border:1px solid #475569;color:#e2e8f0;font-size:24px;line-height:1;
+  display:none;align-items:center;justify-content:center;z-index:3;cursor:pointer}
+#origView .orig-view-step:hover{background:#0e7490;border-color:#22d3ee;color:#fff}
+#origView .orig-view-step.prev{left:18px}
+#origView .orig-view-step.next{right:18px}
+#origView .orig-view-counter{position:fixed;left:50%;bottom:42px;transform:translateX(-50%);
+  padding:4px 12px;border-radius:999px;background:rgba(15,23,42,.82);border:1px solid #334155;
+  color:#94a3b8;font-size:12px;display:none;z-index:3}
 #origClose{position:fixed;top:18px;right:20px;width:38px;height:38px;border-radius:50%;
   background:#1e293b;border:1px solid #475569;color:#e2e8f0;font-size:16px;z-index:2}
 #origClose:hover{background:#ef4444;color:#fff;border-color:#f87171}
@@ -658,6 +671,12 @@ main{
 .slot-card .photo-box{height:auto;min-height:0;flex:1 1 0%}
 .slot-card .card .photo-box{min-height:0}
 .slot-card .card img{object-fit:contain}
+.slot-card .attr-row{padding:0 2px 2px;gap:3px}
+.slot-card .attr-btn{height:23px;font-size:11px;border-radius:7px}
+@media (max-width:760px){
+  .slot-card .attr-row{padding:0 1px 1px}
+  .slot-card .attr-btn{height:22px;font-size:10.5px}
+}
 .home-hint{display:none}
 .clear-slot{
   position:absolute;top:5px;right:5px;z-index:8;width:22px;height:22px;border-radius:50%;
@@ -797,7 +816,8 @@ main{
 }
 .modal input:focus,.modal select:focus{border-color:#38bdf8}
 .player-row{display:flex;align-items:center;gap:8px}
-.player-row input[type=text]{flex:1;min-width:0}
+.player-row input[type=text]{flex:1;min-width:0;user-select:text;-webkit-user-select:text}
+#playerList input[type=text]::selection,#abInput::selection{background:#38bdf8;color:#fff}
 .player-row .cdot{width:12px;height:12px;border-radius:50%;flex:none;box-shadow:0 0 8px currentColor}
 .btn-primary{
   background:linear-gradient(135deg,#7c3aed,#db2777);color:#fff;padding:8px 16px;
@@ -832,14 +852,32 @@ body[data-role="grade"] #toast{bottom:78px}
    批改标注层
    ========================================================= */
 #annotLayer{position:fixed;z-index:55;pointer-events:none;overflow:hidden;display:none}
-.annot-text.dragging{cursor:grabbing;background:rgba(14,116,144,.85);box-shadow:0 6px 18px #000a}
+.annot-text.dragging{cursor:grabbing;background:rgba(14,116,144,.88);box-shadow:0 6px 18px #000a}
 #annotCanvas{position:absolute;left:0;top:0;pointer-events:none}
 .annot-text{
   position:absolute;transform:translate(0,-50%);pointer-events:auto;
-  font-size:14px;font-weight:700;line-height:1.3;padding:2px 7px;border-radius:7px;
-  background:rgba(2,6,23,.72);border:1px dashed currentColor;cursor:grab;white-space:pre-wrap;
-  max-width:280px;text-shadow:0 1px 3px #000;touch-action:none;user-select:none;
+  font-size:14px;font-weight:700;line-height:1.3;padding:3px 9px;border-radius:8px;
+  background:rgba(2,6,23,.72);border:1px dashed currentColor;cursor:move;
+  max-width:280px;min-width:18px;text-shadow:0 1px 3px #000;touch-action:none;user-select:none;
+  outline:none;transition:box-shadow .12s,border-color .12s;
 }
+.annot-text.selected{border-style:solid;border-color:#38bdf8;box-shadow:0 0 0 2px #38bdf855,0 6px 18px #000a}
+.annot-text.editing{cursor:text;user-select:text;-webkit-user-select:text;border-style:solid;border-color:#67e8f9;background:rgba(2,6,23,.94);box-shadow:0 0 0 3px #22d3ee55,0 10px 26px #000c;touch-action:auto}
+.annot-body{display:block;min-width:10px;max-width:260px;white-space:pre-wrap;outline:none;overflow-wrap:break-word}
+.annot-body:empty:before{content:attr(data-ph);color:#94a3b8;font-weight:500}
+.annot-body[contenteditable="true"]{user-select:text;-webkit-user-select:text;cursor:text}
+.annot-del{
+  position:absolute;top:-9px;right:-9px;width:18px;height:18px;border-radius:50%;
+  background:#dc2626;border:1px solid #fca5a5;color:#fff;font-size:12px;line-height:16px;
+  text-align:center;display:none;padding:0;font-weight:700;z-index:2;cursor:pointer;
+}
+.annot-resize{
+  position:absolute;right:-7px;bottom:-7px;width:14px;height:14px;border-radius:4px;
+  background:#0e7490;border:1px solid #67e8f9;display:none;cursor:nwse-resize;z-index:2;
+  box-shadow:0 0 8px #22d3ee88;touch-action:none;
+}
+.annot-resize:after{content:"";position:absolute;right:2px;bottom:2px;width:7px;height:7px;border-right:2px solid #e0f2fe;border-bottom:2px solid #e0f2fe}
+.annot-text.selected .annot-del,.annot-text.selected .annot-resize{display:flex;align-items:center;justify-content:center}
 #annotBar{
   position:fixed;z-index:75;left:50%;bottom:12px;transform:translateX(-50%);
   display:none;align-items:center;justify-content:center;gap:6px;padding:7px 10px;border-radius:14px;
@@ -1417,6 +1455,9 @@ body[data-role="grade"] #globalView .card{height:calc(100% - 54px)}
   <div id="origWrap">
     <img id="origImg" alt="原图">
     <div id="origMsg"></div>
+    <button id="origViewPrev" class="orig-view-step prev" title="上一张">‹</button>
+    <button id="origViewNext" class="orig-view-step next" title="下一张">›</button>
+    <span id="origViewCounter" class="orig-view-counter"></span>
     <button id="origClose" title="关闭">✕</button>
     <div class="hint">点击空白处关闭</div>
   </div>
@@ -1569,9 +1610,9 @@ function makeAuthorBar() {
   const inp = bar.querySelector('#abInput');
   if (inp) {
     inp.addEventListener('keydown', e => {
-      if (e.key === 'Enter') { e.preventDefault(); saveName(inp.value); renderAll(); }
+      if (e.key === 'Enter') { e.preventDefault(); saveName(inp.value); }
     });
-    inp.addEventListener('blur', () => { if (inp.value.trim()) { saveName(inp.value); renderAll(); } });
+    inp.addEventListener('blur', () => { if (inp.value.trim()) saveName(inp.value); });
   }
   bar.querySelectorAll('[data-ab="lock"]').forEach(b => b.addEventListener('click', () => promptProjectPassword()));
   bar.querySelectorAll('[data-ab="reveal"]').forEach(b => b.addEventListener('click', () => toggleAnswerReveal()));
@@ -1611,6 +1652,22 @@ const state = {
   revealed: false,                     // 加密项目：本次会话是否已输密码公开答案
   lockDirty: false                     // 密码改过但还没重新导出
 };
+
+/* =========================================================
+   视角缓存：两个视角各保留一份 DOM，切模式只显示/隐藏；
+   只有另一视角的数据真正变化时才标记脏，避免每次切换全页重建。
+   ========================================================= */
+let viewSwitching = false;
+let lastRenderedMode = null;
+let lastRenderedRole = null;
+let suppressViewDirty = false;
+const viewDirty = { global: true, match: true };
+/* 按「角色+视角」缓存已渲染 DOM：纯切角色/视角时直接复用，图片不会重新加载 */
+let VIEW_CACHE = Object.create(null);
+function markOtherViewDirty() {
+  const active = state.mode === 'match' ? 'match' : 'global';
+  viewDirty[active === 'global' ? 'match' : 'global'] = true;
+}
 
 /* 个人信息可隐藏项：只影响展示，不删除原数据；仅出题模式可改 */
 const INFO_HIDDEN_KEYS = ['name', 'height', 'weight', 'birthday', 'lineage', 'nation', 'school', 'company', 'zodiac', 'zodiacThai'];
@@ -1744,6 +1801,39 @@ function focusAuthorPairInMatch() {
   matchSlotA_photoIdx = typeof info[pr[0]] === 'number' ? info[pr[0]] : firstPhotoIdx(ca);
   matchSlotB_photoIdx = typeof info[pr[1]] === 'number' ? info[pr[1]] : firstPhotoIdx(cb);
   matchSlotA_mode = 'single'; matchSlotB_mode = 'single';
+}
+// 进入匹配视角时，让两个展示槽对应当前数据源里最近的一组 CP。
+// 全局视角和匹配视角共用 pairStore()：全局连线/解绑后，切过来不会停留在旧对象。
+function syncMatchSlotsToStore() {
+  if (state.mode !== 'match') return false;
+  const old = [matchSlotA, matchSlotB, matchSlotA_photoIdx, matchSlotB_photoIdx, matchSlotA_mode, matchSlotB_mode];
+  const changed = () => old.some((v, i) => {
+    const now = [matchSlotA, matchSlotB, matchSlotA_photoIdx, matchSlotB_photoIdx, matchSlotA_mode, matchSlotB_mode][i];
+    return v !== now;
+  });
+  if (state.role === 'author' && (state.locked || answersHidden())) {
+    matchSlotA = null; matchSlotB = null; return changed();
+  }
+  const store = pairStore();
+  const pairs = (store.pairs || []);
+  if (!pairs.length) {
+    matchSlotA = null; matchSlotB = null;
+    matchSlotA_photoIdx = 0; matchSlotB_photoIdx = 0;
+    matchSlotA_mode = 'single'; matchSlotB_mode = 'single';
+    return changed();
+  }
+  const pr = pairs[pairs.length - 1];
+  const ca = state.cards.find(c => c.id === pr[0]);
+  const cb = state.cards.find(c => c.id === pr[1]);
+  if (!ca || !cb) {
+    matchSlotA = null; matchSlotB = null; return changed();
+  }
+  const info = (store.photos && store.photos[getPairKey(pr[0], pr[1])]) || {};
+  matchSlotA = pr[0]; matchSlotB = pr[1];
+  matchSlotA_photoIdx = typeof info[pr[0]] === 'number' ? info[pr[0]] : firstPhotoIdx(ca);
+  matchSlotB_photoIdx = typeof info[pr[1]] === 'number' ? info[pr[1]] : firstPhotoIdx(cb);
+  matchSlotA_mode = 'single'; matchSlotB_mode = 'single';
+  return changed();
 }
 function maybePromptGift(a, b) {
   if (state.role !== 'author' || state.locked || !state.named) return;
@@ -1954,7 +2044,7 @@ function renderGiftStage(url, opts) {
   if (emb.type === 'iframe') {
     const f = document.createElement('iframe');
     // 大礼包打开时尝试自动播放；被浏览器策略拦截也不影响手动播放
-    f.src = emb.url.replace('autoplay=0', 'autoplay=1');
+    f.src = autoPlayEmbedUrl(emb.url);
     f.setAttribute('allow', 'autoplay; fullscreen; picture-in-picture');
     f.allowFullscreen = true;
     f.referrerPolicy = 'no-referrer';
@@ -1968,6 +2058,8 @@ function renderGiftStage(url, opts) {
       v.addEventListener('ended', () => { if (giftAutoEnabled()) giftAdvance(); });
     }
     stage.appendChild(v);
+    const pp = v.play && v.play();
+    if (pp && pp.catch) pp.catch(() => {});
   }
   // 内嵌被平台限制时，给一个始终可点的跳转兜底
   const jump = document.createElement('a');
@@ -2191,6 +2283,7 @@ function askNewPassword(isChange) {
 const DB_NAME = 'CPGameDB';
 const STORE_NAME = 'projects';
 let autosaveTimer = null;
+let autosaveIdle = null;
 
 function openDB() {
   return new Promise((resolve, reject) => {
@@ -2230,6 +2323,11 @@ async function loadFromDB(key) {
     });
   } catch (err) { return null; }
 }
+function triggerAutoSaveQuiet() {
+  suppressViewDirty = true;
+  triggerAutoSave();
+  suppressViewDirty = false;
+}
 function snapshot() {
   return {
     projectId: state.projectId,
@@ -2245,15 +2343,29 @@ function snapshot() {
   };
 }
 function triggerAutoSave(now) {
+  // 数据改动后，另一个缓存视角需要下次进入时重建；切视角自身不标脏
+  if (!viewSwitching && !suppressViewDirty) markOtherViewDirty();
   clearTimeout(autosaveTimer);
+  if (autosaveIdle && window.cancelIdleCallback) {
+    try { cancelIdleCallback(autosaveIdle); } catch (e) {}
+  }
+  autosaveIdle = null;
   const doSave = () => {
+    autosaveIdle = null;
     const snap = snapshot();
     // autosave 记录「当前打开的项目」，proj:<id> 记录项目库里的这一份
     saveToDB('autosave', snap);
     saveToDB('proj:' + state.projectId, snap);
   };
   if (now) { doSave(); return; }
-  autosaveTimer = setTimeout(doSave, 400);
+  // 快速连续切图时合并写入；空闲时再序列化含图片的快照，避免打断点击手感
+  autosaveTimer = setTimeout(() => {
+    if (window.requestIdleCallback) {
+      autosaveIdle = requestIdleCallback(doSave, { timeout: 1200 });
+    } else {
+      doSave();
+    }
+  }, 600);
 }
 // 列出本地项目库（含当前）
 async function listProjects() {
@@ -2308,26 +2420,26 @@ function restoreSnapshot(saved) {
 function isHttpUrl(v) {
   return typeof v === 'string' && /^(https?:)?\/\//i.test(v.trim());
 }
-// 显示用：按网络策略选图（WiFi/电脑优先 originals URL，流量优先本地 base64），绝不回写 photos
-function photoSrcAt(card, idx) {
+// 显示用：默认本地 base64 优先（己方已有图，秒开且不重新拉网络）；
+// 个人信息面板等需要编辑清晰度的场景可传 preferOriginal=true 走原图直链。
+function photoSrcAt(card, idx, preferOriginal) {
   if (!card) return '';
   const local = card.photos && card.photos[idx];
   const orig = originalOf(card, idx) || '';
-  if (!NET_METERED) {
-    // WiFi / 电脑：优先原图 URL；有本地缓存 blob 时直接复用
+  if (preferOriginal) {
     if (orig && IMG_OBJ_URLS[orig]) return IMG_OBJ_URLS[orig];
     if (orig) return orig;
     return local || '';
   }
-  // 流量 / 手机：优先本地 base64；没有本地图时才降级到原图
+  // 卡片 / 缩略图：优先本地 base64，避免切视角、读档后整页重新拉图
   if (local) return local;
   if (orig && IMG_OBJ_URLS[orig]) return IMG_OBJ_URLS[orig];
   return orig || '';
 }
-function photoSlots(card) {
+function photoSlots(card, preferOriginal) {
   const slots = [];
   for (let i = 0; i < 4; i++) {
-    const src = photoSrcAt(card, i);
+    const src = photoSrcAt(card, i, preferOriginal);
     if (src) slots.push({ src: src, idx: i });
   }
   return slots;
@@ -2519,6 +2631,7 @@ function newPlayer(name, idx) {
 }
 function initDefault() {
   // 彻底清空成白纸：绝不能沿用上一份 state.cards（包括照片/答案/密码）
+  viewDirty.global = true; viewDirty.match = true; lastRenderedMode = null; lastRenderedRole = null; VIEW_CACHE = Object.create(null);
   state.projectId = 'proj_' + Date.now();
   state.projectName = '未命名项目';
   state.projectFolder = '';
@@ -2674,9 +2787,25 @@ function makePhotoBox(card, override) {
   const slots = photoSlots(card);
   const photos = slots.map(s => s.src);   // 仅用于显示，本地 base64 或 originals URL
   const mode = override.mode || (photos.length <= 1 ? 'single' : (card.photoMode || 'grid'));
-  let idx = typeof override.idx === 'number' ? override.idx : (card.photoIdx || 0);
-  if (idx >= photos.length) idx = 0;
+  // 全局卡片用 card.photoIdx（在现有照片中的位置）；匹配槽 override.idx 用绝对槽位号
+  const useAbs = typeof override.idx === 'number';
+  let idx = useAbs ? override.idx : (card.photoIdx || 0);
+  if (useAbs && !slots.some(s => s.idx === idx)) idx = slots.length ? slots[0].idx : 0;
+  if (!useAbs && idx >= slots.length) idx = 0;
   const readonly = !!override.readonly;
+
+  // 当前显示图片的绝对槽位号：必须在工具条作用域内可用，否则删除/查看原图按钮会报错
+  const currentPhotoIdx = () => {
+    const curImg = box.querySelector('img[data-photo-idx]');
+    if (curImg && curImg.dataset.photoIdx !== undefined) {
+      const n = Number(curImg.dataset.photoIdx);
+      if (Number.isFinite(n)) return n;
+    }
+    if (override && typeof override.idx === 'number') return override.idx;
+    const pos = Number(card.photoIdx) || 0;
+    const cs = photoSlots(card);
+    return cs[pos] ? cs[pos].idx : (cs[0] ? cs[0].idx : 0);
+  };
 
   if (!photos.length) {
     box.classList.add('empty');
@@ -2689,7 +2818,7 @@ function makePhotoBox(card, override) {
 
   if (mode === 'single') {
     box.classList.add('single');
-    const slot = slots[idx];
+    const slot = useAbs ? (slots.find(s => s.idx === idx) || slots[0]) : (slots[idx] || slots[0]);
     const info = displayPhotoInfo(card, slot.idx);
     if (info.src) {
       const img = noRefImg(document.createElement('img'));
@@ -2712,7 +2841,12 @@ function makePhotoBox(card, override) {
       ph.className = 'photo-load';
       ph.innerHTML = '<span>🖼️</span><b>点按加载原图</b>';
       ph.title = '手机流量模式：点击后才加载这张原图';
-      ph.addEventListener('click', e => { e.stopPropagation(); openPhotoFull(card, slot.idx, slot.src); });
+      ph.dataset.photoIdx = String(slot.idx);
+      ph.addEventListener('click', e => {
+        e.stopPropagation();
+        const di = Number(ph.dataset.photoIdx);
+        openPhotoFull(card, Number.isFinite(di) ? di : slot.idx, photoSrcAt(card, Number.isFinite(di) ? di : slot.idx));
+      });
       box.appendChild(ph);
     }
     if (photos.length > 1) {
@@ -2720,8 +2854,24 @@ function makePhotoBox(card, override) {
       prev.className = 'photo-nav prev'; prev.textContent = '‹';
       const next = document.createElement('div');
       next.className = 'photo-nav next'; next.textContent = '›';
-      prev.addEventListener('click', e => { e.stopPropagation(); const cur = Number(card.photoIdx) || 0; setPhotoIdx(card, (cur + photos.length - 1) % photos.length, override); });
-      next.addEventListener('click', e => { e.stopPropagation(); const cur = Number(card.photoIdx) || 0; setPhotoIdx(card, (cur + 1) % photos.length, override); });
+      // 以当前显示图片的绝对槽位为准循环，匹配视角也不再用全局 card.photoIdx 误判
+      const stepPhoto = dir => {
+        const nowSlots = photoSlots(card);
+        if (!nowSlots.length) return;
+        const curAbs = currentPhotoIdx();
+        let pos = nowSlots.findIndex(s => s.idx === curAbs);
+        if (pos < 0) pos = 0;
+        const nextPos = (pos + dir + nowSlots.length) % nowSlots.length;
+        const nextAbs = nowSlots[nextPos].idx;
+        if (override && override.onIdx) {
+          override.idx = nextAbs;
+          override.onIdx(nextAbs);
+          return;
+        }
+        setPhotoIdx(card, nextPos);
+      };
+      prev.addEventListener('click', e => { e.stopPropagation(); stepPhoto(-1); });
+      next.addEventListener('click', e => { e.stopPropagation(); stepPhoto(1); });
       box.appendChild(prev); box.appendChild(next);
     }
   } else {
@@ -2772,20 +2922,6 @@ function makePhotoBox(card, override) {
 
   }
 
-  // 单图切图后，工具条按钮闭包里捕获的 idx 会过期；点击时以当前显示的图为唯一准绳
-  const currentPhotoIdx = () => {
-    if (mode === 'single') {
-      const curImg = box.querySelector('img[data-photo-idx]');
-      if (curImg && curImg.dataset.photoIdx !== undefined) {
-        const n = Number(curImg.dataset.photoIdx);
-        if (Number.isFinite(n)) return n;
-      }
-    }
-    const nowSlots = photoSlots(card);
-    const pos = (override && typeof override.idx === 'number') ? override.idx : (card.photoIdx || 0);
-    return nowSlots[pos] ? nowSlots[pos].idx : pos;
-  };
-
   // 工具条：所有模式都能切换「单图滑动 / 四宫格」并查看原图
   if (photos.length > 1 || (canEdit() && !readonly && !override.slot)) {
     const tools = document.createElement('div');
@@ -2803,8 +2939,8 @@ function makePhotoBox(card, override) {
       tools.appendChild(mBtn);
       const oBtn = document.createElement('button');
       oBtn.textContent = '⤢';
-      oBtn.title = '查看原图（点击才拉取）';
-      oBtn.addEventListener('click', e => { e.stopPropagation(); viewOriginal(card, currentPhotoIdx()); });
+      oBtn.title = '左右切换查看四宫格原图（点击才拉取）';
+      oBtn.addEventListener('click', e => { e.stopPropagation(); openOriginalGallery(card, currentPhotoIdx()); });
       tools.appendChild(oBtn);
     }
     if (canEdit() && !readonly && !override.slot) {
@@ -2867,6 +3003,11 @@ function removePhotoAt(cardId, idx) {
   toast(left ? ('已删除该照片，剩 ' + left + ' 张') : '已删除最后一张照片');
 }
 
+// 玩家/批改模式切图只是浏览状态，不必把含图片的整份项目写进 IndexedDB
+function autoSavePhotoView() {
+  if (state.role === 'author' && !state.locked) triggerAutoSave();
+  else markOtherViewDirty();
+}
 function setPhotoIdx(card, newIdx, override) {
   if (override && override.onIdx) { override.onIdx(newIdx); return; }
   card.photoIdx = newIdx;
@@ -2875,7 +3016,8 @@ function setPhotoIdx(card, newIdx, override) {
   const el = document.querySelector('#globalView .card[data-id="' + card.id + '"]');
   const box = el && el.querySelector('.photo-box.single');
   const img = box && box.querySelector('img');
-  const slot = photoSlots(card)[card.photoIdx];
+  const slotsNow = photoSlots(card);
+  const slot = slotsNow[card.photoIdx] || slotsNow[0];
   const info = slot ? displayPhotoInfo(card, slot.idx) : { src: '', key: '' };
   if (img && info.src) {
     setPhotoImgSrc(img, info.src);
@@ -2883,10 +3025,15 @@ function setPhotoIdx(card, newIdx, override) {
     else delete img.dataset.thumbKey;
     img.dataset.photoIdx = String(slot.idx);
     img.alt = isInfoHidden(card, 'name') ? '' : (card.name || '');
+  } else if (box) {
+    // 流量模式未加载大图时只更新占位卡槽，避免整卡重绘
+    const ph = box.querySelector('.photo-load');
+    if (ph) ph.dataset.photoIdx = String(slot.idx);
+    else rerenderCard(card.id);
   } else {
     rerenderCard(card.id);
   }
-  triggerAutoSave();
+  autoSavePhotoView();
 }
 
 function makeLockBtn(card) {
@@ -3056,6 +3203,20 @@ function makeCard(card, opts) {
     }
     b1.disabled = true; b0.disabled = true;
     b1.style.cursor = 'default'; b0.style.cursor = 'default';
+  } else if (opts.slot && state.role === 'player') {
+    // 玩家匹配视角：属性可编辑，写入当前玩家 attrs；与全局视角双向同步
+    if (attrVal !== undefined) {
+      const b = slotOf(attrVal) === 1 ? b1 : b0;
+      b.dataset.a = String(attrVal); b.textContent = lab(attrVal); b.classList.add('active');
+    }
+    b1.addEventListener('click', e => { e.stopPropagation(); setAttr(card.id, 1); });
+    b0.addEventListener('click', e => {
+      e.stopPropagation();
+      const p = currentPlayer();
+      const cur = p && p.attrs ? p.attrs[card.id] : undefined;
+      const next = (cur !== undefined && Number(cur) === 0) ? 0.5 : 0;
+      setAttr(card.id, next);
+    });
   } else if (opts.slot) {
     if (attrVal !== undefined) {
       const b = slotOf(attrVal) === 1 ? b1 : b0;
@@ -3224,33 +3385,44 @@ function refreshGlobalPairUI() {
   requestAnimationFrame(drawLines);
 }
 
-// 只换一张卡的属性按钮，不重建照片
+// 只换一张卡的属性按钮，不重建照片；全局与匹配视角一起同步
 function refreshGlobalCardAttr(cardId, val) {
-  const el = document.querySelector('#globalView .card[data-id="' + cardId + '"]');
-  if (!el) return;
-  if (state.hideAttrs) {
-    delete el.dataset.attr;
-    const oldRow = el.querySelector('.attr-row');
-    if (oldRow) oldRow.remove();
-    return;
-  }
-  if (val !== undefined && val !== null) el.dataset.attr = String(val);
-  else delete el.dataset.attr;
-  const row = el.querySelector('.attr-row');
-  if (!row) return;
-  const btns = row.querySelectorAll('.attr-btn');
-  if (btns.length < 2) return;
-  const b1 = btns[0], b0 = btns[1];
-  b1.className = 'attr-btn'; b1.dataset.a = '1'; b1.textContent = '1';
-  b0.className = 'attr-btn'; b0.dataset.a = '0'; b0.textContent = '0';
-  b1.disabled = b0.disabled = false;
-  b1.style.cursor = b0.style.cursor = '';
-  if (val !== undefined && val !== null) {
-    const chosen = Number(val) === 1 ? b1 : b0;
-    chosen.dataset.a = String(val);
-    chosen.textContent = Number(val) === 0.5 ? '0.5' : String(val);
-    chosen.classList.add('active');
-  }
+  const nodes = [
+    ...document.querySelectorAll('#globalView .card[data-id="' + cardId + '"]'),
+    ...document.querySelectorAll('#matchView .card[data-id="' + cardId + '"]')
+  ];
+  if (!nodes.length) return;
+  nodes.forEach(el => {
+    if (state.hideAttrs) {
+      delete el.dataset.attr;
+      const oldRow = el.querySelector('.attr-row');
+      if (oldRow) oldRow.remove();
+      return;
+    }
+    if (val !== undefined && val !== null) el.dataset.attr = String(val);
+    else delete el.dataset.attr;
+    const row = el.querySelector('.attr-row');
+    if (!row) return;
+    const btns = row.querySelectorAll('.attr-btn');
+    if (btns.length < 2) return;
+    const b1 = btns[0], b0 = btns[1];
+    b1.className = 'attr-btn'; b1.dataset.a = '1'; b1.textContent = '1';
+    b0.className = 'attr-btn'; b0.dataset.a = '0'; b0.textContent = '0';
+    b1.disabled = b0.disabled = false;
+    b1.style.cursor = b0.style.cursor = '';
+    // 匹配槽位：只有玩家模式可编辑，其余角色保持只读展示
+    if (el.closest('.slot-card')) {
+      const ro = state.role !== 'player';
+      b1.disabled = b0.disabled = ro;
+      b1.style.cursor = b0.style.cursor = ro ? 'default' : '';
+    }
+    if (val !== undefined && val !== null) {
+      const chosen = Number(val) === 1 ? b1 : b0;
+      chosen.dataset.a = String(val);
+      chosen.textContent = Number(val) === 0.5 ? '0.5' : String(val);
+      chosen.classList.add('active');
+    }
+  });
 }
 
 // 玩家模式切换当前玩家：只更新属性按钮和连线高亮，不重建照片
@@ -3269,6 +3441,7 @@ function refreshGlobalPlayerAttrs() {
 
 function switchPlayerLight(playerId) {
   state.currentPlayerId = playerId;
+  syncMatchSlotsToStore();
   refreshFilterSelects();
   renderScores();
   if (state.mode === 'global') {
@@ -3507,7 +3680,7 @@ function setAttr(cardId, val) {
     state.answers.attrs[cardId] = val;
     refreshGlobalCardAttr(cardId, val);
     renderScores();
-    triggerAutoSave();
+    triggerAutoSaveQuiet();
     return;
   }
   const p = currentPlayer();
@@ -3515,7 +3688,7 @@ function setAttr(cardId, val) {
   p.attrs[cardId] = val;
   refreshGlobalCardAttr(cardId, val);
   renderScores();
-  triggerAutoSave();
+  triggerAutoSaveQuiet();
 }
 
 function toggleGlobalPair(cardId) {
@@ -3805,10 +3978,85 @@ function buildFlagPickers() {
 }
 
 const ZODIAC_MAP = [['白羊','♈'],['金牛','♉'],['双子','♊'],['巨蟹','♋'],['狮子','♌'],['处女','♍'],['天秤','♎'],['天蝎','♏'],['射手','♐'],['摩羯','♑'],['水瓶','♒'],['双鱼','♓']];
+const TH_ZODIAC_MAP = [
+  'ราศีเมษ (白羊)', 'ราศีพฤษภ (金牛)', 'ราศีเมถุน (双子)', 'ราศีกรกฎ (巨蟹)',
+  'ราศีสิงห์ (狮子)', 'ราศีกันย์ (处女)', 'ราศีตุลย์ (天秤)', 'ราศีพิจิก (天蝎)',
+  'ราศีธนู (射手)', 'ราศีมังกร (摩羯)', 'ราศีกุมภ์ (水瓶)', 'ราศีมีน (双鱼)'
+];
+let ciZodiacAuto = { west: '', thai: '' };
 function zodiacGlyph(name) {
   if (!name) return '✧';
   const hit = ZODIAC_MAP.find(pair => name.indexOf(pair[0]) >= 0);
   return hit ? hit[1] : '✧';
+}
+// 公历生日 → 国际星座
+function zodiacIndexFromBirthday(v) {
+  const nd = normalizeBirthday(v);
+  if (!nd) return -1;
+  const m = Number(nd.slice(5, 7));
+  const d = Number(nd.slice(8, 10));
+  if (m === 1) return d >= 20 ? 10 : 9;       // 水瓶 / 摩羯
+  if (m === 2) return d >= 19 ? 11 : 10;      // 双鱼 / 水瓶
+  if (m === 3) return d >= 21 ? 0 : 11;       // 白羊 / 双鱼
+  if (m === 4) return d >= 20 ? 1 : 0;        // 金牛 / 白羊
+  if (m === 5) return d >= 21 ? 2 : 1;        // 双子 / 金牛
+  if (m === 6) return d >= 22 ? 3 : 2;        // 巨蟹 / 双子
+  if (m === 7) return d >= 23 ? 4 : 3;        // 狮子 / 巨蟹
+  if (m === 8) return d >= 23 ? 5 : 4;        // 处女 / 狮子
+  if (m === 9) return d >= 23 ? 6 : 5;        // 天秤 / 处女
+  if (m === 10) return d >= 24 ? 7 : 6;       // 天蝎 / 天秤
+  if (m === 11) return d >= 23 ? 8 : 7;       // 射手 / 天蝎
+  return d >= 22 ? 9 : 8;                     // 摩羯 / 射手
+}
+// 泰国星座按太阳轨道计算，以每月中旬为交界，不能沿用国际星座日期
+function thaiZodiacIndexFromBirthday(v) {
+  const nd = normalizeBirthday(v);
+  if (!nd) return -1;
+  const m = Number(nd.slice(5, 7));
+  const d = Number(nd.slice(8, 10));
+  if (m === 1) return d >= 14 ? 9 : 8;        // 摩羯 / 射手
+  if (m === 2) return d >= 14 ? 10 : 9;       // 水瓶 / 摩羯
+  if (m === 3) return d >= 14 ? 11 : 10;      // 双鱼 / 水瓶
+  if (m === 4) return d >= 13 ? 0 : 11;       // 白羊 / 双鱼
+  if (m === 5) return d >= 15 ? 1 : 0;        // 金牛 / 白羊
+  if (m === 6) return d >= 15 ? 2 : 1;        // 双子 / 金牛
+  if (m === 7) return d >= 17 ? 3 : 2;        // 巨蟹 / 双子
+  if (m === 8) return d >= 17 ? 4 : 3;        // 狮子 / 巨蟹
+  if (m === 9) return d >= 16 ? 5 : 4;        // 处女 / 狮子
+  if (m === 10) return d >= 17 ? 6 : 5;       // 天秤 / 处女
+  if (m === 11) return d >= 16 ? 7 : 6;       // 天蝎 / 天秤
+  return d >= 15 ? 8 : 7;                     // 射手 / 天蝎
+}
+function zodiacFromBirthday(v) {
+  const westIdx = zodiacIndexFromBirthday(v);
+  const thaiIdx = thaiZodiacIndexFromBirthday(v);
+  if (westIdx < 0 || thaiIdx < 0) return null;
+  return {
+    idx: westIdx,
+    westIdx,
+    thaiIdx,
+    west: ZODIAC_MAP[westIdx][0] + '座',
+    thai: TH_ZODIAC_MAP[thaiIdx]
+  };
+}
+function applyBirthdayZodiac(mode) {
+  const out = zodiacFromBirthday($('#info_birthday').value);
+  if (!out) return;
+  const west = $('#info_zodiac'), thai = $('#info_zodiacThai');
+  if (!west || !thai) return;
+  if (mode === 'init') {
+    if (!west.value) { west.value = out.west; ciZodiacAuto.west = out.west; }
+    if (!thai.value) { thai.value = out.thai; ciZodiacAuto.thai = out.thai; }
+  } else {
+    if (!west.value || west.value === ciZodiacAuto.west) {
+      west.value = out.west; ciZodiacAuto.west = out.west;
+    }
+    if (!thai.value || thai.value === ciZodiacAuto.thai) {
+      thai.value = out.thai; ciZodiacAuto.thai = out.thai;
+    }
+  }
+  $('#zcIco1').textContent = zodiacGlyph(west.value);
+  $('#zcIco2').textContent = zodiacGlyph(thai.value);
 }
 
 /* 原图地址映射（按需拉取，点击「查看原图」才加载）
@@ -3919,8 +4167,9 @@ function thumbInfo(card, idx) {
 function displayPhotoInfo(card, idx) {
   const src = photoSrcAt(card, idx);
   if (!src) return { src: '', key: '' };
-  // WiFi / 电脑：主图直接加载大图；流量 / 手机：优先小缩略图，点开才拉原图
-  if (!NET_METERED) return { src: src, key: '' };
+  // 本地 base64 直接显示：不重新拉网络、不生成缩略图、不二次换 src，卡片最稳定；
+  // 只有「没有本地图、仅远程原图」时才走缩略图降级。
+  if (card.photos && card.photos[idx]) return { src: src, key: '' };
   return thumbInfo(card, idx);
 }
 
@@ -4100,10 +4349,32 @@ function openPhotoFull(card, idx, fallbackSrc) {
   const fallback = fallbackSrc || photoSrcAt(card, idx);
   if (fallback) showFullImage(fallback);
 }
+let origViewerState = null;   // { card, slots, index, gallery }
+let origLoadToken = 0;
+function hideOrigNav() {
+  const prev = $('#origViewPrev'), next = $('#origViewNext'), ctr = $('#origViewCounter');
+  if (prev) prev.style.display = 'none';
+  if (next) next.style.display = 'none';
+  if (ctr) ctr.style.display = 'none';
+}
+function showOrigNav() {
+  const st = origViewerState;
+  if (!st || !st.gallery || st.slots.length < 2) { hideOrigNav(); return; }
+  const prev = $('#origViewPrev'), next = $('#origViewNext'), ctr = $('#origViewCounter');
+  if (prev) prev.style.display = 'flex';
+  if (next) next.style.display = 'flex';
+  if (ctr) {
+    ctr.style.display = 'block';
+    ctr.textContent = '第 ' + (st.index + 1) + ' / ' + st.slots.length + ' 张';
+  }
+}
 function showFullImage(src) {
   if (!src) return;
   const v = $('#origView'), img = $('#origImg'), msg = $('#origMsg');
   if (!v || !img || !msg) return;
+  origViewerState = null;
+  origLoadToken++;
+  hideOrigNav();
   msg.style.display = 'none';
   img.style.display = 'block';
   if (img.getAttribute('src') !== src) img.src = src;
@@ -4112,24 +4383,51 @@ function showFullImage(src) {
 function closeOriginal() {
   const v = $('#origView');
   if (!v) return;
+  origLoadToken++;
+  origViewerState = null;
+  hideOrigNav();
   v.classList.remove('show');
   const img = $('#origImg');
   if (img) { img.removeAttribute('src'); img.style.display = 'none'; }
 }
-async function viewOriginal(card, idx) {
+function origShowSlot() {
+  const st = origViewerState;
+  if (!st) return;
+  const v = $('#origView');
+  if (!v) return;
+  v.classList.add('show');
+  showOrigNav();
+  const slot = st.slots[st.index];
+  if (!slot) return;
+  viewOriginalCore(st.card, slot.idx);
+}
+function stepOrigViewer(d) {
+  const st = origViewerState;
+  if (!st || !st.gallery || st.slots.length < 2) return;
+  st.index = (st.index + d + st.slots.length) % st.slots.length;
+  origShowSlot();
+}
+async function viewOriginalCore(card, idx) {
   const v = $('#origView'), img = $('#origImg'), msg = $('#origMsg');
   if (!v || !img || !msg) return;
-  const url = originalOf(card, idx);
+  const token = ++origLoadToken;
   img.style.display = 'none';
   img.removeAttribute('src');
   msg.style.display = 'flex';
   v.classList.add('show');
+  const url = originalOf(card, idx);
   if (!url) {
+    const local = card.photos && card.photos[idx];
+    if (local) {
+      img.src = local; img.style.display = 'block'; msg.style.display = 'none';
+      return;
+    }
     msg.innerHTML = '<span>这张图还没配置原图地址</span>' +
       '<span style="font-size:11px;color:#64748b">在 originals.json 里加一条：{"' + (card.id + 1) + '":["原图直链1","原图直链2"]}</span>';
     return;
   }
   const cachedObj = await cachedOriginalObjectUrl(url);
+  if (token !== origLoadToken) return;
   if (cachedObj) {
     img.src = cachedObj; img.style.display = 'block'; msg.style.display = 'none';
     return;
@@ -4137,18 +4435,47 @@ async function viewOriginal(card, idx) {
   msg.innerHTML = '<span>正在拉取原图…</span>';
   const probe = new Image();
   probe.onload = () => {
+    if (token !== origLoadToken) return;
     img.src = url; img.style.display = 'block'; msg.style.display = 'none';
     ORIG_CACHE[origCacheKey(card, idx)] = url;
     saveOrigCache();
     fetchOriginalToCache(url).then(obj => {
-      if (obj && v.classList.contains('show')) img.src = obj;
+      if (obj && token === origLoadToken && v.classList.contains('show')) img.src = obj;
     });
   };
   probe.onerror = () => {
+    if (token !== origLoadToken) return;
+    const local = card.photos && card.photos[idx];
+    if (local) {
+      img.src = local; img.style.display = 'block'; msg.style.display = 'none';
+      toast('原图加载失败，已显示本地图');
+      return;
+    }
     msg.innerHTML = '<span>原图加载失败，链接可能已失效</span>' +
       '<a href="' + url + '" target="_blank" rel="noopener">直接打开链接</a>';
   };
   probe.src = url;
+}
+// 单张：点某一张图片时，只看这一张
+function viewOriginal(card, idx) {
+  const slots = photoSlots(card, true);
+  if (!slots.length) {
+    origViewerState = { card: card, slots: [{ idx: idx }], index: 0, gallery: false };
+  } else {
+    let pos = slots.findIndex(s => s.idx === idx);
+    if (pos < 0) pos = 0;
+    origViewerState = { card: card, slots: slots, index: pos, gallery: false };
+  }
+  origShowSlot();
+}
+// 按钮小图标：进入四宫格原图浏览，左右循环切换
+function openOriginalGallery(card, startIdx) {
+  const slots = photoSlots(card, true);
+  if (!slots.length) { viewOriginal(card, startIdx); return; }
+  let pos = slots.findIndex(s => s.idx === startIdx);
+  if (pos < 0) pos = 0;
+  origViewerState = { card: card, slots: slots, index: pos, gallery: true };
+  origShowSlot();
 }
 
 /* 视频链接 → 可嵌入地址（B 站 / YouTube / 直链） */
@@ -4229,6 +4556,22 @@ function showVideoFallback(url, text) {
   w.appendChild(box);
   v.classList.add('show');
 }
+// 全屏播放面板：B 站 / YouTube 打开即尝试自动播放；小窗预览不使用此函数
+function autoPlayEmbedUrl(url) {
+  let u = String(url || '');
+  if (!u) return u;
+  if (/player\.bilibili\.com/i.test(u)) {
+    if (/autoplay=0/i.test(u)) u = u.replace(/autoplay=0/ig, 'autoplay=1');
+    else if (!/[?&]autoplay=/i.test(u)) u += (u.indexOf('?') >= 0 ? '&' : '?') + 'autoplay=1';
+    return u;
+  }
+  if (/youtube\.com\/embed\//i.test(u)) {
+    if (!/[?&]autoplay=/i.test(u)) u += (u.indexOf('?') >= 0 ? '&' : '?') + 'autoplay=1&playsinline=1';
+    else u = u.replace(/autoplay=0/ig, 'autoplay=1');
+    return u;
+  }
+  return u.replace(/autoplay=0/ig, 'autoplay=1');
+}
 function openVideoView(emb, fallbackUrl) {
   if (typeof emb === 'string') emb = videoEmbed(emb);
   const v = $('#videoView'), w = $('#videoWrap');
@@ -4238,7 +4581,7 @@ function openVideoView(emb, fallbackUrl) {
   const fb = videoFallbackNode(fallbackUrl || emb.url);
   if (emb.type === 'iframe') {
     const f = document.createElement('iframe');
-    f.src = emb.url;
+    f.src = autoPlayEmbedUrl(emb.url);
     f.setAttribute('allow', 'autoplay; fullscreen; picture-in-picture');
     f.allowFullscreen = true;
     f.referrerPolicy = 'no-referrer';
@@ -4252,6 +4595,9 @@ function openVideoView(emb, fallbackUrl) {
     vid.src = emb.url; vid.controls = true; vid.autoplay = true; vid.playsInline = true;
     vid.addEventListener('error', () => fb.classList.add('show'));
     w.appendChild(vid);
+    // 点击进入全屏面板属于用户手势，再主动 play 一次，避免个别浏览器忽略 autoplay 属性
+    const p = vid.play && vid.play();
+    if (p && p.catch) p.catch(() => {});
   }
   w.appendChild(fb);
   v.classList.add('show');
@@ -4305,7 +4651,7 @@ function renderCiPhoto(card) {
   box.style.backgroundImage = '';
   box.style.gridTemplateColumns = '';
   box.style.gridTemplateRows = '';
-  const slots = photoSlots(card);
+  const slots = photoSlots(card, true);   // 个人信息面板编辑时优先看原图，卡片主界面则用本地图保证稳定
   let idx = card.photoIdx || 0;
   if (idx >= slots.length) idx = 0;
   // 原图直链已切到第 3/4 位、但该位还没有照片或直链时，预览必须显示空槽，而不是退回前两张
@@ -4335,11 +4681,13 @@ function renderCiPhoto(card) {
       im.addEventListener('click', e => {
         e.stopPropagation();
         commitOrigDraft(card, false);
+        // 只读（玩家/批改/锁定项目）：点四宫格任一张直接看这张全图；出题编辑仍进入单图
+        if (!canEdit()) { openPhotoFull(card, slot.idx, slot.src); return; }
         card.photoIdx = i;
         ciOrigIdx = slot.idx;
         ciViewGrid = false;
         renderCiPhoto(card);
-        triggerAutoSave();
+        autoSavePhotoView();
       });
       box.appendChild(im);
     });
@@ -4355,6 +4703,12 @@ function renderCiPhoto(card) {
     const img = noRefImg(document.createElement('img'));
     setPhotoImgSrc(img, cur.src);
     img.alt = isInfoHidden(card, 'name') ? '' : (card.name || '');
+    img.title = '点击查看这张图的全图';
+    img.addEventListener('click', e => {
+      e.stopPropagation();
+      commitOrigDraft(card, false);
+      openPhotoFull(card, cur.idx, cur.src);
+    });
     box.appendChild(img);
     box.style.backgroundImage = 'linear-gradient(rgba(10,20,36,.55),rgba(10,20,36,.62)),url("' + cur.src + '")';
     box.style.backgroundSize = 'cover,cover';
@@ -4366,7 +4720,7 @@ function renderCiPhoto(card) {
       card.photoIdx = (idx + d + slots.length) % slots.length;
       ciOrigIdx = slots[card.photoIdx].idx;
       renderCiPhoto(card);
-      triggerAutoSave();
+      autoSavePhotoView();
     };
     if (slots.length > 1) {
       const prev = document.createElement('button');
@@ -4396,7 +4750,7 @@ function renderCiPhoto(card) {
       e.stopPropagation();
       ciViewGrid = !grid;
       renderCiPhoto(card);
-      triggerAutoSave();
+      autoSavePhotoView();
     });
     box.appendChild(mBtn);
   }
@@ -4404,13 +4758,35 @@ function renderCiPhoto(card) {
   const oBtn = document.createElement('button');
   oBtn.className = 'ci-orig';
   oBtn.textContent = '⤢ 查看原图';
-  oBtn.title = '按需拉取原图直链';
+  oBtn.title = '左右切换查看四宫格原图';
   oBtn.addEventListener('click', e => {
     e.stopPropagation();
     const previewIdx = emptyOrigIdx >= 0 ? emptyOrigIdx : (grid ? slots[0].idx : slots[idx].idx);
-    viewOriginal(card, previewIdx);
+    // 先把右侧正在输入的直链提交，否则刚填的地址点「查看原图」会读不到
+    commitOrigDraft(card, false);
+    openOriginalGallery(card, previewIdx);
   });
   box.appendChild(oBtn);
+
+  // 单图状态下删除当前照片（之前只有全局卡片有删除入口，个人信息面板没有）
+  if (canEdit() && !grid && emptyOrigIdx < 0 && slots.length) {
+    const delIdx = slots[idx].idx;
+    const dBtn = document.createElement('button');
+    dBtn.className = 'ci-del';
+    dBtn.textContent = '✕';
+    dBtn.title = '删除当前显示的这张照片';
+    dBtn.addEventListener('click', e => {
+      e.stopPropagation();
+      removePhotoAt(card.id, delIdx);
+      if (editingCard === card) {
+        loadOrigDraft(card);
+        ciOrigIdx = 0;
+        renderCiPhoto(card);
+        syncOrigInput(card);
+      }
+    });
+    box.appendChild(dBtn);
+  }
 
   if (editingCard === card) syncOrigInput(card);
 
@@ -4471,13 +4847,14 @@ function syncOrigInput(card) {
 function stepOrigIdx(d) {
   if (!editingCard) return;
   commitOrigDraft(editingCard, false);
-  ciOrigIdx = Math.max(0, Math.min(3, ciOrigIdx + d));
+  // 原图直链按 1→2→3→4→1 循环，首尾不再卡住
+  ciOrigIdx = ((ciOrigIdx + d) % 4 + 4) % 4;
   const pos = photoSlots(editingCard).findIndex(s => s.idx === ciOrigIdx);
   if (pos >= 0) editingCard.photoIdx = pos;
   ciViewGrid = false;
   renderCiPhoto(editingCard);
   syncOrigInput(editingCard);
-  triggerAutoSave();
+  autoSavePhotoView();
 }
 /* ===== 个人信息隐藏项：仅出题模式可改；玩家 / 批改只按配置展示 ===== */
 function applyInfoVisibility(card, readonly) {
@@ -4634,6 +5011,9 @@ function openCardInfoModal(card, readonly) {
   $('#info_zodiacThai').value = card.zodiacThai || '';
   $('#zcIco1').textContent = zodiacGlyph(card.zodiac);
   $('#zcIco2').textContent = zodiacGlyph(card.zodiacThai);
+  // 生日已有但星座为空时，打开面板就先给出推荐；已有手动星座则保留
+  ciZodiacAuto = { west: '', thai: '' };
+  applyBirthdayZodiac('init');
 
   selLineage = (card.lineage || []).slice();
   selNation = (card.nationality || []).slice();
@@ -4734,10 +5114,54 @@ function saveCardInfo() {
 /* =========================================================
    匹配模式
    ========================================================= */
+// 匹配视角左右槽单图切换：只换这一张图，不重建整页（避免连点卡顿）
+function updateMatchSlotPhoto(which, card, absIdx) {
+  const wrap = document.querySelector('.slot-wrapper[data-slot="' + which + '"]');
+  const slotCard = wrap && wrap.querySelector('.slot-card .card');
+  const slots = photoSlots(card);
+  const slot = slots.find(s => s.idx === absIdx) || slots[0];
+  if (!wrap || !slotCard || !slot) return;
+  const box = slotCard.querySelector('.photo-box.single');
+  if (!box) {
+    // 从四宫格点选某张图后已切到单图模式：只重建当前槽
+    const fresh = renderMatchSlot(which);
+    wrap.replaceWith(fresh);
+    return;
+  }
+  const info = displayPhotoInfo(card, slot.idx);
+  const img = box.querySelector('img');
+  if (img) {
+    if (info.src) {
+      setPhotoImgSrc(img, info.src);
+      if (info.key) img.dataset.thumbKey = info.key; else delete img.dataset.thumbKey;
+      img.dataset.cardId = String(card.id);
+      img.dataset.photoIdx = String(slot.idx);
+      img.alt = isInfoHidden(card, 'name') ? '' : (card.name || '');
+    } else {
+      // 流量模式下这张远程图还没有缩略图：只重建当前槽，显示“点按加载”，不加载整页
+      const fresh = renderMatchSlot(which);
+      wrap.replaceWith(fresh);
+      return;
+    }
+  } else {
+    const ph = box.querySelector('.photo-load');
+    if (ph) ph.dataset.photoIdx = String(slot.idx);
+  }
+  const title = wrap.querySelector('.slot-title');
+  if (title && slots.length > 1) {
+    const pos = slots.findIndex(s => s.idx === slot.idx);
+    const shown = pos >= 0 ? pos + 1 : 1;
+    const shortMob = window.matchMedia('(max-width:760px)').matches;
+    const baseName = which === 'A' ? '参照对象' : '预想 CP';
+    const shortName = which === 'A' ? '参照' : '预想';
+    title.textContent = (shortMob ? shortName : baseName) + '·第' + shown + '张';
+  }
+}
 function renderMatchSlot(which) {
   const id = which === 'A' ? matchSlotA : matchSlotB;
   const wrap = document.createElement('div');
   wrap.className = 'slot-wrapper';
+  wrap.dataset.slot = which;
   const title = document.createElement('div');
   title.className = 'slot-title';
   title.textContent = state.role === 'player' ? (which === 'A' ? '① 参照对象' : '② 预想 CP') : (which === 'A' ? '参照对象' : '预想 CP');
@@ -4776,11 +5200,13 @@ function renderMatchSlot(which) {
         onIdx: n => {
           if (which === 'A') { matchSlotA_photoIdx = n; matchSlotA_mode = 'single'; }
           else { matchSlotB_photoIdx = n; matchSlotB_mode = 'single'; }
-          renderMatch({ light: true });
+          updateMatchSlotPhoto(which, card, n);
         },
         onMode: m => {
           if (which === 'A') matchSlotA_mode = m; else matchSlotB_mode = m;
-          renderMatch({ light: true });
+          const fresh = renderMatchSlot(which);
+          if (wrap.parentNode) wrap.replaceWith(fresh);
+          requestAnimationFrame(syncMatchHeights);
         }
       });
       box.appendChild(cardEl);
@@ -4794,7 +5220,7 @@ function renderMatchSlot(which) {
         if (which === 'A') matchSlotA_photoIdx = 0; else matchSlotB_photoIdx = 0;
         if (which === 'A') matchSlotA_mode = 'single'; else matchSlotB_mode = 'single';
         lockTip = null;
-        renderMatch({ light: true });
+        refreshMatchSelection();
       });
       cardEl.appendChild(clr);
     }
@@ -4818,6 +5244,78 @@ function updateMatchListSelection(list, pairs) {
 
 // 匹配视角选卡：
 // 玩家模式采用「先锁左侧参照、之后只换右侧预想」；出题/批改保持原有选卡逻辑。
+// 匹配视角选卡后的局部刷新：只换两个展示槽和选中态，不重建整页列表/缩略图
+// 匹配视角只改 CP 数量时，局部更新信息头，不重建列表/缩略图
+function refreshMatchHead() {
+  const head = $('#matchView .m-head');
+  if (!head) return;
+  const p = currentPlayer();
+  const hideAns = answersHidden();
+  const pairs = pairStore().pairs;
+  if (state.role === 'author') {
+    head.innerHTML = '<span>👑 出题模式 · 标准答案配对</span>' +
+      (state.locked ? '<span class="ref">🔐 已加密 · 只读</span>' : '') +
+      '<span class="ref">' + (hideAns ? '🙈 答案已隐藏' : '已设 ' + pairs.length + ' 对') + '</span>';
+  } else if (state.role === 'player') {
+    head.innerHTML = '<span>🎮 ' + esc(p ? p.name : '') + '</span><span class="ref">已连 ' + pairs.length + ' 对</span>';
+  }
+}
+function showLockHint() {
+  const mv = $('#matchView');
+  const body = mv && mv.querySelector('.m-body');
+  if (!mv || !body || !lockTip) return;
+  const old = mv.querySelector('.lock-hint.float');
+  if (old) old.remove();
+  const hint = document.createElement('div');
+  hint.className = 'lock-hint float';
+  const monMob = window.matchMedia('(max-width:760px)').matches;
+  hint.innerHTML = '<b>' + lockTip.t + '</b>' + (monMob ? ' ' + lockTip.short : lockTip.full);
+  body.appendChild(hint);
+  scheduleLockHintHide();
+}
+
+function refreshMatchSelection() {
+  if (state.mode !== 'match' || state.role === 'grade') { renderMatch({ light: true }); return; }
+  const mv = $('#matchView');
+  if (!mv) return;
+  const oldHint = mv.querySelector('.lock-hint.float');
+  if (oldHint) oldHint.remove();
+  refreshMatchHead();
+  const list = mv.querySelector('.match-list-wrap');
+  if (list) updateMatchListSelection(list, pairStore().pairs);
+  const board = mv.querySelector('.match-board');
+  if (board) {
+    const oldA = board.querySelector('.slot-wrapper[data-slot="A"]');
+    const oldB = board.querySelector('.slot-wrapper[data-slot="B"]');
+    if (oldA) oldA.replaceWith(renderMatchSlot('A'));
+    else board.insertBefore(renderMatchSlot('A'), board.firstChild);
+    if (oldB) oldB.replaceWith(renderMatchSlot('B'));
+    else board.appendChild(renderMatchSlot('B'));
+  }
+  const bar = mv.querySelector('.lock-action-bar');
+  if (bar) {
+    const pairs = pairStore().pairs;
+    const both = matchSlotA !== null && matchSlotB !== null;
+    const hasPair = both && pairs.some(pr => (pr[0] === matchSlotA && pr[1] === matchSlotB) || (pr[0] === matchSlotB && pr[1] === matchSlotA));
+    const roAuthor = state.role === 'author' && state.locked;
+    const lockBtn = bar.querySelector('.btn-lock-big');
+    const unlockBtn = bar.querySelector('.btn-unlock-big');
+    const clearBtn = bar.querySelector('.btn-clear-slot');
+    if (lockBtn) {
+      lockBtn.textContent = hasPair ? '🔒 更新 CP 合照' : '🔒 锁死 CP';
+      lockBtn.disabled = roAuthor || !both;
+    }
+    if (unlockBtn) unlockBtn.disabled = roAuthor || !hasPair;
+    if (clearBtn) clearBtn.disabled = roAuthor || (matchSlotA === null && matchSlotB === null);
+  }
+  const oldGift = mv.querySelector('.cp-gift-wrap');
+  if (oldGift) oldGift.remove();
+  const gift = giftForSelection();
+  if (gift) mv.appendChild(makeGiftCorner(gift));
+  else lastGiftKey = null;
+  requestAnimationFrame(syncMatchHeights);
+}
+
 function handleMatchCardSelect(card, pairedId, pairs, store) {
   lockTip = null;
   clearLockHintTimer();
@@ -4855,7 +5353,7 @@ function handleMatchCardSelect(card, pairedId, pairs, store) {
         else { matchSlotA = card.id; matchSlotA_photoIdx = firstPhotoIdx(card); matchSlotA_mode = 'single'; }
       }
     }
-    renderMatch({ light: true });
+    refreshMatchSelection();
     return;
   }
 
@@ -4876,7 +5374,7 @@ function handleMatchCardSelect(card, pairedId, pairs, store) {
     } else {
       toast('已锁定参照第 ' + (card.id + 1) + ' 号；现在点其它卡片切换预想 CP', 1500, true);
     }
-    renderMatch({ light: true });
+    refreshMatchSelection();
     return;
   }
 
@@ -4899,7 +5397,7 @@ function handleMatchCardSelect(card, pairedId, pairs, store) {
   matchSlotB = card.id;
   matchSlotB_photoIdx = firstPhotoIdx(card);
   matchSlotB_mode = 'single';
-  renderMatch({ light: true });
+  refreshMatchSelection();
 }
 
 function renderMatch(opts) {
@@ -5011,7 +5509,14 @@ function renderMatch(opts) {
       }
     }
 
-    item.addEventListener('click', () => handleMatchCardSelect(card, pairedId, pairs, store));
+    // pairedId 不能缓存：解绑后旧配对会残留，导致再点其他卡仍提示“已绑定”
+    item.addEventListener('click', () => {
+      const st = pairStore();
+      const nowPairs = answersHidden() ? [] : (st.pairs || []);
+      const pr = nowPairs.find(x => x[0] === card.id || x[1] === card.id);
+      const pid = pr ? (pr[0] === card.id ? pr[1] : pr[0]) : null;
+      handleMatchCardSelect(card, pid, nowPairs, st);
+    });
     grid.appendChild(item);
   });
   listWrap.appendChild(grid);
@@ -5104,7 +5609,8 @@ function renderMatch(opts) {
               '<br>请继续下一步：可「🔒 更新 CP 合照」换合照，或点「✕ 清空展示」再组合新的 CP',
         short: '（' + (a + 1) + '号' + nA + ' × ' + (b + 1) + '号' + nB + '）· 可更新合照或清空展示'
       };
-      renderMatch({ light: true });
+      refreshMatchSelection();
+      showLockHint();
       renderScores();
       if (!stillPaired && state.role === 'author') maybePromptGift(a, b);
     });
@@ -5128,7 +5634,7 @@ function renderMatch(opts) {
       matchSlotA = null; matchSlotB = null;
       matchSlotA_photoIdx = 0; matchSlotB_photoIdx = 0;
       matchSlotA_mode = 'single'; matchSlotB_mode = 'single';
-      renderMatch({ light: true });
+      refreshMatchSelection();
       renderScores();
       triggerAutoSave();
       toast('已解绑该 CP，可重新选卡配对');
@@ -5147,7 +5653,7 @@ function renderMatch(opts) {
       matchSlotA_photoIdx = 0; matchSlotB_photoIdx = 0;
       matchSlotA_mode = 'single'; matchSlotB_mode = 'single';
       lockTip = null;
-      renderMatch({ light: true });
+      refreshMatchSelection();
       toast('已清空展示框（已锁死的 CP 仍保留，点对应卡片可继续操作）');
     });
     bar.appendChild(clearSlotBtn);
@@ -5197,20 +5703,106 @@ function refreshFilterSelects() {
     state.cards.map(c => '<option value="' + c.id + '">NO.' + (c.id + 1) + ' ' + esc(isInfoHidden(c, 'name') ? '' : (c.name || '')) + '</option>').join('');
   cSel.value = filterCardId;
 }
-function renderAll() {
+/* 数据指纹：只取影响卡片渲染的字段，图片只取长度+首尾片段，避免复制巨大 base64 */
+function shortImgSig(v) {
+  if (!v) return '';
+  const s = String(v);
+  return s.length <= 48 ? s : s.length + ':' + s.slice(0, 10) + ':' + s.slice(-10);
+}
+function anySig(v) {
+  if (Array.isArray(v)) return v.map(anySig);
+  if (v && typeof v === 'object') {
+    const out = {};
+    Object.keys(v).sort().forEach(k => { out[k] = anySig(v[k]); });
+    return out;
+  }
+  return typeof v === 'string' ? shortImgSig(v) : v;
+}
+function roleViewSignature() {
+  const cards = state.cards.map(c => [
+    c.id, c.name, c.height, c.weight, c.birthday, c.school, c.company, c.videoUrl,
+    c.zodiac, c.zodiacThai,
+    (c.lineage || []).join('|'), (c.nationality || []).join('|'),
+    (c.infoHidden || []).join('|'), c.showName, c.showHeight, c.showWeight, c.showVideo,
+    c.photoMode, c.photoIdx,
+    (c.photos || []).map(shortImgSig),
+    (c.originals || []).map(x => x || '')
+  ]);
+  const players = state.players.map(p => [
+    p.id, p.name, p.color,
+    p.attrs, p.pairs, p.pairOffsets,
+    anySig(p.pairPhotos)
+  ]);
+  const a = state.answers || {};
+  return JSON.stringify([
+    state.projectId, state.named, state.authorName, state.author && state.author.name, state.author && state.author.url,
+    state.globalPhotoMode, state.locked, state.revealed, state.hideAttrs,
+    state.currentPlayerId, filterPlayerId, filterCardId, cards, a.attrs, a.pairs, a.pairOffsets,
+    anySig(a.pairPhotos), anySig(a.gifts),
+    players
+  ]);
+}
+function saveViewCache(role, mode) {
+  const el = mode === 'global' ? $('#globalView') : $('#matchView');
+  if (!el || !el.children.length) return;
+  const frag = document.createDocumentFragment();
+  while (el.firstChild) frag.appendChild(el.firstChild);
+  VIEW_CACHE[role + ':' + mode] = { frag: frag, sig: roleViewSignature() };
+}
+function restoreViewCache(role, mode) {
+  const entry = VIEW_CACHE[role + ':' + mode];
+  if (!entry || !entry.frag) return false;
+  if (entry.sig !== roleViewSignature()) { entry.frag = null; return false; }
+  const el = mode === 'global' ? $('#globalView') : $('#matchView');
+  if (!el) return false;
+  el.innerHTML = '';
+  el.appendChild(entry.frag);
+  entry.frag = null;
+  // 缓存里的图可能还是初始大图；若缩略图已生成，顺手换成小图，进一步省内存
+  el.querySelectorAll('img[data-thumb-key]').forEach(img => {
+    const thumb = THUMB_CACHE[img.dataset.thumbKey];
+    if (thumb && img.getAttribute('src') !== thumb) img.src = thumb;
+  });
+  return true;
+}
+function renderAll(opts) {
+  opts = opts || {};
   document.body.dataset.role = state.role;
   document.body.dataset.mode = state.mode;
+  const target = state.mode;
+  const switching = lastRenderedMode !== target;
+  let restored = false;
+  if (opts.roleSwitch || opts.viewSwitch) restored = restoreViewCache(state.role, target);
+  if (restored) viewDirty[target] = false;
+  if (!switching) viewDirty[target === 'global' ? 'match' : 'global'] = true;
+  // 进入匹配视角，让展示槽跟上当前数据源的最近 CP；槽位变了才标脏
+  if (target === 'match') {
+    if (syncMatchSlotsToStore()) viewDirty.match = true;
+  }
   const gv = $('#globalView');
   const mv = $('#matchView');
-  if (state.mode === 'global') {
+  if (target === 'global') {
+    const need = restored ? false : (switching ? (viewDirty.global || !gv.children.length) : true);
+    if (need) {
+      gv.style.display = 'none';   // 在隐藏状态构建，构建完再显示，避免白屏闪
+      renderGlobal();
+      viewDirty.global = false;
+    }
     gv.style.display = '';
     mv.style.display = 'none';
-    renderGlobal();
   } else {
+    const need = restored ? false : (switching ? (viewDirty.match || !mv.children.length) : true);
+    if (need) {
+      mv.style.display = 'none';
+      renderMatch();
+      viewDirty.match = false;
+    }
     gv.style.display = 'none';
     mv.style.display = '';
-    renderMatch();
+    if (restored) refreshMatchSelection();
   }
+  lastRenderedMode = target;
+  lastRenderedRole = state.role;
   renderScores();
   refreshFilterSelects();
   updateRoleButtons();
@@ -5339,6 +5931,12 @@ function renderPlayerList() {
     const input = document.createElement('input');
     input.type = 'text';
     input.value = p.name;
+    // 防止父级手势/拖拽逻辑吞掉鼠标框选；显式允许在输入框内选择文字
+    input.style.userSelect = 'text';
+    input.style.webkitUserSelect = 'text';
+    input.addEventListener('pointerdown', e => e.stopPropagation());
+    input.addEventListener('mousedown', e => e.stopPropagation());
+    input.addEventListener('dragstart', e => e.preventDefault());
     input.addEventListener('input', () => {
       p.name = input.value;
       renderScores();
@@ -5352,6 +5950,7 @@ function renderPlayerList() {
     cur.textContent = p.id === state.currentPlayerId ? '✓ 当前' : '设为当前';
     cur.addEventListener('click', () => {
       state.currentPlayerId = p.id;
+      syncMatchSlotsToStore();
       renderAll();
       renderPlayerList();
       triggerAutoSave();
@@ -5362,9 +5961,29 @@ function renderPlayerList() {
     del.className = 'btn-ghost';
     del.textContent = '删除';
     del.addEventListener('click', () => {
-      if (state.players.length <= 1) { toast('至少保留一名玩家'); return; }
+      // 只有一名玩家时，删除 = 清空该玩家数据并恢复初始名称；玩家2及以后才整个删除
+      if (state.players.length <= 1) {
+        p.name = '玩家1';
+        p.attrs = {};
+        p.pairs = [];
+        p.pairOffsets = {};
+        p.pairPhotos = {};
+        if (state.annot && state.annot.player) {
+          state.annot.player = { strokes: [], texts: [] };
+        }
+        state.currentPlayerId = p.id;
+        syncMatchSlotsToStore();
+        renderPlayerList();
+        renderScores();
+        refreshFilterSelects();
+        renderAll();
+        triggerAutoSave();
+        toast('已清空当前玩家数据，并恢复为「玩家1」');
+        return;
+      }
       state.players = state.players.filter(x => x.id !== p.id);
       if (state.currentPlayerId === p.id) state.currentPlayerId = state.players[0].id;
+      syncMatchSlotsToStore();
       renderPlayerList();
       refreshFilterSelects();
       renderAll();
@@ -5559,6 +6178,9 @@ function exportResult() {
 
 function loadProject(data) {
   if (!data || typeof data !== 'object') return false;
+  // 新项目文件：两个缓存视角都失效，避免沿用上一项目的 DOM
+  viewDirty.global = true; viewDirty.match = true; lastRenderedMode = null; lastRenderedRole = null; VIEW_CACHE = Object.create(null);
+  if (typeof annot !== 'undefined') { annot.selectedId = null; annot.editingId = null; }
   // 没有 projectId 的旧文件/纯文字文件必须分配新身份，避免沿用上一项目的缓存
   state.projectId = (typeof data.projectId === 'string' && data.projectId.trim())
     ? data.projectId.trim()
@@ -5948,6 +6570,7 @@ async function newProject(name, quiet, folder) {
   state.currentPlayerId = state.players[0].id;
   state.role = 'author';
   state.mode = 'global';
+  viewDirty.global = true; viewDirty.match = true; lastRenderedMode = null; lastRenderedRole = null; VIEW_CACHE = Object.create(null);
   state.author = { name: '', url: '' };
   state.lock = null;
   state.locked = false;
@@ -6409,7 +7032,7 @@ async function openRemotePicker() {
 /* =========================================================
    批改标注层（画笔 / 橡皮 / 文本）
    ========================================================= */
-const annot = { tool: null, color: '#fbbf24', width: 3, drawing: false, last: null };
+const annot = { tool: null, color: '#fbbf24', width: 3, drawing: false, last: null, selectedId: null, editingId: null };
 
 function annotLayer() { return document.getElementById('annotLayer'); }
 function annotCanvas() { return document.getElementById('annotCanvas'); }
@@ -6444,60 +7067,242 @@ function redrawAnnot() {
   });
 }
 
+function saveAnnotState() {
+  suppressViewDirty = true;
+  triggerAutoSave();
+  suppressViewDirty = false;
+}
+
+function annotTextId(t) {
+  if (!t.id) t.id = 'at_' + Date.now().toString(36) + '_' + Math.random().toString(36).slice(2, 7);
+  return t.id;
+}
+function annotTextNode(t) {
+  const layer = annotLayer();
+  if (!layer || !t.id) return null;
+  return Array.from(layer.querySelectorAll('.annot-text')).find(n => n.dataset.tid === String(t.id)) || null;
+}
+function selectAnnotText(id, keepEdit) {
+  annot.selectedId = id;
+  const layer = annotLayer();
+  if (layer) {
+    layer.querySelectorAll('.annot-text').forEach(n => n.classList.toggle('selected', String(n.dataset.tid) === String(id)));
+  }
+  if (id) {
+    const t = annotData().texts.find(x => String(x.id) === String(id));
+    if (t && t.color) {
+      annot.color = t.color;
+      const ci = document.getElementById('annotColor');
+      if (ci) ci.value = t.color;
+    }
+  }
+}
+function startAnnotEdit(t) {
+  const el = annotTextNode(t);
+  if (!el) return;
+  annot.editingId = t.id;
+  annot.selectedId = t.id;
+  selectAnnotText(t.id, true);
+  el.classList.add('editing');
+  const body = el.querySelector('.annot-body');
+  if (!body) return;
+  body.contentEditable = 'true';
+  try {
+    body.focus({ preventScroll: true });
+    const range = document.createRange();
+    range.selectNodeContents(body);
+    range.collapse(false);
+    const sel = window.getSelection();
+    sel.removeAllRanges();
+    sel.addRange(range);
+  } catch (e) {}
+}
+function finishAnnotEdit(t) {
+  if (annot.editingId !== t.id) return;
+  const el = annotTextNode(t);
+  const body = el && el.querySelector('.annot-body');
+  if (body) {
+    t.text = String(body.innerText || '').replace(/\u00a0/g, ' ').replace(/[ \t]+\n/g, '\n').trim();
+  }
+  annot.editingId = null;
+  if (body) body.contentEditable = 'false';
+  if (el) el.classList.remove('editing');
+  if (!t.text) {
+    const d = annotData();
+    const idx = d.texts.indexOf(t);
+    if (idx >= 0) d.texts.splice(idx, 1);
+    if (annot.selectedId === t.id) annot.selectedId = null;
+    placeAnnotTexts();
+  } else if (body) {
+    body.textContent = t.text;
+  }
+  saveAnnotState();
+}
+
+function makeAnnotTextNode(t) {
+  const el = document.createElement('div');
+  el.className = 'annot-text';
+  el.dataset.tid = t.id;
+  const body = document.createElement('div');
+  body.className = 'annot-body';
+  body.dataset.ph = '输入文字…';
+  body.textContent = t.text || '';
+  const resize = document.createElement('span');
+  resize.className = 'annot-resize';
+  resize.title = '拖拽改变文字大小';
+  const del = document.createElement('button');
+  del.className = 'annot-del';
+  del.type = 'button';
+  del.textContent = '×';
+  del.title = '删除文字';
+  el.appendChild(body);
+  el.appendChild(resize);
+  el.appendChild(del);
+
+  // 点击选中；非编辑状态下拖拽移动
+  let drag = false, moved = false, wasSelected = false, sx = 0, sy = 0, ox = 0, oy = 0;
+  el.addEventListener('pointerdown', ev => {
+    if (state.role !== 'grade') return;
+    if (ev.target.closest('.annot-del,.annot-resize')) return;
+    if (annot.editingId === t.id) return;         // 正在编辑：让光标正常插入、拖选文字
+    ev.preventDefault();
+    ev.stopPropagation();
+    wasSelected = annot.selectedId === t.id;
+    selectAnnotText(t.id);
+    const r = annotLayer().getBoundingClientRect();
+    drag = true; moved = false;
+    sx = ev.clientX; sy = ev.clientY;
+    ox = t.x * r.width; oy = t.y * r.height;
+    el.classList.add('dragging');
+    try { el.setPointerCapture(ev.pointerId); } catch (err) {}
+  });
+  el.addEventListener('pointermove', ev => {
+    if (!drag) return;
+    const r = annotLayer().getBoundingClientRect();
+    if (!r.width || !r.height) return;
+    if (Math.abs(ev.clientX - sx) + Math.abs(ev.clientY - sy) > 3) moved = true;
+    t.x = Math.max(0, Math.min(1, (ox + ev.clientX - sx) / r.width));
+    t.y = Math.max(0, Math.min(1, (oy + ev.clientY - sy) / r.height));
+    el.style.left = (t.x * 100) + '%';
+    el.style.top = (t.y * 100) + '%';
+  });
+  const endDrag = () => {
+    if (!drag) return;
+    drag = false;
+    el.classList.remove('dragging');
+    if (moved) saveAnnotState();
+    else if (wasSelected) startAnnotEdit(t);   // 已选中的文字再点一下即可编辑；拖动则不会误入编辑
+  };
+  el.addEventListener('pointerup', endDrag);
+  el.addEventListener('pointercancel', endDrag);
+
+  // 双击进入 Word 式直接编辑；点击空白不触发
+  el.addEventListener('dblclick', ev => {
+    if (ev.target.closest('.annot-del,.annot-resize')) return;
+    if (annot.editingId === t.id) return;
+    ev.preventDefault();
+    ev.stopPropagation();
+    startAnnotEdit(t);
+  });
+
+  // 输入时实时保存（不重建节点，光标不掉）
+  body.addEventListener('input', () => {
+    t.text = String(body.innerText || '').replace(/\u00a0/g, ' ');
+    saveAnnotState();
+  });
+  body.addEventListener('blur', () => finishAnnotEdit(t));
+  body.addEventListener('keydown', ev => {
+    if (ev.key === 'Escape') { ev.preventDefault(); body.blur(); }
+    if (ev.key === 'Enter' && (ev.ctrlKey || ev.metaKey)) { ev.preventDefault(); body.blur(); }
+  });
+  body.addEventListener('paste', ev => {
+    if (!ev.clipboardData) return;
+    ev.preventDefault();
+    const txt = ev.clipboardData.getData('text/plain');
+    document.execCommand('insertText', false, txt);
+  });
+
+  // 拖右下角改变字号
+  let resizing = false, rsx = 0, rsy = 0, rSize = 14;
+  resize.addEventListener('pointerdown', ev => {
+    ev.preventDefault();
+    ev.stopPropagation();
+    selectAnnotText(t.id);
+    resizing = true;
+    rsx = ev.clientX;
+    rsy = ev.clientY;
+    rSize = Number(t.size) || 14;
+    resize.setPointerCapture(ev.pointerId);
+  });
+  resize.addEventListener('pointermove', ev => {
+    if (!resizing) return;
+    const dx = ev.clientX - rsx, dy = ev.clientY - rsy;
+    const delta = Math.abs(dx) >= Math.abs(dy) ? dx : dy;
+    const next = Math.max(10, Math.min(80, Math.round(rSize + delta * 1.2)));
+    t.size = next;
+    el.style.fontSize = next + 'px';
+  });
+  const endResize = () => {
+    if (!resizing) return;
+    resizing = false;
+    saveAnnotState();
+  };
+  resize.addEventListener('pointerup', endResize);
+  resize.addEventListener('pointercancel', endResize);
+
+  del.addEventListener('pointerdown', ev => ev.stopPropagation());
+  del.addEventListener('click', ev => {
+    ev.preventDefault();
+    ev.stopPropagation();
+    if (annot.editingId === t.id) annot.editingId = null;
+    const d = annotData();
+    const idx = d.texts.indexOf(t);
+    if (idx >= 0) d.texts.splice(idx, 1);
+    if (annot.selectedId === t.id) annot.selectedId = null;
+    placeAnnotTexts();
+    saveAnnotState();
+  });
+
+  return el;
+}
+
 function placeAnnotTexts() {
   const layer = annotLayer();
   if (!layer) return;
-  layer.querySelectorAll('.annot-text').forEach(n => n.remove());
   const d = annotData();
   d.texts.forEach(t => {
-    const el = document.createElement('div');
-    el.className = 'annot-text';
-    el.textContent = t.text;
+    annotTextId(t);
+    if (typeof t.size !== 'number') t.size = 14;
+  });
+  const existing = new Map(
+    Array.from(layer.querySelectorAll('.annot-text')).map(n => [String(n.dataset.tid), n])
+  );
+  d.texts.forEach(t => {
+    let el = existing.get(String(t.id));
+    existing.delete(String(t.id));
+    if (!el) {
+      el = makeAnnotTextNode(t);
+      layer.appendChild(el);
+    }
+    const body = el.querySelector('.annot-body');
+    const isEditing = annot.editingId === t.id;
     el.style.left = (t.x * 100) + '%';
     el.style.top = (t.y * 100) + '%';
     el.style.color = t.color || '#fbbf24';
-    el.title = '拖动可移动位置，双击删除';
-    // 拖动定位
-    let drag = false, moved = false, sx = 0, sy = 0, ox = 0, oy = 0;
-    el.addEventListener('pointerdown', ev => {
-      if (state.role !== 'grade') return;
-      ev.preventDefault();
-      ev.stopPropagation();
-      const r = layer.getBoundingClientRect();
-      drag = true; moved = false;
-      sx = ev.clientX; sy = ev.clientY;
-      ox = t.x * r.width; oy = t.y * r.height;
-      el.classList.add('dragging');
-      try { el.setPointerCapture(ev.pointerId); } catch (err) {}
-    });
-    el.addEventListener('pointermove', ev => {
-      if (!drag) return;
-      const r = layer.getBoundingClientRect();
-      if (!r.width || !r.height) return;
-      if (Math.abs(ev.clientX - sx) + Math.abs(ev.clientY - sy) > 3) moved = true;
-      t.x = Math.max(0, Math.min(1, (ox + ev.clientX - sx) / r.width));
-      t.y = Math.max(0, Math.min(1, (oy + ev.clientY - sy) / r.height));
-      el.style.left = (t.x * 100) + '%';
-      el.style.top = (t.y * 100) + '%';
-    });
-    const up = () => {
-      if (!drag) return;
-      drag = false;
-      el.classList.remove('dragging');
-      if (moved) triggerAutoSave();
-    };
-    el.addEventListener('pointerup', up);
-    el.addEventListener('pointercancel', up);
-    el.addEventListener('dblclick', ev => {
-      ev.stopPropagation();
-      ev.preventDefault();
-      const idx = d.texts.indexOf(t);
-      if (idx >= 0) d.texts.splice(idx, 1);
-      placeAnnotTexts();
-      triggerAutoSave();
-    });
-    layer.appendChild(el);
+    el.style.fontSize = (t.size || 14) + 'px';
+    el.classList.toggle('selected', annot.selectedId === t.id);
+    el.classList.toggle('editing', isEditing);
+    el.title = '拖动移动 · 双击或再点进入编辑 · 右下角拖拽改变字号';
+    if (body) {
+      body.contentEditable = isEditing ? 'true' : 'false';
+      if (!isEditing && document.activeElement !== body && body.textContent !== (t.text || '')) {
+        body.textContent = t.text || '';
+      }
+    }
   });
+  existing.forEach(n => n.remove());
+  if (annot.selectedId && !d.texts.some(t => t.id === annot.selectedId)) annot.selectedId = null;
+  if (annot.editingId && !d.texts.some(t => t.id === annot.editingId)) annot.editingId = null;
 }
 
 function syncAnnotGeom() {
@@ -6531,7 +7336,11 @@ function updateAnnotUI() {
     const ci = bar.querySelector('#annotColor');
     if (ci) ci.value = annot.color;
   }
-  if (state.role !== 'grade') annot.tool = null;
+  if (state.role !== 'grade') {
+    annot.tool = null;
+    annot.editingId = null;
+    annot.selectedId = null;
+  }
 }
 
 function setupAnnot() {
@@ -6567,9 +7376,11 @@ function setupAnnot() {
     const d = annotData();
     d.strokes = [];
     d.texts = [];
+    annot.selectedId = null;
+    annot.editingId = null;
     redrawAnnot();
     placeAnnotTexts();
-    triggerAutoSave();
+    saveAnnotState();
     toast('已清空本模式批注');
   });
   const colorInput = bar.querySelector('#annotColor');
@@ -6577,6 +7388,16 @@ function setupAnnot() {
     colorInput.addEventListener('input', () => {
       annot.color = colorInput.value;
       annot.width = 3;
+      // 选中文字时，调色盘直接给选中对象换色
+      if (annot.selectedId) {
+        const t = annotData().texts.find(x => String(x.id) === String(annot.selectedId));
+        if (t) {
+          t.color = annot.color;
+          const el = annotTextNode(t);
+          if (el) el.style.color = t.color;
+          saveAnnotState();
+        }
+      }
       updateAnnotUI();
     });
   }
@@ -6595,14 +7416,18 @@ function setupAnnot() {
     } else if (annot.tool === 'eraser') {
       eraseAnnot(x, y);
     } else if (annot.tool === 'text') {
-      openInput('添加标注文字', '', v => {
-        const txt = (v || '').trim();
-        if (!txt) return;
-        annotData().texts.push({ x, y, text: txt, color: annot.color });
-        placeAnnotTexts();
-        triggerAutoSave();
-        toast('文字已添加，可按住拖动调整位置');
-      });
+      // 若已有文字正在编辑，先提交旧文字，再新建，避免两个输入框抢焦点
+      if (annot.editingId) {
+        const old = annotData().texts.find(x => String(x.id) === String(annot.editingId));
+        if (old) finishAnnotEdit(old);
+      }
+      // Word 式：点一下画面直接出现可输入文本框，不再弹窗
+      const t = { id: 'at_' + Date.now().toString(36) + '_' + Math.random().toString(36).slice(2, 7), x, y, text: '', color: annot.color, size: 14 };
+      annotData().texts.push(t);
+      annot.selectedId = t.id;
+      annot.editingId = t.id;
+      placeAnnotTexts();
+      requestAnimationFrame(() => startAnnotEdit(t));
     }
   });
   cv.addEventListener('pointermove', e => {
@@ -6619,7 +7444,7 @@ function setupAnnot() {
     if (!annot.drawing) return;
     annot.drawing = false;
     annot.last = null;
-    triggerAutoSave();
+    saveAnnotState();
     redrawAnnot();
   };
   cv.addEventListener('pointerup', endDraw);
@@ -6641,7 +7466,7 @@ function eraseAnnot(nx, ny) {
     if (hit) d.strokes.splice(i, 1);
   }
   redrawAnnot();
-  triggerAutoSave();
+  saveAnnotState();
 }
 
 /* =========================================================
@@ -6866,15 +7691,18 @@ function bindEvents() {
           }
         }
       }
+      // 切角色前把当前角色的两个视角 DOM 收进缓存，目标角色若有同数据缓存就直接复用
+      saveViewCache(state.role, 'global');
+      saveViewCache(state.role, 'match');
       state.role = role;
       globalPairingRef = null;
       lockTip = null;
       matchSlotA = null; matchSlotB = null;
       annot.tool = null;
-      if (role === 'author' && state.mode === 'match') focusAuthorPairInMatch();
+      if (state.mode === 'match') syncMatchSlotsToStore();
       document.body.dataset.role = role;
       document.body.dataset.mode = state.mode;
-      renderAll();
+      renderAll({ roleSwitch: true });
       triggerAutoSave();
       toast('已切换到' + ROLE_LABEL[role]);
     });
@@ -6883,10 +7711,17 @@ function bindEvents() {
   // 视图（全局 / 匹配）
   $$('[data-mode]').forEach(btn => {
     btn.addEventListener('click', () => {
-      state.mode = btn.dataset.mode;
-      state.mode === 'global' ? (globalPairingRef = null) : focusAuthorPairInMatch();
-      renderAll();
-      triggerAutoSave();
+      if (btn.dataset.mode === state.mode) return;
+      viewSwitching = true;
+      try {
+        saveViewCache(state.role, state.mode);
+        state.mode = btn.dataset.mode;
+        if (state.mode === 'global') globalPairingRef = null;
+        renderAll({ viewSwitch: true });
+        triggerAutoSave();
+      } finally {
+        viewSwitching = false;
+      }
     });
   });
 
@@ -6968,16 +7803,26 @@ function bindEvents() {
         const nd = normalizeBirthday(bdInput.value);
         if (nd) bdInput.value = nd;
       }
+      applyBirthdayZodiac('edit');
     });
     bdInput.addEventListener('blur', () => {
       const nd = normalizeBirthday(bdInput.value);
-      if (nd) bdInput.value = nd;
+      if (nd) {
+        bdInput.value = nd;
+        applyBirthdayZodiac('edit');
+      }
     });
   }
   // 卡片信息保存
   $('#btnSaveCardInfo').addEventListener('click', saveCardInfo);
-  $('#info_zodiac').addEventListener('change', e => { $('#zcIco1').textContent = zodiacGlyph(e.target.value); });
-  $('#info_zodiacThai').addEventListener('change', e => { $('#zcIco2').textContent = zodiacGlyph(e.target.value); });
+  $('#info_zodiac').addEventListener('change', e => {
+    ciZodiacAuto.west = '';   // 手动改过之后，不再被生日推荐覆盖
+    $('#zcIco1').textContent = zodiacGlyph(e.target.value);
+  });
+  $('#info_zodiacThai').addEventListener('change', e => {
+    ciZodiacAuto.thai = '';
+    $('#zcIco2').textContent = zodiacGlyph(e.target.value);
+  });
   $('#info_videoUrl').addEventListener('input', () => syncVideoBtn(editingCard));
   const cui = $('#ciOrigUrl');
   if (cui) {
@@ -6994,9 +7839,14 @@ function bindEvents() {
       const oSlots = photoSlots(c);
       const oPos = oSlots.findIndex(s => s.idx === ciOrigIdx);
       if (oPos >= 0) { c.photoIdx = oPos; ciViewGrid = false; }
-      renderCiPhoto(c);
-      syncOrigInput(c);
-      renderAll();
+      // 不能在这里同步 renderCiPhoto：输入框失焦的 change 会先于按钮 click 执行，
+      // 重建按钮会吞掉「查看原图」的点击；同时避免每次改直链都 renderAll 全页闪图。
+      setTimeout(() => {
+        if (editingCard === c && $('#cardInfoModal').classList.contains('show')) {
+          renderCiPhoto(c);
+          syncOrigInput(c);
+        }
+      }, 0);
       triggerAutoSave();
     });
   }
@@ -7025,6 +7875,7 @@ function bindEvents() {
     const p = newPlayer('玩家' + (state.players.length + 1), state.players.length);
     state.players.push(p);
     state.currentPlayerId = p.id;
+    syncMatchSlotsToStore();
     renderPlayerList();
     refreshFilterSelects();
     renderAll();
@@ -7253,9 +8104,11 @@ function bindEvents() {
     const d = annotData();
     d.strokes = [];
     d.texts = [];
+    annot.selectedId = null;
+    annot.editingId = null;
     redrawAnnot();
     placeAnnotTexts();
-    triggerAutoSave();
+    saveAnnotState();
     toast('已清空本模式批注');
   });
   const hideAttrsChk = $('#hideAttrsChk');
@@ -7339,10 +8192,22 @@ function bindEvents() {
       syncAnnotGeom();
     }, 120);
   });
-  $('#main').addEventListener('scroll', syncAnnotGeom, { passive: true });
+  let mainScrollRaf = 0;
+  $('#main').addEventListener('scroll', () => {
+    if (mainScrollRaf) return;
+    mainScrollRaf = requestAnimationFrame(() => {
+      mainScrollRaf = 0;
+      syncAnnotGeom();
+    });
+  }, { passive: true });
+  let globalScrollRaf = 0;
   $('#globalView').addEventListener('scroll', () => {
-    if (state.mode === 'global') drawLines();
-    syncAnnotGeom();
+    if (globalScrollRaf) return;
+    globalScrollRaf = requestAnimationFrame(() => {
+      globalScrollRaf = 0;
+      if (state.mode === 'global') drawLines();
+      syncAnnotGeom();
+    });
   }, { passive: true });
 
   // Esc 关闭弹窗 / 退出标注
@@ -7375,6 +8240,9 @@ function bindEvents() {
     ov.addEventListener('click', e => { if (e.target === ov) closeOriginal(); });
     const oc = $('#origClose');
     if (oc) oc.addEventListener('click', e => { e.stopPropagation(); closeOriginal(); });
+    const op = $('#origViewPrev'), on = $('#origViewNext');
+    if (op) op.addEventListener('click', e => { e.stopPropagation(); stepOrigViewer(-1); });
+    if (on) on.addEventListener('click', e => { e.stopPropagation(); stepOrigViewer(1); });
   }
 
 }
