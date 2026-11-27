@@ -1,8 +1,11 @@
 {
   "projectId": "proj_1795273548786",
   "projectName": "BL_泰腐CP",
+  "folder": "",
+  "fileName": "BL_泰腐CP.json",
   "pairCount": 8,
   "globalPhotoMode": "grid",
+  "hideAttrs": false,
   "cards": [
     {
       "id": 0,
@@ -18,7 +21,7 @@
       ],
       "birthday": "1999/10/08",
       "zodiac": "天秤座",
-      "zodiacThai": "",
+      "zodiacThai": "ราศีกันย์ (处女)",
       "school": "泰国国立法政大学",
       "company": "Billkin Entertainment（个人工作室）",
       "photos": [
@@ -45,7 +48,8 @@
       "showZodiacThai": false,
       "showSchool": false,
       "showCompany": false,
-      "showVideo": true
+      "showVideo": true,
+      "infoHidden": []
     },
     {
       "id": 1,
@@ -60,7 +64,7 @@
       ],
       "birthday": "2001/02/01",
       "zodiac": "水瓶座",
-      "zodiacThai": "",
+      "zodiacThai": "ราศีมังกร (摩羯)",
       "school": "泰国先皇理工大学",
       "company": "GMM_TV",
       "photos": [
@@ -87,7 +91,8 @@
       "showZodiacThai": false,
       "showSchool": false,
       "showCompany": false,
-      "showVideo": true
+      "showVideo": true,
+      "infoHidden": []
     },
     {
       "id": 2,
@@ -104,7 +109,7 @@
       ],
       "birthday": "1997/12/27",
       "zodiac": "摩羯座",
-      "zodiacThai": "",
+      "zodiacThai": "ราศีธนู (射手)",
       "school": "曼谷大学",
       "company": "Cloud 9 Entertainment",
       "photos": [
@@ -131,7 +136,8 @@
       "showZodiacThai": false,
       "showSchool": false,
       "showCompany": false,
-      "showVideo": true
+      "showVideo": true,
+      "infoHidden": []
     },
     {
       "id": 3,
@@ -147,7 +153,7 @@
       ],
       "birthday": "1995/07/10",
       "zodiac": "巨蟹座",
-      "zodiacThai": "",
+      "zodiacThai": "ราศีเมถุน (双子)",
       "school": "曼谷大学（传播艺术学院）",
       "company": "GMM_TV",
       "photos": [
@@ -174,7 +180,8 @@
       "showZodiacThai": false,
       "showSchool": false,
       "showCompany": false,
-      "showVideo": true
+      "showVideo": true,
+      "infoHidden": []
     },
     {
       "id": 4,
@@ -189,7 +196,7 @@
       ],
       "birthday": "1999/09/11",
       "zodiac": "处女座",
-      "zodiacThai": "",
+      "zodiacThai": "ราศีสิงห์ (狮子)",
       "school": "泰国艺术大学（考古学院人类学系）",
       "company": "泰洋泰莱",
       "photos": [
@@ -216,7 +223,8 @@
       "showZodiacThai": false,
       "showSchool": false,
       "showCompany": false,
-      "showVideo": true
+      "showVideo": true,
+      "infoHidden": []
     },
     {
       "id": 5,
@@ -231,7 +239,7 @@
       ],
       "birthday": "1997/01/25",
       "zodiac": "水瓶座",
-      "zodiacThai": "",
+      "zodiacThai": "ราศีมังกร (摩羯)",
       "school": "泰国易三仓大学",
       "company": "MeMindY（CP）、Cusp Entertainment‌",
       "photos": [
@@ -258,7 +266,8 @@
       "showZodiacThai": false,
       "showSchool": false,
       "showCompany": false,
-      "showVideo": true
+      "showVideo": true,
+      "infoHidden": []
     },
     {
       "id": 6,
@@ -277,7 +286,7 @@
       ],
       "birthday": "1991/01/20",
       "zodiac": "水瓶座",
-      "zodiacThai": "",
+      "zodiacThai": "ราศีมังกร (摩羯)",
       "school": "泰国艺术大学（信息与通信技术学院）",
       "company": "GMM_TV",
       "photos": [
@@ -304,7 +313,8 @@
       "showZodiacThai": false,
       "showSchool": false,
       "showCompany": false,
-      "showVideo": true
+      "showVideo": true,
+      "infoHidden": []
     },
     {
       "id": 7,
@@ -320,7 +330,7 @@
       ],
       "birthday": "2001/07/25",
       "zodiac": "狮子座",
-      "zodiacThai": "",
+      "zodiacThai": "ราศีกรกฎ (巨蟹)",
       "school": "泰国农业大学（人文学院-中文系）",
       "company": "Domundi（DMD）",
       "photos": [
@@ -347,7 +357,8 @@
       "showZodiacThai": false,
       "showSchool": false,
       "showCompany": false,
-      "showVideo": true
+      "showVideo": true,
+      "infoHidden": []
     },
     {
       "id": 8,
@@ -389,7 +400,8 @@
       "showZodiacThai": false,
       "showSchool": false,
       "showCompany": false,
-      "showVideo": true
+      "showVideo": true,
+      "infoHidden": []
     },
     {
       "id": 9,
@@ -405,7 +417,7 @@
       ],
       "birthday": "1999/02/21",
       "zodiac": "双鱼座",
-      "zodiacThai": "",
+      "zodiacThai": "ราศีกุมภ์ (水瓶)",
       "school": "泰国国立法政大学经济学院",
       "company": "GMM_TV",
       "photos": [
@@ -432,7 +444,8 @@
       "showZodiacThai": false,
       "showSchool": false,
       "showCompany": false,
-      "showVideo": true
+      "showVideo": true,
+      "infoHidden": []
     },
     {
       "id": 10,
@@ -447,7 +460,7 @@
       ],
       "birthday": "2000/11/29",
       "zodiac": "射手座",
-      "zodiacThai": "",
+      "zodiacThai": "ราศีพิจิก (天蝎)",
       "school": "泰国北曼谷国王大学",
       "company": "泰国TV_3台",
       "photos": [
@@ -474,7 +487,8 @@
       "showZodiacThai": false,
       "showSchool": false,
       "showCompany": false,
-      "showVideo": true
+      "showVideo": true,
+      "infoHidden": []
     },
     {
       "id": 11,
@@ -490,7 +504,7 @@
       ],
       "birthday": "1996/04/30",
       "zodiac": "金牛座",
-      "zodiacThai": "",
+      "zodiacThai": "ราศีเมษ (白羊)",
       "school": "泰国农业大学",
       "company": "PP Krit Entertainment（个人工作室）",
       "photos": [
@@ -517,7 +531,8 @@
       "showZodiacThai": false,
       "showSchool": false,
       "showCompany": false,
-      "showVideo": true
+      "showVideo": true,
+      "infoHidden": []
     },
     {
       "id": 12,
@@ -531,8 +546,8 @@
         "泰国"
       ],
       "birthday": "1992/09/10",
-      "zodiac": "",
-      "zodiacThai": "",
+      "zodiac": "处女座",
+      "zodiacThai": "ราศีสิงห์ (狮子)",
       "school": "曼谷大学（传播艺术学院）",
       "company": "Domundi（DMD）",
       "photos": [
@@ -559,7 +574,8 @@
       "showZodiacThai": false,
       "showSchool": false,
       "showCompany": false,
-      "showVideo": true
+      "showVideo": true,
+      "infoHidden": []
     },
     {
       "id": 13,
@@ -574,7 +590,7 @@
       ],
       "birthday": "1990/09/23",
       "zodiac": "天秤座",
-      "zodiacThai": "",
+      "zodiacThai": "ราศีกันย์ (处女)",
       "school": "兰实大学",
       "company": "泰洋泰莱",
       "photos": [
@@ -601,7 +617,8 @@
       "showZodiacThai": false,
       "showSchool": false,
       "showCompany": false,
-      "showVideo": true
+      "showVideo": true,
+      "infoHidden": []
     },
     {
       "id": 14,
@@ -617,7 +634,7 @@
       ],
       "birthday": "2003/07/05",
       "zodiac": "巨蟹座",
-      "zodiacThai": "",
+      "zodiacThai": "ราศีเมถุน (双子)",
       "school": "朱拉隆功大学",
       "company": "GMM_TV",
       "photos": [
@@ -644,7 +661,8 @@
       "showZodiacThai": false,
       "showSchool": false,
       "showCompany": false,
-      "showVideo": true
+      "showVideo": true,
+      "infoHidden": []
     },
     {
       "id": 15,
@@ -658,8 +676,8 @@
         "泰国"
       ],
       "birthday": "1998/03/08",
-      "zodiac": "",
-      "zodiacThai": "",
+      "zodiac": "双鱼座",
+      "zodiacThai": "ราศีกุมภ์ (水瓶)",
       "school": "泰国农业大学",
       "company": "GMM_TV",
       "photos": [
@@ -686,7 +704,8 @@
       "showZodiacThai": false,
       "showSchool": false,
       "showCompany": false,
-      "showVideo": true
+      "showVideo": true,
+      "infoHidden": []
     }
   ],
   "answers": {
@@ -798,5 +817,5 @@
       "texts": []
     }
   },
-  "savedAt": "2026-11-23T08:45:33.137Z"
+  "savedAt": "2026-11-27T02:10:11.667Z"
 }

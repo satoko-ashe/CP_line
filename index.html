@@ -1255,7 +1255,7 @@ body[data-role="grade"] #globalView .card{height:calc(100% - 54px)}
     <h2>📁 当前项目：<span id="psCurName">未命名项目</span></h2>
     <h3>点选其他项目即切换，各自数据独立保存，互不混淆</h3>
     <div class="ps-list" id="psList"></div>
-    <div class="ps-note">📌 文件夹用于归类同系列项目（如 GL_泰百CP-01/02/03）；导出文件名 = 项目名.json，JSON 内保留 folder 归属。可勾选多个项目批量归入。</div>
+    <div class="ps-note">📌 文件夹用于归类同系列项目（如 GL_泰百CP / GL_泰百CP-01/02）；文件夹名最多10字符，子文件名最多15字符（项目名最多10字符 + .json）。JSON 内保留 folder 归属；可勾选多个项目批量归入。</div>
     <div class="ps-actions">
       <button class="btn-ghost" id="psNew">＋ 新建项目</button>
       <button class="btn-ghost" id="psNewFolder">📁 新建文件夹项目</button>
@@ -2158,18 +2158,18 @@ function answersHidden() {
 function ensureNamed() {
   if (state.named) return true;
   if (state.locked) { requireEdit(); return false; }
-  openInput('先给项目命名（命名后才能编辑）· 改完记得导出项目文件备份 · 点击「设置」面板可修改卡槽对数', '', async v => {
-    const name = String(v || '').trim();
+  openInput('先给项目命名（最多10个字符，导出为「项目名.json」）· 命名后才能编辑 · 改完记得导出项目文件备份', '', async v => {
+    const name = limitProjectName(v);
     if (!name) { toast('未命名项目不能编辑，请先输入项目名称'); return; }
     state.projectName = name;
     state.named = true;
-    $('#projName').textContent = name;
+    setProjNameDisplay(name);
     document.title = '趣味CP连线游戏 · ' + name;
     triggerAutoSave(true);
     renderAll();
     if ($('#psCurName')) $('#psCurName').textContent = name;
     toast('已命名为「' + name + '」：现在可以编辑；完成后请导出项目文件备份');
-  }, { placeholder: '输入项目名称' });
+  }, { placeholder: '输入项目名称（最多10个字符）', maxLength: PROJECT_NAME_MAX });
   return false;
 }
 
@@ -2408,9 +2408,9 @@ function restoreSnapshot(saved) {
   }
   if (saved.lastMode === 'match' || saved.lastMode === 'global') state.mode = saved.lastMode;
   state.role = 'author';
-  state.projectName = saved.projectName || state.projectName;
+  state.projectName = limitProjectName(saved.projectName || state.projectName) || '未命名项目';
   state.projectFolder = cleanFolderName(saved.projectFolder || (saved.project && (saved.project.folder || saved.project.folderName)) || '');
-  $('#projName').textContent = state.projectName;
+  setProjNameDisplay(state.projectName);
   return true;
 }
 
@@ -2636,7 +2636,7 @@ function initDefault() {
   state.projectName = '未命名项目';
   state.projectFolder = '';
   state.named = false;
-  $('#projName').textContent = state.projectName;
+  setProjNameDisplay(state.projectName);
   state.pairCount = 10;
   state.globalPhotoMode = 'single';
   state.hideAttrs = false;
@@ -3315,12 +3315,13 @@ function applyHeaderCompact() {
   set('#btnAuthorRole', compact ? '👑 出题' : '👑 出题模式');
   set('#btnPlayerRole', compact ? '🎮 玩家' : '🎮 玩家模式');
   set('#btnGradeRole', compact ? '🖋 批改' : '🖋 批改模式');
-  // 平板 / 手机统一短标签 + 图标；电脑始终显示完整视角名 + 图标
-  const touchView = isTabletUI() || innerWidth <= 840;   // 窄屏电脑也缩短，避免顶栏换行
-  set('.mode-btn[data-mode="global"]', touchView ? '🌐 全局' : '🌐 全局视角');
-  set('.mode-btn[data-mode="match"]', touchView ? '💞 匹配' : '💞 匹配视角');
+  // 平板 / 手机统一短标签 + 图标；电脑始终显示完整标题与视角名
+  const coarsePointer = (navigator.maxTouchPoints || 0) > 0 || matchMedia('(pointer: coarse)').matches;
+  const smallScreen = isTabletUI() || (coarsePointer && innerWidth <= 900);
+  set('.mode-btn[data-mode="global"]', smallScreen ? '🌐 全局' : '🌐 全局视角');
+  set('.mode-btn[data-mode="match"]', smallScreen ? '💞 匹配' : '💞 匹配视角');
   const brand = document.querySelector('.brand');
-  if (brand) brand.textContent = innerWidth <= 900 ? '💞 CP连线' : '💞 趣味CP连线游戏';
+  if (brand) brand.textContent = smallScreen ? '💞 CP连线' : '💞 趣味CP连线游戏';
   // 手机：右上工具只留图标，避免导航折成三行
   const recOn = document.querySelector('#btnRec') && document.querySelector('#btnRec').classList.contains('on');
   const tools = [
@@ -5011,9 +5012,9 @@ function openCardInfoModal(card, readonly) {
   $('#info_zodiacThai').value = card.zodiacThai || '';
   $('#zcIco1').textContent = zodiacGlyph(card.zodiac);
   $('#zcIco2').textContent = zodiacGlyph(card.zodiacThai);
-  // 生日已有但星座为空时，打开面板就先给出推荐；已有手动星座则保留
+  // 生日自动推荐只在出题编辑态进行；只读项目不临时补星座，避免显示未保存的推断值
   ciZodiacAuto = { west: '', thai: '' };
-  applyBirthdayZodiac('init');
+  if (!readonly) applyBirthdayZodiac('init');
 
   selLineage = (card.lineage || []).slice();
   selNation = (card.nationality || []).slice();
@@ -6014,8 +6015,8 @@ function openSettings() {
 function projectData() {
   return {
     projectId: state.projectId,
-    projectName: state.projectName,
-    folder: state.projectFolder || '',
+    projectName: limitProjectName(state.projectName || '') || '未命名项目',
+    folder: cleanFolderName(state.projectFolder || ''),
     fileName: exportProjectFileName(),
     pairCount: state.pairCount,
     globalPhotoMode: state.globalPhotoMode === 'grid' ? 'grid' : 'single',
@@ -6075,14 +6076,39 @@ function stamp() {
   const pad = n => String(n).padStart(2, '0');
   return d.getFullYear() + pad(d.getMonth() + 1) + pad(d.getDate()) + '_' + pad(d.getHours()) + pad(d.getMinutes());
 }
+// 名称上限：项目名 10 字符 + .json = 子文件名最长 15；文件夹名 10
+const PROJECT_NAME_MAX = 10;
+const PROJECT_NAME_DISPLAY = 8;
+const FOLDER_NAME_MAX = 10;
+function sliceChars(v, max) {
+  return Array.from(String(v || '')).slice(0, max).join('');
+}
+function charLength(v) { return Array.from(String(v || '')).length; }
 function cleanProjectName(v) {
   return String(v || '').trim().replace(/\.json$/i, '').trim();
 }
+function limitProjectName(v) {
+  return sliceChars(cleanProjectName(v), PROJECT_NAME_MAX).trim();
+}
+function displayProjectName(v) {
+  const name = cleanProjectName(v) || '未命名项目';
+  return charLength(name) > PROJECT_NAME_DISPLAY
+    ? sliceChars(name, PROJECT_NAME_DISPLAY) + '…'
+    : name;
+}
+function setProjNameDisplay(name) {
+  const el = $('#projName');
+  if (!el) return;
+  const full = cleanProjectName(name) || '未命名项目';
+  el.textContent = displayProjectName(full);
+  el.title = full;
+}
 function cleanFolderName(v) {
-  return String(v || '').trim().replace(/\\/g, '/').replace(/^\/+|\/+$/g, '').replace(/\/{2,}/g, '/');
+  return String(v || '').trim().replace(/\\/g, '/').split('/')
+    .filter(Boolean).map(seg => sliceChars(seg, FOLDER_NAME_MAX)).filter(Boolean).join('/');
 }
 function projectFileBase() {
-  const base = cleanProjectName(state.projectName || '未命名项目') || '未命名项目';
+  const base = limitProjectName(state.projectName || '未命名项目') || '未命名项目';
   return base.replace(/[\\/:*?"<>|]/g, '-') || '未命名项目';
 }
 function exportProjectFileName() {
@@ -6185,7 +6211,7 @@ function loadProject(data) {
   state.projectId = (typeof data.projectId === 'string' && data.projectId.trim())
     ? data.projectId.trim()
     : ('proj_' + Date.now() + '_' + Math.random().toString(36).slice(2, 7));
-  state.projectName = data.projectName || '未命名项目';
+  state.projectName = limitProjectName(data.projectName || '未命名项目') || '未命名项目';
   state.projectFolder = cleanFolderName(data.folder || data.folderName || '');
   const au = data.author || {};
   state.author = { name: String(au.name || '').slice(0, 24), url: String(au.url || '') };
@@ -6203,7 +6229,7 @@ function loadProject(data) {
   editingCard = null; photoTarget = null; replaceTarget = null;
   $('#cardInfoModal').classList.remove('show');
   $('#origView').classList.remove('show');
-  $('#projName').textContent = state.projectName;
+  setProjNameDisplay(state.projectName);
 
   // 卡片：完整归一化，旧数据自动补默认值
   const rawCards = Array.isArray(data.cards) ? data.cards : [];
@@ -6272,6 +6298,8 @@ function openInput(title, value, cb, opts) {
   $('#inputField').type = opts.password ? 'password' : 'text';
   $('#inputField').placeholder = opts.placeholder || (opts.password ? '请输入密码' : '请输入…');
   $('#inputField').value = value || '';
+  if (opts.maxLength > 0) $('#inputField').setAttribute('maxlength', String(opts.maxLength));
+  else $('#inputField').removeAttribute('maxlength');
   inputCallback = cb;
   $('#inputModal').classList.add('show');
   setTimeout(() => $('#inputField').focus(), 50);
@@ -6362,10 +6390,10 @@ function projectIsNamed(p) {
 
 function projFolderOf(p) {
   if (!p) return '';
-  return String((p.project && (p.project.folder || p.project.folderName)) || p.projectFolder || '').trim();
+  return cleanFolderName((p.project && (p.project.folder || p.project.folderName)) || p.projectFolder || '');
 }
 function projectFileLabel(pOrName) {
-  const name = cleanProjectName(typeof pOrName === 'string' ? pOrName : (pOrName && pOrName.projectName));
+  const name = limitProjectName(typeof pOrName === 'string' ? pOrName : (pOrName && pOrName.projectName));
   return (name || '未命名项目') + '.json';
 }
 function projectPathLabel(folder, name) {
@@ -6550,7 +6578,7 @@ async function switchProject(id, name) {
 }
 
 async function newProject(name, quiet, folder) {
-  name = cleanProjectName(name) || '未命名项目';
+  name = limitProjectName(name) || '未命名项目';
   folder = cleanFolderName(folder);
   // 新建必须是一张真正的白纸：不再复用任何“未命名项目”，
   // 否则会把上一份（可能带密码/照片/答案）的存档当成空白项打开，造成泄密。
@@ -6559,7 +6587,7 @@ async function newProject(name, quiet, folder) {
   state.projectName = name;
   state.projectFolder = folder;
   state.named = name !== '未命名项目';
-  $('#projName').textContent = name;
+  setProjNameDisplay(name);
   state.pairCount = 10;
   state.globalPhotoMode = 'single';
   state.hideAttrs = false;
@@ -6588,7 +6616,7 @@ async function newProject(name, quiet, folder) {
   if (!quiet) toast('已新建空白项目「' + name + '」，可在卡片上自定义答案；记得导出项目文件备份');
 }
 function promptNewProject() {
-  openInput('新建项目（会重置当前卡片与连线）· 建好后请导出项目文件备份', '', v => newProject(v));
+  openInput('新建项目（最多10个字符 + .json）· 会重置当前卡片与连线 · 建好后请导出项目文件备份', '', v => newProject(v), { maxLength: PROJECT_NAME_MAX, placeholder: '项目名（最多10个字符）' });
 }
 async function suggestFolderChildName(folder) {
   const base = cleanFolderName(folder).split('/').pop() || '项目';
@@ -6600,43 +6628,45 @@ async function suggestFolderChildName(folder) {
       if (m) max = Math.max(max, Number(m[1]));
     });
   } catch (e) {}
-  return base + '-' + String(max + 1).padStart(2, '0');
+  const suffix = '-' + String(max + 1).padStart(2, '0');
+  const trimmedBase = sliceChars(base, PROJECT_NAME_MAX - suffix.length) || '项目';
+  return trimmedBase + suffix;
 }
 function promptAddChildToFolder(folder) {
   folder = cleanFolderName(folder);
   if (!folder) return;
   suggestFolderChildName(folder).then(suggested => {
-    openInput('在文件夹「' + folder + '」新建子项目 · 导出为文件名.json', suggested, async name => {
-      const nm = cleanProjectName(name);
+    openInput('在文件夹「' + folder + '」新建子项目 · 项目名最多10个字符（含 .json 共15个字符）', suggested, async name => {
+      const nm = limitProjectName(name);
       if (!nm) { toast('项目名不能为空'); return; }
       await newProject(nm, false, folder);
       openProjFolders.add(folder);
       $('#projSwitch').classList.remove('show');
       toast('已在「' + folder + '」创建「' + nm + '.json」');
-    });
+    }, { maxLength: PROJECT_NAME_MAX });
   });
 }
 function promptNewFolderProject() {
-  openInput('新建文件夹（如 GL_泰百CP）· 之后可在文件夹内继续新建子项目', '', v => {
+  openInput('新建文件夹（如 GL_泰百CP，最多10个字符）· 之后可在文件夹内继续新建子项目', '', v => {
     const folder = cleanFolderName(v);
     if (!folder) { toast('文件夹名不能为空'); return; }
     suggestFolderChildName(folder).then(suggested => {
-      openInput('文件夹「' + folder + '」的第一个项目名（导出为文件名.json）', suggested, async name => {
-        const nm = cleanProjectName(name);
+      openInput('文件夹「' + folder + '」的第一个项目名（最多10个字符，含 .json 共15个字符）', suggested, async name => {
+        const nm = limitProjectName(name);
         if (!nm) { toast('项目名不能为空'); return; }
         await newProject(nm, false, folder);
         openProjFolders.add(folder);
         $('#projSwitch').classList.remove('show');
         toast('已建立文件夹「' + folder + '」并创建「' + nm + '.json」');
-      });
+      }, { maxLength: PROJECT_NAME_MAX });
     });
-  });
+  }, { maxLength: FOLDER_NAME_MAX, placeholder: '文件夹名（最多10个字符）' });
 }
 function promptBatchMoveToFolder() {
   const ids = Array.from(selectedProjIds);
   if (!ids.length) { toast('请先勾选要整理的项目（左侧小方框）'); return; }
   if (state.locked && ids.includes(state.projectId)) { toast('当前项目已加密：解锁后才能整理文件夹'); return; }
-  openInput('批量归入文件夹（留空 = 移出文件夹）· ' + ids.length + ' 个项目', '', async v => {
+  openInput('批量归入文件夹（留空 = 移出文件夹，文件夹名最多10个字符）· ' + ids.length + ' 个项目', '', async v => {
     const folder = cleanFolderName(v);
     const all = await listProjects();
     let moved = 0;
@@ -6656,13 +6686,13 @@ function promptBatchMoveToFolder() {
     selectedProjIds.clear();
     await renderProjSwitch();
     toast(folder ? ('已将 ' + moved + ' 个项目归入文件夹「' + folder + '」') : ('已将 ' + moved + ' 个项目移出文件夹'));
-  });
+  }, { maxLength: FOLDER_NAME_MAX });
 }
 function promptMoveProject(p) {
   if (!p || !p.projectId) return;
   if (p.projectId === state.projectId && state.locked) { toast('项目已加密：解锁后才能整理文件夹'); return; }
   const cur = projFolderOf(p);
-  openInput('归入文件夹（留空 = 作为独立单文件）· 可输入已有文件夹名', cur, async v => {
+  openInput('归入文件夹（留空 = 作为独立单文件，文件夹名最多10个字符）· 可输入已有文件夹名', cur, async v => {
     const folder = cleanFolderName(v);
     if (!p.project) p.project = {};
     p.project.folder = folder;
@@ -6675,22 +6705,22 @@ function promptMoveProject(p) {
     if (folder) openProjFolders.add(folder);
     await renderProjSwitch();
     toast(folder ? ('已将「' + projectFileLabel(p) + '」归入文件夹「' + folder + '」') : ('已将「' + projectFileLabel(p) + '」移出文件夹'));
-  });
+  }, { maxLength: FOLDER_NAME_MAX });
 }
 function renameProject() {
-  openInput('重命名项目（导出文件名会随之变化）', state.projectName === '未命名项目' ? '' : state.projectName, async v => {
-    const name = cleanProjectName(v);
+  openInput('重命名项目（最多10个字符，导出为「项目名.json」）', state.projectName === '未命名项目' ? '' : state.projectName, async v => {
+    const name = limitProjectName(v);
     if (!name) { toast('项目名不能为空'); return; }
     state.projectName = name;
     state.named = true;
-    $('#projName').textContent = name;
-    const cn = $('#psCurName'); if (cn) cn.textContent = name;
+    setProjNameDisplay(name);
+    const cn = $('#psCurName'); if (cn) cn.textContent = projectPathLabel(state.projectFolder, name);
     document.title = name ? ('趣味CP连线游戏 · ' + name) : '趣味CP连线游戏';
     triggerAutoSave(true);
     await renderProjSwitch();               // 面板里立即显示新名字，不用重新打开
     renderAll();
     toast('已重命名为「' + name + '」：编辑完成后请导出项目文件备份');
-  });
+  }, { maxLength: PROJECT_NAME_MAX, placeholder: '项目名（最多10个字符）' });
 }
 
 // 远程清单：从 GitHub 等地址拉取项目表
@@ -6819,11 +6849,11 @@ async function remoteHead(url) {
 }
 function remoteMetaChanged(oldMeta, newMeta) {
   if (!oldMeta || !newMeta) return false;
-  // 只用 HTTP 强校验（ETag / Last-Modified）判断更新。
   // content-length 不能用：GET 常是压缩后的长度，HEAD 是原始长度，比较会永久误报“有更新”。
+  // 优先 Last-Modified：部分 CDN 的 ETag 会随压缩/边缘节点变化，但文件其实没改。
+  if (oldMeta.lastModified && newMeta.lastModified) return oldMeta.lastModified !== newMeta.lastModified;
   const tag = v => String(v || '').trim().replace(/^W\//i, '');
   if (oldMeta.etag && newMeta.etag) return tag(oldMeta.etag) !== tag(newMeta.etag);
-  if (oldMeta.lastModified && newMeta.lastModified) return oldMeta.lastModified !== newMeta.lastModified;
   return false;
 }
 function checkRemoteFreshness(e, cache) {
@@ -6862,7 +6892,8 @@ async function loadRemoteEntry(e, opts) {
         $('#projPicker').classList.remove('show');
         toast('⚡ 已从本地缓存载入：' + state.projectName + '（无需重复下载）');
         remoteBusy = false;
-        if (!opts.manual) checkRemoteFreshness(e, cache);
+        // 启动时不再自动弹「远程有更新」：部分 CDN 的 HEAD 校验头每次变化，
+        // 会把未改动文件误判成更新。需要检查更新时，用户点「拉取项目」即可。
         return true;
       }
     }
@@ -8251,7 +8282,7 @@ function bindEvents() {
    启动
    ========================================================= */
 async function initApp() {
-  $('#projName').textContent = state.projectName;
+  setProjNameDisplay(state.projectName);
   bindEvents();
   bindInfoHideUI();
   updateRoleButtons();
