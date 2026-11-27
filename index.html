@@ -11,11 +11,15 @@
    基础
    ========================================================= */
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-html,body{height:100%}
+.ps-list,.ci-hide-menu,.ci-col,.modal,.pp-list,.gift-list,.gift-main,.gift-stage,.ci-main,.photo-grid,#globalView,#matchView{
+  overscroll-behavior:contain;-webkit-overflow-scrolling:touch;
+}
+html,body{height:100%;height:100dvh;overscroll-behavior:none}
 body{
-  margin:0;display:flex;flex-direction:column;height:100vh;background:#0b1120;color:#e2e8f0;
+  margin:0;position:fixed;inset:0;width:100%;display:flex;flex-direction:column;
+  height:100vh;height:100dvh;background:#0b1120;color:#e2e8f0;
   font-family:"Noto Sans SC",-apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
-  overflow:hidden;
+  overflow:hidden;overscroll-behavior:none;
 }
 button{font-family:inherit;border:none;background:none;color:inherit;cursor:pointer;outline:none}
 input,select{font-family:inherit}
@@ -448,6 +452,7 @@ main{
 }
 .ci-label{display:flex;align-items:center;gap:6px;font-size:11.5px;color:#8be9fd;font-weight:800;letter-spacing:.4px;white-space:nowrap}
 .ci-ico{font-size:14px;filter:brightness(1.45) saturate(1.35) drop-shadow(0 0 6px #38bdf877)}
+.ci-ico svg{width:1.05em;height:1.05em;display:block;flex:none}
 .ci-hint{margin-left:auto;font-size:10px;color:#64748b;font-weight:400}
 .orig-nav{margin-left:auto;display:flex;align-items:center;gap:5px}
 .orig-nav .ci-hint{margin-left:0;min-width:44px;text-align:center;color:#7dd3fc}
@@ -477,8 +482,25 @@ main{
 .ci-video{display:flex;align-items:center;gap:8px;flex:1;min-width:0;background:#101b2d;border:1px solid #1e293b;border-radius:12px;padding:5px 8px}
 .ci-video-ico{font-size:15px}
 .ci-video input{flex:1;min-width:0;background:transparent;border:none;color:#e2e8f0;font-size:12.5px;outline:none}
+.ci-video .ci-stop{flex:none;width:78px;max-width:78px;text-align:center;background:#0b1322!important;
+  border:1px solid #334155!important;border-radius:7px!important;padding:3px 5px!important;font-size:11.5px!important}
+.ci-video .ci-stop::placeholder{color:#64748b}
 .ci-play{width:30px;height:30px;border-radius:50%;background:#182234;border:1px solid #334155;color:#94a3b8;font-size:12px;flex:none}
 .ci-play.has{background:#0e7490;border-color:#22d3ee;color:#fff;box-shadow:0 0 12px #06b6d466}
+.ci-video-tools{display:flex;flex-wrap:wrap;align-items:center;gap:6px;padding-top:2px}
+.ci-time-group{display:inline-flex;align-items:center;gap:2px;font-size:10.5px;color:#7dd3fc;font-weight:800;white-space:nowrap}
+.ci-time-label{margin-right:2px}
+.ci-time-part{width:25px;max-width:25px;background:#0b1322;border:1px solid #334155;border-radius:6px;color:#e2e8f0;font-size:11px;text-align:center;padding:3px 2px;outline:none;font-variant-numeric:tabular-nums}
+.ci-time-part:focus{border-color:#38bdf8;box-shadow:0 0 0 2px #38bdf833}
+.ci-time-part::placeholder{color:#64748b;font-size:9.5px}
+.ci-time-colon{color:#64748b;font-weight:700}
+.ci-mark{flex:none;height:24px;padding:0 6px;border-radius:7px;background:#16233a;border:1px solid #2a3a52;color:#7dd3fc;font-size:10.5px;font-weight:800}
+.ci-mark:hover{background:#1d3050;border-color:#38bdf8;color:#e0f2fe}
+.ci-video-meta{font-size:10px;color:#64748b;min-height:13px;line-height:1.35}
+.ci-foot-tools{flex:1 1 100%;padding-top:0}
+.ci-foot .ci-video-meta{flex:1 1 100%;margin-top:-3px}
+.ci-video-block.compact .ci-video-tools,.ci-video-block.compact .ci-video-meta{display:none}
+.ci-modal.readonly .ci-video-tools,.ci-modal.readonly .ci-video-meta{display:none}
 .ci-actions{display:flex;gap:8px;margin-left:auto}
 .ci-modal.readonly .ci-add{display:none}
 .ci-modal.readonly .ci-video,
@@ -525,6 +547,15 @@ main{
 .ci-player .zoom:hover{background:#0e7490;border-color:#22d3ee;color:#fff}
 .ci-player .load:hover{filter:brightness(1.15)}
 .ci-player.done .ph{display:none}
+/* 到达设定停止时间后的“播放完毕”遮罩：B站内嵌会卸掉 iframe，避免片尾推荐画面 */
+.video-stop-overlay{position:absolute;inset:0;z-index:6;display:flex;align-items:center;justify-content:center;
+  background:radial-gradient(circle at 50% 45%,rgba(15,23,42,.78),rgba(2,6,23,.95));backdrop-filter:blur(2px)}
+.video-stop-overlay .vs-card{display:flex;flex-direction:column;align-items:center;gap:9px;padding:18px 22px;
+  border-radius:15px;background:#0f172ae8;border:1px solid #334155;box-shadow:0 16px 44px #0009;color:#e2e8f0;text-align:center}
+.video-stop-overlay .vs-card b{font-size:14px;color:#fbcfe8;letter-spacing:.5px}
+.video-stop-overlay .vs-card span{font-size:11px;color:#94a3b8;line-height:1.5}
+.video-stop-overlay .vs-replay{padding:6px 14px;border-radius:9px;border:1px solid #22d3ee;background:#0e7490;color:#fff;font-size:12px;font-weight:800}
+.video-stop-overlay .vs-replay:hover{filter:brightness(1.12)}
 /* 视频放大浮层 */
 #videoView{position:fixed;inset:0;z-index:430;display:none;align-items:center;justify-content:center;
   background:rgba(2,6,23,.95);backdrop-filter:blur(3px);padding:16px}
@@ -541,7 +572,7 @@ main{
 .vv-fallback a{color:#67e8f9;text-decoration:underline;white-space:nowrap}
 .vv-fallback .vv-tip{max-width:62vw;line-height:1.5}
 #videoView .x{position:fixed;top:18px;right:20px;width:38px;height:38px;border-radius:50%;
-  background:#1e293b;border:1px solid #475569;color:#e2e8f0;font-size:16px;z-index:2}
+  background:#1e293b;border:1px solid #475569;color:#e2e8f0;font-size:16px;z-index:8}
 #videoView .x:hover{background:#ef4444;border-color:#f87171;color:#fff}
 /* 查看原图 */
 #origView{position:fixed;inset:0;z-index:420;display:none;align-items:center;justify-content:center;
@@ -561,7 +592,7 @@ main{
   padding:4px 12px;border-radius:999px;background:rgba(15,23,42,.82);border:1px solid #334155;
   color:#94a3b8;font-size:12px;display:none;z-index:3}
 #origClose{position:fixed;top:18px;right:20px;width:38px;height:38px;border-radius:50%;
-  background:#1e293b;border:1px solid #475569;color:#e2e8f0;font-size:16px;z-index:2}
+  background:#1e293b;border:1px solid #475569;color:#e2e8f0;font-size:16px;z-index:8}
 #origClose:hover{background:#ef4444;color:#fff;border-color:#f87171}
 #origView .hint{position:fixed;left:0;right:0;bottom:16px;text-align:center;color:#64748b;font-size:11px}
 @media (max-width:980px){
@@ -1054,9 +1085,18 @@ body[data-role="grade"] #globalView .card{height:calc(100% - 54px)}
 .gift-setup-pair{font-size:12px;color:#fbcfe8;font-weight:800;line-height:1.5}
 .gift-setup-tip{font-size:11px;color:#64748b;line-height:1.6}
 .gift-url-wrap{display:flex;flex-direction:column;gap:7px}
-.gift-url-wrap input{width:100%;background:#0b1322;border:1px solid #334155;border-radius:9px;color:#e2e8f0;
-  padding:8px 10px;font-size:12px;outline:none}
-.gift-url-wrap input:focus{border-color:#f472b6;box-shadow:0 0 0 3px #f472b622}
+.gift-url-row{display:flex;align-items:center;gap:7px;min-width:0;flex-wrap:wrap}
+.gift-url-row input[type=text]{flex:1 1 180px;min-width:0;width:100%;background:#0b1322;border:1px solid #334155;border-radius:9px;color:#e2e8f0;
+  padding:7px 9px;font-size:12px;outline:none}
+.gift-url-row input[type=text]:focus{border-color:#f472b6;box-shadow:0 0 0 3px #f472b622}
+.gift-times{display:flex;align-items:center;gap:9px;flex-wrap:wrap;flex:none}
+.gift-time{display:inline-flex;align-items:center;gap:2px;font-size:10.5px;color:#f9a8d4;font-weight:800;white-space:nowrap}
+.gift-time-label{margin-right:1px}
+.gift-url-row input.gift-time-part{flex:0 0 24px;width:24px!important;max-width:24px;background:#0b1322;border:1px solid #334155;border-radius:6px;color:#e2e8f0;
+  padding:5px 2px;font-size:11px;text-align:center;outline:none;font-variant-numeric:tabular-nums}
+.gift-url-row input.gift-time-part:focus{border-color:#f472b6;box-shadow:0 0 0 2px #f472b622}
+.gift-url-row input.gift-time-part::placeholder{color:#64748b;font-size:9px}
+.gift-time-colon{color:#64748b;font-weight:700}
 .gift-setup-actions{display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap}
 .gift-setup-actions .clear{margin-right:auto;color:#fda4af;border-color:#7f1d1d;background:#220d0d}
 @media (max-width:980px){
@@ -1065,6 +1105,8 @@ body[data-role="grade"] #globalView .card{height:calc(100% - 54px)}
 }
 @media (max-width:760px){
   .match-guide{display:none}
+  .gift-url-row input[type=text]{flex:1 1 100%}
+  .gift-times{width:100%;justify-content:flex-end}
   .cp-gift{width:78px;height:78px;max-width:none;padding:0}
   .cp-gift .gift-ico{font-size:43px}
   .cp-gift .gift-sub{max-width:100px;font-size:9.5px}
@@ -1202,12 +1244,12 @@ body[data-role="grade"] #globalView .card{height:calc(100% - 54px)}
     </section>
     <section>
       <h3>原图加载</h3>
-      <label class="chk"><input type="checkbox" id="autoOrigChk"> 一键预加载原图（写入缓存，不覆盖本地照片）</label>
+      <label class="chk"><input type="checkbox" id="autoOrigChk"> 一键预加载原图（WiFi / 电脑默认开启，写入缓存，不覆盖本地照片）</label>
       <div class="row" style="margin-top:8px">
         <button class="btn-ghost" id="btnPullOrig">⬇ 立即拉取原图</button>
         <button class="btn-ghost" id="btnClearOrig">🗑 清除原图缓存</button>
       </div>
-      <div class="ps-note">📶 WiFi / 电脑优先原图 URL；手机流量优先本地图，点「查看原图」按张加载。</div>
+      <div class="ps-note">📶 本地图优先；远程图先显示缩略图，WiFi / 电脑自动补原图并写缓存；手机流量按张点按加载。</div>
     </section>
     <section>
       <h3>文件 & 导出</h3>
@@ -1255,7 +1297,7 @@ body[data-role="grade"] #globalView .card{height:calc(100% - 54px)}
     <h2>📁 当前项目：<span id="psCurName">未命名项目</span></h2>
     <h3>点选其他项目即切换，各自数据独立保存，互不混淆</h3>
     <div class="ps-list" id="psList"></div>
-    <div class="ps-note">📌 文件夹用于归类同系列项目（如 GL_泰百CP / GL_泰百CP-01/02）；文件夹名最多10字符，子文件名最多15字符（项目名最多10字符 + .json）。JSON 内保留 folder 归属；可勾选多个项目批量归入。</div>
+    <div class="ps-note">📌 文件夹用于归类同系列项目（如 GL_泰百CP / GL_泰百CP-01/02）；文件夹每段最多15字符，子文件名含 .json 不超过20字符（项目名最多10字符 + .json）。JSON 内保留 folder 归属；可勾选多个项目批量归入。</div>
     <div class="ps-actions">
       <button class="btn-ghost" id="psNew">＋ 新建项目</button>
       <button class="btn-ghost" id="psNewFolder">📁 新建文件夹项目</button>
@@ -1390,7 +1432,7 @@ body[data-role="grade"] #globalView .card{height:calc(100% - 54px)}
 
       <aside class="ci-col right">
         <div class="ci-block" id="ciLineageBlock">
-          <div class="ci-label"><span class="ci-ico">🩸</span>血统<span class="ci-hint">可多个 · 混血可多选</span></div>
+          <div class="ci-label"><span class="ci-ico blood-ico" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 2.4C12 2.4 5.4 10.2 5.4 15.1a6.6 6.6 0 0 0 13.2 0c0-4.9-6.6-12.7-6.6-12.7Z" fill="#ef4444" stroke="#fda4af" stroke-width="1.5"/><path d="M9.4 9.1c-1.2 2-2 4.2-2 5.9" fill="none" stroke="#fecdd3" stroke-width="1.1" stroke-linecap="round" opacity=".55"/></svg></span>血统<span class="ci-hint">可多个 · 混血可多选</span></div>
           <div class="tag-list" id="tag_lineage"></div>
           <div class="tag-add">
             <input type="text" id="in_lineage" placeholder="输入国家，如 中国 / 泰国">
@@ -1438,6 +1480,27 @@ body[data-role="grade"] #globalView .card{height:calc(100% - 54px)}
         <input type="text" id="info_videoUrl" placeholder="粘贴视频链接，例如 https://…">
         <button class="ci-play" id="btnCiVideo" title="播放视频">▶</button>
       </div>
+      <div class="ci-video-tools ci-foot-tools">
+        <div class="ci-time-group">
+          <span class="ci-time-label">起点</span>
+          <input type="text" id="info_videoStartH" class="ci-time-part" inputmode="numeric" maxlength="2" placeholder="时" aria-label="起点 时">
+          <span class="ci-time-colon">:</span>
+          <input type="text" id="info_videoStartM" class="ci-time-part" inputmode="numeric" maxlength="2" placeholder="分" aria-label="起点 分">
+          <span class="ci-time-colon">:</span>
+          <input type="text" id="info_videoStartS" class="ci-time-part" inputmode="numeric" maxlength="2" placeholder="秒" aria-label="起点 秒">
+        </div>
+        <div class="ci-time-group">
+          <span class="ci-time-label">终点</span>
+          <input type="text" id="info_videoStopH" class="ci-time-part" inputmode="numeric" maxlength="2" placeholder="时" aria-label="终点 时">
+          <span class="ci-time-colon">:</span>
+          <input type="text" id="info_videoStopM" class="ci-time-part" inputmode="numeric" maxlength="2" placeholder="分" aria-label="终点 分">
+          <span class="ci-time-colon">:</span>
+          <input type="text" id="info_videoStopS" class="ci-time-part" inputmode="numeric" maxlength="2" placeholder="秒" aria-label="终点 秒">
+        </div>
+        <button type="button" class="ci-mark" id="btnMarkStart" title="把预览视频的当前时间设为起点（B 站无法读取进度，请手填）">⏱起</button>
+        <button type="button" class="ci-mark" id="btnMarkStop" title="把预览视频的当前时间设为终点（B 站无法读取进度，请手填）">⏱终</button>
+      </div>
+      <div class="ci-video-meta" id="ciVideoMeta">总时长 -- · 起点/终点按 时 分 秒 填</div>
       <div class="ci-actions">
         <button class="btn-ghost" data-close="cardInfoModal" id="btnCancelCardInfo">取消</button>
         <button class="btn-primary" id="btnSaveCardInfo">保存</button>
@@ -1469,7 +1532,7 @@ body[data-role="grade"] #globalView .card{height:calc(100% - 54px)}
   <div class="ci-modal gift-modal">
     <div class="ci-top">
       <div class="ci-brand">🎁 年度最佳 CP 视频大礼包 <span id="giftPairTag" style="font-size:11px;color:#fbcfe8;font-weight:700"></span></div>
-      <label class="gift-auto" title="直链 mp4 播完自动切下一条；B站 / YouTube 内嵌无法读取结束时间，请手动点视频按钮切换"><input type="checkbox" id="giftAutoPlay" checked> 直链自动连播</label>
+      <label class="gift-auto" title="填了停止时间的视频到点自动切下一条；未填停止时间时，直链 mp4 播完自动切；B站无停止时间无法判断结束"><input type="checkbox" id="giftAutoPlay" checked> 到点 / 播完自动连播</label>
       <button class="ci-x" data-close="giftModal" title="关闭">✕</button>
     </div>
     <div class="gift-main">
@@ -1488,11 +1551,11 @@ body[data-role="grade"] #globalView .card{height:calc(100% - 54px)}
   <div class="modal">
     <h2>🎁 为这对 CP 设置大礼包？</h2>
     <div class="gift-setup-pair" id="giftSetupPair"></div>
-    <div class="gift-setup-tip">最多 3 个视频链接，支持 B 站 BV 号 / B 站视频页、YouTube、直链 mp4。留空或点「否」= 不设置；之后解绑再重新连线，可再次修改。</div>
+    <div class="gift-setup-tip">最多 3 个视频链接，支持 B 站 BV 号 / B 站视频页、YouTube、直链 mp4。留空或点「否」= 不设置；之后解绑再重新连线，可再次修改。起点/终点都按时、分、秒分开填；起点要早于终点，终点留空 = 播到结尾。B 站用起点参数定位，从载入开始计时，建议终点小于实际时长。</div>
     <div class="gift-url-wrap">
-      <input type="text" id="giftUrl1" placeholder="视频链接 1（可留空）">
-      <input type="text" id="giftUrl2" placeholder="视频链接 2（可留空）">
-      <input type="text" id="giftUrl3" placeholder="视频链接 3（可留空）">
+      <div class="gift-url-row"><input type="text" id="giftUrl1" placeholder="视频链接 1（可留空）"><div class="gift-times"><span class="gift-time"><span class="gift-time-label">起</span><input type="text" id="giftStart1H" class="gift-time-part" inputmode="numeric" maxlength="2" placeholder="时" aria-label="视频1 起点 时"><span class="gift-time-colon">:</span><input type="text" id="giftStart1M" class="gift-time-part" inputmode="numeric" maxlength="2" placeholder="分" aria-label="视频1 起点 分"><span class="gift-time-colon">:</span><input type="text" id="giftStart1S" class="gift-time-part" inputmode="numeric" maxlength="2" placeholder="秒" aria-label="视频1 起点 秒"></span><span class="gift-time"><span class="gift-time-label">止</span><input type="text" id="giftStop1H" class="gift-time-part" inputmode="numeric" maxlength="2" placeholder="时" aria-label="视频1 终点 时"><span class="gift-time-colon">:</span><input type="text" id="giftStop1M" class="gift-time-part" inputmode="numeric" maxlength="2" placeholder="分" aria-label="视频1 终点 分"><span class="gift-time-colon">:</span><input type="text" id="giftStop1S" class="gift-time-part" inputmode="numeric" maxlength="2" placeholder="秒" aria-label="视频1 终点 秒"></span></div></div>
+      <div class="gift-url-row"><input type="text" id="giftUrl2" placeholder="视频链接 2（可留空）"><div class="gift-times"><span class="gift-time"><span class="gift-time-label">起</span><input type="text" id="giftStart2H" class="gift-time-part" inputmode="numeric" maxlength="2" placeholder="时" aria-label="视频2 起点 时"><span class="gift-time-colon">:</span><input type="text" id="giftStart2M" class="gift-time-part" inputmode="numeric" maxlength="2" placeholder="分" aria-label="视频2 起点 分"><span class="gift-time-colon">:</span><input type="text" id="giftStart2S" class="gift-time-part" inputmode="numeric" maxlength="2" placeholder="秒" aria-label="视频2 起点 秒"></span><span class="gift-time"><span class="gift-time-label">止</span><input type="text" id="giftStop2H" class="gift-time-part" inputmode="numeric" maxlength="2" placeholder="时" aria-label="视频2 终点 时"><span class="gift-time-colon">:</span><input type="text" id="giftStop2M" class="gift-time-part" inputmode="numeric" maxlength="2" placeholder="分" aria-label="视频2 终点 分"><span class="gift-time-colon">:</span><input type="text" id="giftStop2S" class="gift-time-part" inputmode="numeric" maxlength="2" placeholder="秒" aria-label="视频2 终点 秒"></span></div></div>
+      <div class="gift-url-row"><input type="text" id="giftUrl3" placeholder="视频链接 3（可留空）"><div class="gift-times"><span class="gift-time"><span class="gift-time-label">起</span><input type="text" id="giftStart3H" class="gift-time-part" inputmode="numeric" maxlength="2" placeholder="时" aria-label="视频3 起点 时"><span class="gift-time-colon">:</span><input type="text" id="giftStart3M" class="gift-time-part" inputmode="numeric" maxlength="2" placeholder="分" aria-label="视频3 起点 分"><span class="gift-time-colon">:</span><input type="text" id="giftStart3S" class="gift-time-part" inputmode="numeric" maxlength="2" placeholder="秒" aria-label="视频3 起点 秒"></span><span class="gift-time"><span class="gift-time-label">止</span><input type="text" id="giftStop3H" class="gift-time-part" inputmode="numeric" maxlength="2" placeholder="时" aria-label="视频3 终点 时"><span class="gift-time-colon">:</span><input type="text" id="giftStop3M" class="gift-time-part" inputmode="numeric" maxlength="2" placeholder="分" aria-label="视频3 终点 分"><span class="gift-time-colon">:</span><input type="text" id="giftStop3S" class="gift-time-part" inputmode="numeric" maxlength="2" placeholder="秒" aria-label="视频3 终点 秒"></span></div></div>
     </div>
     <div class="gift-setup-actions">
       <button class="btn-ghost preview" id="giftPreview" type="button" title="用当前填写的链接预览播放界面">▶ 预览</button>
@@ -1634,7 +1697,7 @@ function makeAuthorBar() {
 const state = {
   pairCount: 10,
   cards: [],
-  answers: { attrs: {}, pairs: [], pairOffsets: {}, pairPhotos: {}, gifts: {} },
+  answers: { attrs: {}, pairs: [], pairOffsets: {}, pairPhotos: {}, gifts: {}, giftStarts: {}, giftStops: {} },
   players: [],
   currentPlayerId: null,
   mode: 'global',          // global | match
@@ -1769,12 +1832,44 @@ function giftVideosFor(a, b) {
   const list = state.answers && state.answers.gifts ? state.answers.gifts[key] : null;
   return Array.isArray(list) ? list.slice(0, 3).filter(Boolean) : [];
 }
-function setGiftVideos(a, b, urls) {
+function giftStopsFor(a, b) {
+  const key = getPairKey(Number(a), Number(b));
+  const raw = state.answers && state.answers.giftStops ? state.answers.giftStops[key] : null;
+  const urls = giftVideosFor(a, b);
+  const src = Array.isArray(raw) ? raw : [];
+  return urls.map((_, i) => normalizeVideoStop(src[i] || 0));
+}
+function giftStartsFor(a, b) {
+  const key = getPairKey(Number(a), Number(b));
+  const raw = state.answers && state.answers.giftStarts ? state.answers.giftStarts[key] : null;
+  const urls = giftVideosFor(a, b);
+  const src = Array.isArray(raw) ? raw : [];
+  return urls.map((_, i) => normalizeVideoStop(src[i] || 0));
+}
+function setGiftVideos(a, b, urls, starts, stops) {
   const key = getPairKey(Number(a), Number(b));
   if (!state.answers.gifts) state.answers.gifts = {};
-  const list = (urls || []).map(v => String(v || '').trim()).filter(Boolean).slice(0, 3);
-  if (list.length) state.answers.gifts[key] = list;
-  else delete state.answers.gifts[key];
+  if (!state.answers.giftStarts) state.answers.giftStarts = {};
+  if (!state.answers.giftStops) state.answers.giftStops = {};
+  const items = (urls || []).map((v, i) => ({
+    url: String(v || '').trim(),
+    start: normalizeVideoStop((starts || [])[i] || 0),
+    stop: normalizeVideoStop((stops || [])[i] || 0)
+  })).filter(x => x.url).slice(0, 3);
+  const list = items.map(x => x.url);
+  const startList = items.map(x => x.start);
+  const stopList = items.map(x => x.stop);
+  if (list.length) {
+    state.answers.gifts[key] = list;
+    if (startList.some(Boolean)) state.answers.giftStarts[key] = startList;
+    else delete state.answers.giftStarts[key];
+    if (stopList.some(Boolean)) state.answers.giftStops[key] = stopList;
+    else delete state.answers.giftStops[key];
+  } else {
+    delete state.answers.gifts[key];
+    delete state.answers.giftStarts[key];
+    delete state.answers.giftStops[key];
+  }
   renderScores();
   triggerAutoSave(true);
 }
@@ -1843,9 +1938,13 @@ function maybePromptGift(a, b) {
 function openGiftSetup(a, b) {
   giftSetupPair = { a: Number(a), b: Number(b) };
   const existing = giftVideosFor(a, b);
+  const starts = giftStartsFor(a, b);
+  const stops = giftStopsFor(a, b);
   $('#giftSetupPair').textContent = '💞 ' + giftPairTitle(a, b);
   ['#giftUrl1', '#giftUrl2', '#giftUrl3'].forEach((sel, i) => {
     const el = $(sel); if (el) el.value = existing[i] || '';
+    setTimeParts('giftStart' + (i + 1), starts[i] || 0);
+    setTimeParts('giftStop' + (i + 1), stops[i] || 0);
   });
   const clr = $('#giftClear');
   if (clr) clr.style.display = existing.length ? '' : 'none';
@@ -1858,26 +1957,28 @@ function closeGiftSetup() {
   // 关闭设置窗后立即刷新出题匹配视角：保存→彩色，取消/清空→灰色
   if (state.mode === 'match') renderMatch();
 }
-function giftSetupUrls() {
-  return ['#giftUrl1', '#giftUrl2', '#giftUrl3']
-    .map(sel => { const el = $(sel); return el ? el.value.trim() : ''; })
-    .filter(Boolean).slice(0, 3);
+function giftSetupItems() {
+  return [1, 2, 3].map(i => ({
+    url: ($('#giftUrl' + i) && $('#giftUrl' + i).value || '').trim(),
+    start: readTimeParts('giftStart' + i),
+    stop: readTimeParts('giftStop' + i)
+  })).filter(x => x.url).slice(0, 3);
 }
 function previewGiftSetup() {
   if (!giftSetupPair) return;
-  const urls = giftSetupUrls();
-  if (!urls.length) { toast('请先填写至少一个视频链接再预览'); return; }
+  const items = giftSetupItems();
+  if (!items.length) { toast('请先填写至少一个视频链接再预览'); return; }
   // 不关闭设置窗，播放层临时置顶；关闭播放后仍可继续修改/保存
   $('#giftModal').classList.add('mask-top');
-  openGiftModal({ key: getPairKey(giftSetupPair.a, giftSetupPair.b), a: giftSetupPair.a, b: giftSetupPair.b, urls });
+  openGiftModal({ key: getPairKey(giftSetupPair.a, giftSetupPair.b), a: giftSetupPair.a, b: giftSetupPair.b, urls: items.map(x => x.url), starts: items.map(x => x.start), stops: items.map(x => x.stop) });
 }
 function saveGiftSetup() {
   if (!giftSetupPair) return;
-  const list = ['#giftUrl1', '#giftUrl2', '#giftUrl3']
-    .map(sel => { const el = $(sel); return el ? el.value.trim() : ''; })
-    .filter(Boolean).slice(0, 3);
-  setGiftVideos(giftSetupPair.a, giftSetupPair.b, list);
-  const had = list.length;
+  const items = giftSetupItems();
+  const bad = items.find(x => x.stop && x.start >= x.stop);
+  if (bad) { toast('大礼包的起点要早于终点；请把终点调到起点之后，或把终点留空'); return; }
+  setGiftVideos(giftSetupPair.a, giftSetupPair.b, items.map(x => x.url), items.map(x => x.start), items.map(x => x.stop));
+  const had = items.length;
   closeGiftSetup();
   toast(had ? '已保存这对 CP 的大礼包（' + had + ' 个视频）' : '未填写链接，已跳过该 CP 的大礼包');
 }
@@ -1897,7 +1998,9 @@ function giftForSelection() {
     const ansPairs = (state.answers && state.answers.pairs) || [];
     if (!ansPairs.some(pr => (pr[0] === a && pr[1] === b) || (pr[0] === b && pr[1] === a))) return null;
     const urls = giftVideosFor(a, b);
-    return { key, a, b, urls, editable: true };
+    const starts = giftStartsFor(a, b);
+    const stops = giftStopsFor(a, b);
+    return { key, a, b, urls, starts, stops, editable: true };
   }
   // 玩家模式：必须已经锁死为玩家的正式 CP，且只显示已设置礼包的彩色入口
   if (state.role !== 'player') return null;
@@ -1906,7 +2009,9 @@ function giftForSelection() {
   if (!isCorrectPair(a, b)) return null;
   const urls = giftVideosFor(a, b);
   if (!urls.length) return null;
-  return { key, a, b, urls, editable: false };
+  const starts = giftStartsFor(a, b);
+  const stops = giftStopsFor(a, b);
+  return { key, a, b, urls, starts, stops, editable: false };
 }
 function playGiftSound() {
   try {
@@ -1916,6 +2021,7 @@ function playGiftSound() {
     const t0 = ac.currentTime;
     [880, 1174, 1568].forEach((freq, i) => {
       const o = ac.createOscillator(), g = ac.createGain();
+      if (!o || !g || !ac.destination) return;
       o.type = 'triangle'; o.frequency.value = freq;
       const t = t0 + i * 0.07;
       g.gain.setValueAtTime(0, t);
@@ -1993,7 +2099,7 @@ function makeGiftCorner(gift) {
       openGiftSetup(gift.a, gift.b);
       return;
     }
-    openGiftModal({ key: gift.key, a: gift.a, b: gift.b, urls });
+    openGiftModal({ key: gift.key, a: gift.a, b: gift.b, urls, starts: gift.starts, stops: gift.stops });
   });
   wrap.appendChild(btn);
   if (fresh) {
@@ -2029,46 +2135,61 @@ function renderGiftStage(url, opts) {
   const stage = $('#giftStage');
   if (!stage) return;
   clearGiftAutoTimer();
+  clearVideoStopTimer(stage);
   stage.innerHTML = '';
   const emb = videoEmbed(url);
+  const start = normalizeVideoStop(opts.start || 0);
+  const e = emb ? embedAtStart(emb, start) : null;
+  const stop = normalizeVideoStop(opts.stop || 0);
+  const hasNext = !!opts.hasNext;
   const autoChk = $('#giftAutoPlay');
-  // B站 / YouTube 无法读取结束事件：自动连播只对直链视频生效，内嵌时禁用勾选并提示手动切换
-  if (autoChk) autoChk.disabled = !!(emb && emb.type === 'iframe');
-  if (!emb) {
+  // B站/YouTube 读不到进度：填了停止时间才能到点自动切；没填则只有直链能靠 ended 连播
+  if (autoChk) {
+    const canAuto = !!emb && hasNext && (emb.type === 'video' || stop > 0);
+    autoChk.disabled = !canAuto;
+    autoChk.title = !hasNext
+      ? '已是最后一个视频'
+      : (emb && emb.type === 'iframe' && !stop
+        ? 'B站/YouTube 未填停止时间，无法判断结束；填停止秒数即可自动切下一条'
+        : '填了停止时间的视频到点自动切下一条；直链未填停止时间则按播完切换');
+  }
+  if (!e) {
     const empty = document.createElement('div');
     empty.className = 'gift-empty';
     empty.innerHTML = '该链接暂不支持内嵌播放。<br><a href="' + esc(url) + '" target="_blank" rel="noopener noreferrer">在新标签页打开视频</a>';
     stage.appendChild(empty);
     return;
   }
-  if (emb.type === 'iframe') {
+  if (e.type === 'iframe') {
     const f = document.createElement('iframe');
     // 大礼包打开时尝试自动播放；被浏览器策略拦截也不影响手动播放
-    f.src = autoPlayEmbedUrl(emb.url);
+    f.src = autoPlayEmbedUrl(e.url);
     f.setAttribute('allow', 'autoplay; fullscreen; picture-in-picture');
     f.allowFullscreen = true;
     f.referrerPolicy = 'no-referrer';
     f.title = '年度最佳 CP 视频';
     stage.appendChild(f);
-    // B站 / YouTube 内嵌无法可靠读取播放结束事件：不硬切换，由用户点上方视频按钮手动切换
   } else {
     const v = document.createElement('video');
-    v.src = emb.url; v.controls = true; v.autoplay = true; v.playsInline = true;
-    if (opts.hasNext && opts.auto) {
-      v.addEventListener('ended', () => { if (giftAutoEnabled()) giftAdvance(); });
-    }
+    v.src = e.url; v.controls = true; v.autoplay = false; v.preload = 'auto'; v.playsInline = true;
     stage.appendChild(v);
-    const pp = v.play && v.play();
-    if (pp && pp.catch) pp.catch(() => {});
+    startDirectVideo(v, e.start);
   }
   // 内嵌被平台限制时，给一个始终可点的跳转兜底
   const jump = document.createElement('a');
   jump.className = 'gift-fallback';
-  jump.href = emb.url;
+  jump.href = e.watchUrl || url;
   jump.target = '_blank';
   jump.rel = 'noopener noreferrer';
-  jump.textContent = '无法播放？在新标签打开 ↗';
+  jump.textContent = /bilibili/i.test(e.watchUrl || url) ? '在B站看高清 ↗' : '无法播放？在新标签打开 ↗';
   stage.appendChild(jump);
+  applyVideoStop(stage, e, stop, {
+    start: e.start,
+    auto: !!(opts.auto && giftAutoEnabled() && hasNext),
+    onStop: giftAdvance,
+    note: stop ? '已到达设定时间，已停止播放' : '视频已播放完毕',
+    replay: () => playGiftIndex(giftPlayIndex)
+  });
 }
 function playGiftIndex(i) {
   if (!currentGift) return;
@@ -2080,7 +2201,9 @@ function playGiftIndex(i) {
   if (list) {
     list.querySelectorAll('.gift-item').forEach((el, j) => el.classList.toggle('on', j === i));
   }
-  renderGiftStage(urls[i], { auto: giftAutoEnabled(), hasNext: i + 1 < urls.length });
+  const starts = currentGift.starts || [];
+  const stops = currentGift.stops || [];
+  renderGiftStage(urls[i], { auto: giftAutoEnabled(), hasNext: i + 1 < urls.length, start: starts[i] || 0, stop: stops[i] || 0 });
 }
 function openGiftModal(gift) {
   currentGift = gift;
@@ -2109,7 +2232,7 @@ function closeGiftModal() {
     mask.classList.remove('mask-top'); // 预览播放层恢复普通层级，下面仍保留设置窗
   }
   const stage = $('#giftStage');
-  if (stage) stage.innerHTML = '';
+  if (stage) { clearVideoStopTimer(stage); stage.innerHTML = ''; }
   currentGift = null;
   giftPlayIndex = 0;
 }
@@ -2509,6 +2632,8 @@ function normalizeCard(c, i) {
     photoMode: c.photoMode === 'grid' ? 'grid' : 'single',
     photoIdx: typeof c.photoIdx === 'number' ? c.photoIdx : 0,
     videoUrl: c.videoUrl || '',
+    videoStart: normalizeVideoStop(c.videoStart),
+    videoStop: normalizeVideoStop(c.videoStop),
     showName: c.showName !== false,
     showNationality: !!c.showNationality,
     showHeight: c.showHeight !== false,
@@ -2562,6 +2687,113 @@ function normalizePairs(arr) {
   return arr.filter(pr => Array.isArray(pr) && pr.length === 2 && !isNaN(pr[0]) && !isNaN(pr[1]))
             .map(pr => [Number(pr[0]), Number(pr[1])]);
 }
+// 视频停止时间：支持 45、45秒、1:30、01:30、1分30秒；返回秒数，0/空 = 不截停
+function normalizeVideoStop(v) {
+  if (typeof v === 'number' && isFinite(v)) return Math.max(0, Math.min(86400, Math.round(v)));
+  let s = String(v == null ? '' : v).trim().toLowerCase();
+  if (!s) return 0;
+  s = s.replace(/秒|s$/g, '');
+  const cn = s.match(/^(\d+)\s*分(?:(\d+)\s*秒?)?$/);
+  if (cn) return Math.max(0, Math.min(86400, Number(cn[1]) * 60 + Number(cn[2] || 0)));
+  if (s.indexOf(':') >= 0) {
+    const parts = s.split(':').map(x => Number(String(x).replace(/[^\d.]/g, '')));
+    if (parts.length >= 2 && parts.every(n => isFinite(n))) {
+      const total = parts.length === 3
+        ? parts[0] * 3600 + parts[1] * 60 + parts[2]
+        : parts[0] * 60 + parts[1];
+      return Math.max(0, Math.min(86400, Math.round(total)));
+    }
+  }
+  const n = Number(s.replace(/[^\d.]/g, ''));
+  return isFinite(n) ? Math.max(0, Math.min(86400, Math.round(n))) : 0;
+}
+function formatVideoStop(v) {
+  const n = normalizeVideoStop(v);
+  if (!n) return '';
+  if (n < 60) return String(n);
+  const h = Math.floor(n / 3600), m = Math.floor((n % 3600) / 60), sec = n % 60;
+  return (h ? h + ':' + String(m).padStart(2, '0') : String(m)) + ':' + String(sec).padStart(2, '0');
+}
+// 时间输入：时 / 分 / 秒分开填，避免 00:35 被解析成 35 后不好回填。
+function setTimeParts(prefix, seconds) {
+  const n = normalizeVideoStop(seconds);
+  const h = Math.floor(n / 3600);
+  const m = Math.floor((n % 3600) / 60);
+  const sec = n % 60;
+  ['H', 'M', 'S'].forEach((k, i) => {
+    const el = document.getElementById(prefix + k);
+    if (!el) return;
+    if (!n) { el.value = ''; return; }
+    el.value = String([h, m, sec][i]).padStart(2, '0');
+  });
+}
+function readTimeParts(prefix) {
+  const val = k => {
+    const el = document.getElementById(prefix + k);
+    const n = el ? parseInt(String(el.value).replace(/[^0-9]/g, ''), 10) : 0;
+    return isFinite(n) ? Math.max(0, n) : 0;
+  };
+  const h = Math.min(99, val('H'));
+  const m = Math.min(59, val('M'));
+  const s = Math.min(59, val('S'));
+  return Math.max(0, Math.min(86400, h * 3600 + m * 60 + s));
+}
+function normalizeTimePartInput(el, max) {
+  if (!el) return;
+  let v = String(el.value || '').replace(/[^0-9]/g, '').slice(0, 2);
+  if (v === '') { el.value = ''; return; }
+  v = String(Math.min(max, parseInt(v, 10) || 0)).padStart(2, '0');
+  el.value = v;
+}
+function bindTimeParts(prefix, onCommit) {
+  ['H', 'M', 'S'].forEach((k, i) => {
+    const el = document.getElementById(prefix + k);
+    if (!el) return;
+    const max = i === 0 ? 99 : 59;
+    el.addEventListener('input', () => {
+      let v = String(el.value || '').replace(/[^0-9]/g, '').slice(0, 2);
+      el.value = v;
+      if (v.length === 2 && i < 2) {
+        const next = document.getElementById(prefix + ['H', 'M', 'S'][i + 1]);
+        if (next) next.focus();
+      }
+    });
+    // 只做格式化，不在这里提交：自动跳到下一格时 change 会提前触发，
+    // 若立刻回填会把刚输入一半的时间清空（B 站起点写不进去的根因）。
+    el.addEventListener('change', () => normalizeTimePartInput(el, max));
+    el.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); el.blur(); } });
+  });
+  // 焦点离开“时/分/秒”这一组后，才提交整组时间；组内跳格不会误触发。
+  const group = document.getElementById(prefix + 'H')?.closest('.ci-time-group, .gift-time');
+  if (group && typeof onCommit === 'function' && !group.dataset.timeCommitBound) {
+    group.dataset.timeCommitBound = '1';
+    group.addEventListener('focusout', ev => {
+      if (group.contains(ev.relatedTarget)) return;
+      onCommit();
+    });
+  }
+}
+// CP 大礼包：answers.giftStarts / giftStops = { "0-1": [30, 0, 0] }，与 gifts 的链接逐条对应
+function normalizeGiftStarts(obj) {
+  const out = {};
+  if (!obj || typeof obj !== 'object' || Array.isArray(obj)) return out;
+  Object.keys(obj).forEach(k => {
+    if (!/^\d+-\d+$/.test(String(k))) return;
+    const list = (Array.isArray(obj[k]) ? obj[k] : []).slice(0, 3).map(normalizeVideoStop);
+    if (list.some(Boolean)) out[k] = list;
+  });
+  return out;
+}
+function normalizeGiftStops(obj) {
+  const out = {};
+  if (!obj || typeof obj !== 'object' || Array.isArray(obj)) return out;
+  Object.keys(obj).forEach(k => {
+    if (!/^\d+-\d+$/.test(String(k))) return;
+    const list = (Array.isArray(obj[k]) ? obj[k] : []).slice(0, 3).map(normalizeVideoStop);
+    if (list.some(Boolean)) out[k] = list;
+  });
+  return out;
+}
 // CP 大礼包：answers.gifts = { "0-1": ["视频1", "视频2", "视频3"] }
 function normalizeGifts(obj) {
   const out = {};
@@ -2609,7 +2841,9 @@ function buildCards(n, fresh) {
   const attrs = {};
   if (!fresh && !state.hideAttrs) state.cards.forEach((c, i) => { attrs[c.id] = i % 2 === 0 ? 1 : 0; });  // 新建项目留空；隐藏属性时也不生成
   const gifts = fresh ? {} : ((state.answers && state.answers.gifts) || {});
-  state.answers = { attrs, pairs: [], pairOffsets: {}, pairPhotos: {}, gifts: normalizeGifts(gifts) };
+  const giftStarts = fresh ? {} : ((state.answers && state.answers.giftStarts) || {});
+  const giftStops = fresh ? {} : ((state.answers && state.answers.giftStops) || {});
+  state.answers = { attrs, pairs: [], pairOffsets: {}, pairPhotos: {}, gifts: normalizeGifts(gifts), giftStarts: normalizeGiftStarts(giftStarts), giftStops: normalizeGiftStops(giftStops) };
 
   state.players.forEach(p => {
     p.attrs = {};
@@ -2641,7 +2875,7 @@ function initDefault() {
   state.globalPhotoMode = 'single';
   state.hideAttrs = false;
   state.cards = [];
-  state.answers = { attrs: {}, pairs: [], pairOffsets: {}, pairPhotos: {}, gifts: {} };
+  state.answers = { attrs: {}, pairs: [], pairOffsets: {}, pairPhotos: {}, gifts: {}, giftStarts: {}, giftStops: {} };
   buildCards(10, true);
   state.players = [newPlayer('玩家1', 0)];
   state.currentPlayerId = state.players[0].id;
@@ -3143,7 +3377,7 @@ function makeCard(card, opts) {
     vb.title = card.videoUrl ? '播放个人视频介绍' : '暂无视频链接';
     vb.addEventListener('click', e => {
       e.stopPropagation();
-      if (card.videoUrl) openVideoView(videoEmbed(card.videoUrl), card.videoUrl);
+      if (card.videoUrl) openVideoView(videoEmbed(card.videoUrl), card.videoUrl, card.videoStop, card.videoStart);
       else if (canEdit()) { toast('还没有填写视频链接'); openCardInfoModal(card, false); }
       else toast('暂无视频');
     });
@@ -4085,7 +4319,11 @@ function saveOrigCache() {
 }
 const AUTO_ORIG_KEY = 'cp.autoOrig';
 let AUTO_ORIG = (function () {
-  try { return localStorage.getItem(AUTO_ORIG_KEY) === '1'; } catch (e) { return false; }
+  try {
+    const v = localStorage.getItem(AUTO_ORIG_KEY);
+    // 默认开启：WiFi / 电脑才会真正预加载；手机流量仍由 netAllowsAutoOrig() 拦住
+    return v === null ? true : v === '1';
+  } catch (e) { return true; }
 })();
 
 /* =========================================================
@@ -4101,6 +4339,8 @@ let THUMB_WARMING = Object.create(null);
 let THUMB_FAILED = Object.create(null);
 let THUMB_QUEUE = [];
 let THUMB_ACTIVE = 0;
+// 远程图先生成缩略图再换上，避免直接把大图塞进卡片造成闪图/大图解码
+const IMG_THUMB_PLACEHOLDER = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
 
 function thumbCacheKey(card, idx, src) {
   if (!card || !src) return '';
@@ -4127,6 +4367,8 @@ function runThumbJob(key, src) {
       refreshThumbImg(key, data);
     } else {
       THUMB_FAILED[key] = 1;
+      // 缩略图生成失败时，WiFi 才回退原图；流量模式仍然保持点击加载
+      if (!NET_METERED && (isHttpUrl(src) || String(src).slice(0, 5) === 'blob:')) refreshThumbImg(key, src);
     }
     delete THUMB_WARMING[key];
     THUMB_ACTIVE = Math.max(0, THUMB_ACTIVE - 1);
@@ -4162,6 +4404,12 @@ function thumbInfo(card, idx) {
   if (THUMB_CACHE[key]) return { src: THUMB_CACHE[key], key };
   if (THUMB_FAILED[key]) return { src: (NET_METERED && isHttpUrl(src)) ? '' : src, key: '' };
   if (NET_METERED && isHttpUrl(src)) return { src: '', key }; // 手机流量：不主动下载远程大图
+  if (isHttpUrl(src) || String(src).slice(0, 5) === 'blob:') {
+    // WiFi / 原图直链 / 已缓存 blob：先占位并生成缩略图，缩略图就绪后 refreshThumbImg 换图；
+    // 不先把整张原图当 src，避免大图解码/换图造成页面闪图
+    warmThumb(key, src);
+    return { src: IMG_THUMB_PLACEHOLDER, key };
+  }
   warmThumb(key, src);
   return { src: src, key };
 }
@@ -4180,6 +4428,13 @@ function isMobileLike() {
   if (innerWidth <= 760) return true;
   return !!(window.matchMedia && matchMedia('(pointer:coarse)').matches && innerWidth <= 1180);
 }
+// 手机（含横屏）才默认按流量；平板/电脑识别不到网络类型时按 WiFi 处理，便于自动预加载原图
+function isPhoneLike() {
+  const ua = navigator.userAgent || '';
+  if (/iPhone|iPod|Windows Phone/i.test(ua)) return true;
+  if (/Android/i.test(ua) && /Mobile/i.test(ua)) return true;
+  return innerWidth <= 760 && !!(window.matchMedia && matchMedia('(pointer:coarse)').matches);
+}
 function detectNetworkKind() {
   const c = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
   if (c) {
@@ -4190,11 +4445,11 @@ function detectNetworkKind() {
     if (type === 'ethernet') return 'wired';
     if (c.effectiveType && /^(slow-2g|2g|3g)$/.test(String(c.effectiveType))) return 'metered';
   }
-  // 识别不到类型时：手机默认按流量省流；电脑默认视为 WiFi
-  return isMobileLike() ? 'metered' : 'wifi';
+  // 识别不到类型时：手机默认按流量省流；平板/电脑默认视为 WiFi
+  return isPhoneLike() ? 'metered' : 'wifi';
 }
 function detectMeteredNetwork() { return detectNetworkKind() === 'metered'; }
-function netAllowsAutoOrig() { return NET_KIND === 'wifi'; }
+function netAllowsAutoOrig() { return NET_KIND === 'wifi' || NET_KIND === 'wired'; }
 let NET_KIND = detectNetworkKind();
 let NET_METERED = NET_KIND === 'metered';
 function syncAutoOrigChk() {
@@ -4491,16 +4746,129 @@ function videoEmbed(url) {
   }
   const bv = raw.match(/(BV[0-9A-Za-z]{10})/) || raw.match(/[?&]bvid=(BV[0-9A-Za-z]{10})/);
   if (bv) {
-    return { type: 'iframe', url: 'https://player.bilibili.com/player.html?bvid=' + bv[1] + '&page=1&high_quality=1&danmaku=0&autoplay=0' };
+    return { type: 'iframe', url: 'https://player.bilibili.com/player.html?bvid=' + bv[1] + '&page=1&high_quality=1&danmaku=0&autoplay=0', watchUrl: 'https://www.bilibili.com/video/' + bv[1] + '/' };
   }
   const yt = raw.match(/youtu(?:\.be\/|be\.com\/watch\?v=)([\w-]{11})/);
-  if (yt) return { type: 'iframe', url: 'https://www.youtube.com/embed/' + yt[1] };
-  if (/\.(mp4|webm|ogv)(\?|#|$)/i.test(raw)) return { type: 'video', url: raw };
+  if (yt) return { type: 'iframe', url: 'https://www.youtube.com/embed/' + yt[1], watchUrl: 'https://www.youtube.com/watch?v=' + yt[1] };
+  if (/\.(mp4|webm|ogv)(\?|#|$)/i.test(raw)) return { type: 'video', url: raw, watchUrl: raw };
   return null;
 }
+function setQueryParam(url, key, value) {
+  try {
+    const u = new URL(String(url).replace(/&amp;/g, '&'), location.href);
+    u.searchParams.set(key, String(value));
+    return u.href;
+  } catch (e) { return url; }
+}
+// 小屏/触屏优先用 B 站自己的网页播放器，绕开 player.html 在移动端跳转到 mbplayer 的链路；
+// 这条链路容易触发“打开哔哩哔哩 APP”，不是我们页面想做的跳转。
+function preferBiliMobilePlayer() {
+  const touch = (navigator.maxTouchPoints || 0) > 0 || (matchMedia && matchMedia('(pointer:coarse)').matches);
+  return !!touch && (isTabletUI() || innerWidth <= 900);
+}
+function biliMobilePlayerUrl(src) {
+  try {
+    const u = new URL(String(src).replace(/&amp;/g, '&'), location.href);
+    const q = new URLSearchParams();
+    const bvid = u.searchParams.get('bvid');
+    const aid = u.searchParams.get('aid');
+    if (bvid) q.set('bvid', bvid); else if (aid) q.set('aid', aid);
+    q.set('p', u.searchParams.get('page') || u.searchParams.get('p') || '1');
+    q.set('autoplay', u.searchParams.get('autoplay') || '1');
+    q.set('t', u.searchParams.get('t') || '0');
+    q.set('high_quality', u.searchParams.get('high_quality') || '1');
+    q.set('danmaku', u.searchParams.get('danmaku') || '0');
+    return 'https://www.bilibili.com/blackboard/html5mobileplayer.html?' + q.toString();
+  } catch (e) { return src; }
+}
+// 给嵌入地址加起播点：B 站用 t=秒，YouTube 用 start=秒；直链由 video 自己 seek
+function embedAtStart(emb, start) {
+  if (!emb) return emb;
+  const s = normalizeVideoStop(start);
+  let u = emb.url;
+  if (/player\.bilibili\.com/i.test(u)) {
+    // B 站用 t 参数把进度条定位到起点；0 也显式写入，避免记忆播放从上次位置续播
+    u = setQueryParam(u, 't', s);
+    if (preferBiliMobilePlayer()) u = biliMobilePlayerUrl(u);
+  } else if (s > 0 && /youtube\.com\/embed\//i.test(u)) {
+    u = setQueryParam(u, 'start', s);
+  }
+  return Object.assign({}, emb, { url: u, start: s });
+}
+// 直链：等元数据/可播放后再 seek 到起点并播放，避免先闪 00:00 再跳
+function startDirectVideo(v, start) {
+  if (!v) return;
+  const s = normalizeVideoStop(start);
+  let started = false;
+  // 元数据还没到也先排一个 seek 请求，浏览器会在拿到时长后执行，减少先出 00:00 的几率
+  if (s > 0) { try { v.currentTime = s; } catch (e) {} }
+  const playNow = () => {
+    if (started) return;
+    started = true;
+    try { const p = v.play && v.play(); if (p && p.catch) p.catch(() => {}); } catch (e) {}
+  };
+  const seekAndPlay = () => {
+    if (started) return;
+    if (!s) { playNow(); return; }
+    if (v.readyState < 2) { v.addEventListener('canplay', seekAndPlay, { once: true }); return; }
+    const target = isFinite(v.duration) && v.duration > 0 ? Math.min(s, Math.max(0, v.duration - 0.05)) : s;
+    // 先暂停、seek 到起点，等 seeked 确认后再播放；避免慢网时先闪 00:00 画面
+    try { v.pause(); } catch (e) {}
+    let tries = 0;
+    const onSeek = () => {
+      if (started) return;
+      if (Math.abs(v.currentTime - target) > 0.3) {
+        if (tries < 4) {
+          tries++;
+          setTimeout(() => { try { v.currentTime = target; } catch (e) {} }, 150);
+          return;
+        }
+        // 实在无法定位时也不从 00:00 假装成功：保留画面并提示，用户可重新载入
+        setCiVideoMeta('起点定位失败，请重新载入预览或换直链');
+        return;
+      }
+      v.removeEventListener('seeked', onSeek);
+      playNow();
+    };
+    v.addEventListener('seeked', onSeek);
+    try { v.currentTime = target; } catch (e) {}
+    // 已经停在目标位置时不会再有 seeked，直接开播
+    setTimeout(() => {
+      if (!started && Math.abs(v.currentTime - target) < 0.3) { v.removeEventListener('seeked', onSeek); playNow(); }
+    }, 0);
+    // 极端情况下 seek 事件不触发：再补一次 seek；不强行从 00:00 播放
+    setTimeout(() => {
+      if (!started) {
+        if (Math.abs(v.currentTime - target) < 0.3) { v.removeEventListener('seeked', onSeek); playNow(); }
+        else { try { v.currentTime = target; } catch (e) {} }
+      }
+    }, 4000);
+  };
+  if (v.readyState >= 2) seekAndPlay();
+  else v.addEventListener('canplay', seekAndPlay, { once: true });
+}
+function setCiVideoMeta(text) {
+  const el = $('#ciVideoMeta');
+  if (el) el.textContent = text;
+}
+function markPreviewTime(which) {
+  if (!editingCard || !canEdit()) return;
+  const v = $('#ciPlayer video');
+  if (!v) { toast('B 站跨域读不到播放进度，请手动填写起点/终点；直链视频才能打点'); return; }
+  const sec = Math.max(0, Math.round(v.currentTime || 0));
+  setTimeParts(which === 'start' ? 'info_videoStart' : 'info_videoStop', sec);
+  if (which === 'start') editingCard.videoStart = sec;
+  else editingCard.videoStop = sec;
+  if (which === 'stop' && editingCard.videoStop && editingCard.videoStart >= editingCard.videoStop) {
+    toast('当前时间还没过起点，终点已记录；保存前请把终点调到起点之后');
+  }
+  setCiVideoMeta('已打点：' + (which === 'start' ? '起点 ' : '终点 ') + formatVideoStop(sec));
+}
+
 function resetCiPlayer(card) {
   const box = $('#ciPlayer');
   if (!box) return;
+  clearVideoStopTimer(box);
   const blk = box.closest('.ci-video-block');
   if (blk) blk.classList.toggle('compact', !(card && card.videoUrl));
   box.innerHTML = '<div class="ph"></div>';
@@ -4509,14 +4877,15 @@ function resetCiPlayer(card) {
   title.textContent = 'B 站 / 直链视频';
   const tip = document.createElement('span');
   const emb = card && card.videoUrl ? videoEmbed(card.videoUrl) : null;
+  setCiVideoMeta('总时长 -- · 起点/终点按 时 分 秒 填');
   if (emb) {
     tip.textContent = '点击载入预览（不点就不加载）';
     const btn = document.createElement('button');
     btn.className = 'load';
     btn.textContent = '▶ 载入视频预览';
-    btn.addEventListener('click', e => { e.stopPropagation(); embedVideo(emb); });
+    btn.addEventListener('click', e => { e.stopPropagation(); embedVideo(emb, card.videoStop, card.videoStart); });
     ph.appendChild(title); ph.appendChild(tip); ph.appendChild(btn);
-    addZoomBtn(box, emb);
+    addZoomBtn(box, emb, card.videoStop, card.videoStart);
   } else {
     tip.textContent = card && card.videoUrl ? '该链接不支持内嵌，用 ▶ 打开外部页面' : '粘贴 B 站链接或嵌入代码后预览';
     ph.appendChild(title); ph.appendChild(tip);
@@ -4551,6 +4920,7 @@ function videoFallbackNode(url, text) {
 function showVideoFallback(url, text) {
   const v = $('#videoView'), w = $('#videoWrap');
   if (!v || !w) return;
+  clearVideoStopTimer(w);
   w.innerHTML = '';
   const box = videoFallbackNode(url, text || '该链接不支持内嵌播放，可尝试跳转到标签页打开');
   box.classList.add('show', 'only');
@@ -4573,16 +4943,159 @@ function autoPlayEmbedUrl(url) {
   }
   return u.replace(/autoplay=0/ig, 'autoplay=1');
 }
-function openVideoView(emb, fallbackUrl) {
+
+/* =========================================================
+   视频定点停止：B 站 iframe 读不到进度，只能在到点时卸掉播放器，
+   这样片尾不会露出“相关推荐”画面；直链则精确暂停在最后一帧。
+   ========================================================= */
+const VIDEO_STOP_TIMERS = new WeakMap();
+function clearVideoStopTimer(container) {
+  if (!container) return;
+  const t = VIDEO_STOP_TIMERS.get(container);
+  if (t) { clearTimeout(t); VIDEO_STOP_TIMERS.delete(container); }
+}
+function armVideoStop(container, seconds, cb) {
+  clearVideoStopTimer(container);
+  const ms = Math.max(1, normalizeVideoStop(seconds)) * 1000;
+  const id = setTimeout(() => { VIDEO_STOP_TIMERS.delete(container); try { cb(); } catch (e) {} }, ms);
+  VIDEO_STOP_TIMERS.set(container, id);
+}
+function pauseBiliFrame(frame) {
+  try { frame.contentWindow.postMessage('setPlayer-{"type":"play","value":false}', '*'); } catch (e) {}
+  try { frame.src = 'about:blank'; } catch (e) {}
+}
+function showVideoStopOverlay(container, opts) {
+  if (!container) return;
+  opts = opts || {};
+  clearVideoStopTimer(container);
+  if (opts.clear) container.innerHTML = '';
+  const old = container.querySelector('.video-stop-overlay');
+  if (old) old.remove();
+  const ov = document.createElement('div');
+  ov.className = 'video-stop-overlay';
+  const card = document.createElement('div');
+  card.className = 'vs-card';
+  const title = document.createElement('b');
+  title.textContent = opts.title || '播放完毕';
+  const note = document.createElement('span');
+  note.textContent = opts.note || '已到达设定的停止时间';
+  card.appendChild(title); card.appendChild(note);
+  if (opts.replay) {
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'vs-replay';
+    btn.textContent = '↻ 重新播放';
+    btn.addEventListener('click', e => { e.stopPropagation(); ov.remove(); try { opts.replay(); } catch (err) {} });
+    card.appendChild(btn);
+  }
+  ov.appendChild(card);
+  container.appendChild(ov);
+}
+function finishVideoAtStop(container, emb, opts) {
+  opts = opts || {};
+  if (opts.onStop) { opts.onStop(); return; }
+  const clear = emb && emb.type === 'iframe';
+  showVideoStopOverlay(container, {
+    clear: clear,
+    title: opts.title || '播放完毕',
+    note: opts.note || '已到达设定时间，已停止播放',
+    replay: opts.replay
+  });
+}
+// 将停止规则挂到已创建好的播放器上；无停止时间时只保留直链的 ended 自动连播
+function applyVideoStop(container, emb, seconds, opts) {
+  if (!container || !emb) return;
+  opts = opts || {};
+  clearVideoStopTimer(container);
+  const stop = normalizeVideoStop(seconds);
+  const start = normalizeVideoStop(opts.start != null ? opts.start : emb.start);
+  if (emb.type === 'video') {
+    const v = container.querySelector('video');
+    if (!v) return;
+    let done = false;
+    let manual = false;
+    const cancelManual = () => { if (done) return; manual = true; clearVideoStopTimer(container); };
+    let manualArmed = false;
+    const armManual = () => {
+      if (manualArmed) return;
+      manualArmed = true;
+      v.addEventListener('pause', () => { if (!done) cancelManual(); });
+      v.addEventListener('seeking', () => { if (!done) cancelManual(); });
+      v.addEventListener('ratechange', () => { if (!done && Math.abs(v.playbackRate - 1) > .01) cancelManual(); });
+    };
+    const armManualSoon = () => setTimeout(armManual, 300);
+    if (!v.paused && v.readyState >= 2) armManualSoon();
+    else v.addEventListener('playing', armManualSoon, { once: true });
+    const finish = quiet => {
+      if (done) return;
+      done = true;
+      try { v.pause(); } catch (e) {}
+      // 用户手动拖动/暂停后，计时已取消：自然播完就停在原视频末尾，不再拉回设定终点
+      if (!manual && stop && isFinite(v.duration) && v.duration > 0) {
+        try { v.currentTime = Math.min(stop, Math.max(0, v.duration - 0.05)); } catch (e) {}
+      }
+      finishVideoAtStop(container, emb, {
+        onStop: opts.onStop && opts.auto ? opts.onStop : null,
+        note: opts.note,
+        replay: quiet ? null : (opts.replay || (() => { try { v.currentTime = 0; v.play(); } catch (e) {} }))
+      });
+    };
+    if (stop) {
+      const onTime = () => { if (!manual && v.currentTime >= stop) finish(false); };
+      v.addEventListener('timeupdate', onTime);
+      v.addEventListener('ended', () => finish(false));
+      // 视频本身比停止时间短：正常结束也走同一套“完毕/自动下一条”
+      if (opts.onStop && opts.auto) v.addEventListener('ended', () => { if (!done) { done = true; opts.onStop(); } });
+    } else {
+      if (opts.onStop && opts.auto) {
+        v.addEventListener('ended', () => { if (!done) { done = true; opts.onStop(); } });
+      } else {
+        v.addEventListener('ended', () => finish(false));
+      }
+    }
+    return;
+  }
+  if (!stop) return;
+  const frame = container.querySelector('iframe');
+  if (!frame) return;
+  let started = false;
+  let manual = false;
+  // B 站 iframe 无法读内部暂停/拖动；用户点进播放器（focus）视为手动接管，取消自动截停，让原视频继续
+  frame.addEventListener('focus', () => { manual = true; clearVideoStopTimer(container); });
+  const span = stop > start ? stop - start : stop;
+  const startTimer = () => {
+    if (started || manual) return;
+    const current = container.querySelector('iframe');
+    if (!current || current !== frame) return;
+    started = true;
+    armVideoStop(container, span, () => {
+      if (manual) return;
+      const f = container.querySelector('iframe');
+      if (f) pauseBiliFrame(f);
+      finishVideoAtStop(container, emb, {
+        onStop: opts.onStop && opts.auto ? opts.onStop : null,
+        note: opts.note,
+        replay: opts.replay
+      });
+    });
+  };
+  // B站播放器加载后开始计时；若 load 事件异常，1.5 秒后兜底开始
+  frame.addEventListener('load', () => setTimeout(startTimer, 500), { once: true });
+  setTimeout(startTimer, 1800);
+}
+
+function openVideoView(emb, fallbackUrl, stopSeconds, startSeconds) {
   if (typeof emb === 'string') emb = videoEmbed(emb);
   const v = $('#videoView'), w = $('#videoWrap');
   if (!v || !w) return;
   if (!emb) { showVideoFallback(fallbackUrl); return; }
+  const e = embedAtStart(emb, startSeconds != null ? startSeconds : emb.start);
+  clearVideoStopTimer(w);
   w.innerHTML = '';
   const fb = videoFallbackNode(fallbackUrl || emb.url);
   if (emb.type === 'iframe') {
     const f = document.createElement('iframe');
-    f.src = autoPlayEmbedUrl(emb.url);
+    f.src = autoPlayEmbedUrl(e.url);
     f.setAttribute('allow', 'autoplay; fullscreen; picture-in-picture');
     f.allowFullscreen = true;
     f.referrerPolicy = 'no-referrer';
@@ -4593,14 +5106,17 @@ function openVideoView(emb, fallbackUrl) {
     f.addEventListener('error', () => { clearTimeout(timer); fb.classList.add('show'); });
   } else {
     const vid = document.createElement('video');
-    vid.src = emb.url; vid.controls = true; vid.autoplay = true; vid.playsInline = true;
+    vid.src = e.url; vid.controls = true; vid.autoplay = false; vid.preload = 'auto'; vid.playsInline = true;
     vid.addEventListener('error', () => fb.classList.add('show'));
     w.appendChild(vid);
-    // 点击进入全屏面板属于用户手势，再主动 play 一次，避免个别浏览器忽略 autoplay 属性
-    const p = vid.play && vid.play();
-    if (p && p.catch) p.catch(() => {});
+    startDirectVideo(vid, e.start);
   }
   w.appendChild(fb);
+  applyVideoStop(w, e, stopSeconds, {
+    start: e.start,
+    note: '已到达设定终点，已停止播放',
+    replay: () => openVideoView(emb, fallbackUrl, stopSeconds, startSeconds)
+  });
   v.classList.add('show');
 }
 function closeVideoView() {
@@ -4608,39 +5124,55 @@ function closeVideoView() {
   if (!v) return;
   v.classList.remove('show');
   const w = $('#videoWrap');
-  if (w) w.innerHTML = '';
+  if (w) { clearVideoStopTimer(w); w.innerHTML = ''; }
 }
-function addZoomBtn(box, emb) {
+function addZoomBtn(box, emb, stopSeconds, startSeconds) {
   if (!box || !emb) return;
   const b = document.createElement('button');
   b.className = 'zoom';
   b.textContent = '⤢';
   b.title = '放大观看';
-  b.addEventListener('click', e => { e.stopPropagation(); openVideoView(emb); });
+  b.addEventListener('click', e => { e.stopPropagation(); const em = embedAtStart(emb, startSeconds); openVideoView(em, em.url, stopSeconds, em.start); });
   box.appendChild(b);
 }
 
-function embedVideo(emb) {
+function embedVideo(emb, stopSeconds, startSeconds) {
   const box = $('#ciPlayer');
   if (!box || !emb) return;
+  const e = embedAtStart(emb, startSeconds);
+  clearVideoStopTimer(box);
   box.innerHTML = '';
   if (emb.type === 'iframe') {
     const f = document.createElement('iframe');
-    f.src = emb.url;
+    f.src = autoPlayEmbedUrl(e.url);
     f.setAttribute('allow', 'autoplay; fullscreen; picture-in-picture');
     f.allowFullscreen = true;
     f.loading = 'lazy';
     f.referrerPolicy = 'no-referrer';
     box.appendChild(f);
-    addZoomBtn(box, emb);
+    addZoomBtn(box, e, stopSeconds, e.start);
   } else {
     const v = document.createElement('video');
-    v.src = emb.url;
+    v.src = e.url;
     v.controls = true;
+    v.autoplay = false;
+    v.preload = 'auto';
     v.playsInline = true;
     box.appendChild(v);
-    addZoomBtn(box, emb);
+    startDirectVideo(v, e.start);
+    const showMeta = () => {
+      if (isFinite(v.duration) && v.duration > 0) setCiVideoMeta('总时长 ' + formatVideoStop(v.duration) + ' · 只保存起点和终点');
+    };
+    if (v.readyState >= 1) showMeta();
+    else v.addEventListener('loadedmetadata', showMeta, { once: true });
+    addZoomBtn(box, e, stopSeconds, e.start);
   }
+  if (e.type === 'iframe') setCiVideoMeta('B 站/外链总时长未知 · 终点需手填');
+  applyVideoStop(box, e, stopSeconds, {
+    start: e.start,
+    note: '已到达设定终点，已停止播放',
+    replay: () => embedVideo(emb, stopSeconds, startSeconds)
+  });
 }
 
 /* 弹窗中居中的大图：单图滑动 / 四宫格 + 查看原图 */
@@ -5008,6 +5540,8 @@ function openCardInfoModal(card, readonly) {
   $('#info_school').value = card.school || '';
   $('#info_company').value = card.company || '';
   $('#info_videoUrl').value = card.videoUrl || '';
+  setTimeParts('info_videoStart', card.videoStart);
+  setTimeParts('info_videoStop', card.videoStop);
   $('#info_zodiac').value = card.zodiac || '';
   $('#info_zodiacThai').value = card.zodiacThai || '';
   $('#zcIco1').textContent = zodiacGlyph(card.zodiac);
@@ -5087,7 +5621,12 @@ function saveCardInfo() {
   c.birthday = bd;
   c.school = $('#info_school').value.trim();
   c.company = $('#info_company').value.trim();
+  const vStart = readTimeParts('info_videoStart');
+  const vStop = readTimeParts('info_videoStop');
+  if (vStop && vStart >= vStop) { toast('起点要早于终点：请把终点调到起点之后，或留空不截停'); $('#info_videoStopH').focus(); return; }
   c.videoUrl = $('#info_videoUrl').value.trim();
+  c.videoStart = vStart;
+  c.videoStop = vStop;
   const oi = $('#ciOrigUrl');
   if (oi) {
     ciOrigDraft[Math.max(0, Math.min(3, ciOrigIdx))] = oi.value;
@@ -5721,7 +6260,7 @@ function anySig(v) {
 }
 function roleViewSignature() {
   const cards = state.cards.map(c => [
-    c.id, c.name, c.height, c.weight, c.birthday, c.school, c.company, c.videoUrl,
+    c.id, c.name, c.height, c.weight, c.birthday, c.school, c.company, c.videoUrl, c.videoStart, c.videoStop,
     c.zodiac, c.zodiacThai,
     (c.lineage || []).join('|'), (c.nationality || []).join('|'),
     (c.infoHidden || []).join('|'), c.showName, c.showHeight, c.showWeight, c.showVideo,
@@ -5739,7 +6278,7 @@ function roleViewSignature() {
     state.projectId, state.named, state.authorName, state.author && state.author.name, state.author && state.author.url,
     state.globalPhotoMode, state.locked, state.revealed, state.hideAttrs,
     state.currentPlayerId, filterPlayerId, filterCardId, cards, a.attrs, a.pairs, a.pairOffsets,
-    anySig(a.pairPhotos), anySig(a.gifts),
+    anySig(a.pairPhotos), anySig(a.gifts), anySig(a.giftStarts), anySig(a.giftStops),
     players
   ]);
 }
@@ -6041,6 +6580,8 @@ function projectData() {
       school: c.school, company: c.company,
       photos: photos, photoMode: c.photoMode, photoIdx: c.photoIdx, originals: originals,
       videoUrl: c.videoUrl,
+      videoStart: normalizeVideoStop(c.videoStart),
+      videoStop: normalizeVideoStop(c.videoStop),
       showName: c.showName, showNationality: c.showNationality,
       showHeight: c.showHeight, showWeight: c.showWeight,
       showBirthday: c.showBirthday, showZodiac: c.showZodiac,
@@ -6057,6 +6598,14 @@ function projectData() {
       gifts: (function () {
         const g = normalizeGifts(state.answers.gifts);
         return Object.keys(g).length ? g : undefined;
+      })(),
+      giftStarts: (function () {
+        const s = normalizeGiftStarts(state.answers.giftStarts);
+        return Object.keys(s).length ? s : undefined;
+      })(),
+      giftStops: (function () {
+        const s = normalizeGiftStops(state.answers.giftStops);
+        return Object.keys(s).length ? s : undefined;
       })()
     },
     players: state.players.map(p => ({
@@ -6076,10 +6625,11 @@ function stamp() {
   const pad = n => String(n).padStart(2, '0');
   return d.getFullYear() + pad(d.getMonth() + 1) + pad(d.getDate()) + '_' + pad(d.getHours()) + pad(d.getMinutes());
 }
-// 名称上限：项目名 10 字符 + .json = 子文件名最长 15；文件夹名 10
+// 名称上限：项目名 10 字符；文件夹每段 15；子文件名含 .json 不超过 20（项目名+ .json 实际 15）
 const PROJECT_NAME_MAX = 10;
 const PROJECT_NAME_DISPLAY = 8;
-const FOLDER_NAME_MAX = 10;
+const FOLDER_NAME_MAX = 15;
+const PROJECT_FILE_MAX = 20;
 function sliceChars(v, max) {
   return Array.from(String(v || '')).slice(0, max).join('');
 }
@@ -6112,7 +6662,8 @@ function projectFileBase() {
   return base.replace(/[\\/:*?"<>|]/g, '-') || '未命名项目';
 }
 function exportProjectFileName() {
-  return projectFileBase() + '.json';
+  const base = sliceChars(projectFileBase(), Math.max(1, PROJECT_FILE_MAX - 5));
+  return base + '.json';
 }
 function saveFile(name, text, type) {
   const blob = new Blob([text], { type: type || 'application/json' });
@@ -6249,7 +6800,9 @@ function loadProject(data) {
     pairs: normalizePairs(ans.pairs),
     pairOffsets: normalizeOffsets(ans.pairOffsets),
     pairPhotos: normalizePairPhotos(ans.pairPhotos),
-    gifts: normalizeGifts(ans.gifts)
+    gifts: normalizeGifts(ans.gifts),
+    giftStarts: normalizeGiftStarts(ans.giftStarts),
+    giftStops: normalizeGiftStops(ans.giftStops)
   };
   // 只补齐“已有答案”的缺失项；空白新项目不要凭空生成答案（否则会像复制了旧答案）
   if (!state.locked && Object.keys(state.answers.attrs || {}).length) {
@@ -6592,7 +7145,7 @@ async function newProject(name, quiet, folder) {
   state.globalPhotoMode = 'single';
   state.hideAttrs = false;
   state.cards = [];
-  state.answers = { attrs: {}, pairs: [], gifts: {} };
+  state.answers = { attrs: {}, pairs: [], gifts: {}, giftStarts: {}, giftStops: {} };
   buildCards(10, true);                     // 卡片、属性答案、连线全部清空
   state.players = [newPlayer('玩家1', 0)];
   state.currentPlayerId = state.players[0].id;
@@ -6647,7 +7200,7 @@ function promptAddChildToFolder(folder) {
   });
 }
 function promptNewFolderProject() {
-  openInput('新建文件夹（如 GL_泰百CP，最多10个字符）· 之后可在文件夹内继续新建子项目', '', v => {
+  openInput('新建文件夹（如 GL_泰百CP，最多15个字符）· 之后可在文件夹内继续新建子项目', '', v => {
     const folder = cleanFolderName(v);
     if (!folder) { toast('文件夹名不能为空'); return; }
     suggestFolderChildName(folder).then(suggested => {
@@ -6660,13 +7213,13 @@ function promptNewFolderProject() {
         toast('已建立文件夹「' + folder + '」并创建「' + nm + '.json」');
       }, { maxLength: PROJECT_NAME_MAX });
     });
-  }, { maxLength: FOLDER_NAME_MAX, placeholder: '文件夹名（最多10个字符）' });
+  }, { maxLength: FOLDER_NAME_MAX, placeholder: '文件夹名（最多15个字符）' });
 }
 function promptBatchMoveToFolder() {
   const ids = Array.from(selectedProjIds);
   if (!ids.length) { toast('请先勾选要整理的项目（左侧小方框）'); return; }
   if (state.locked && ids.includes(state.projectId)) { toast('当前项目已加密：解锁后才能整理文件夹'); return; }
-  openInput('批量归入文件夹（留空 = 移出文件夹，文件夹名最多10个字符）· ' + ids.length + ' 个项目', '', async v => {
+  openInput('批量归入文件夹（留空 = 移出文件夹，文件夹名最多15个字符）· ' + ids.length + ' 个项目', '', async v => {
     const folder = cleanFolderName(v);
     const all = await listProjects();
     let moved = 0;
@@ -6692,7 +7245,7 @@ function promptMoveProject(p) {
   if (!p || !p.projectId) return;
   if (p.projectId === state.projectId && state.locked) { toast('项目已加密：解锁后才能整理文件夹'); return; }
   const cur = projFolderOf(p);
-  openInput('归入文件夹（留空 = 作为独立单文件，文件夹名最多10个字符）· 可输入已有文件夹名', cur, async v => {
+  openInput('归入文件夹（留空 = 作为独立单文件，文件夹名最多15个字符）· 可输入已有文件夹名', cur, async v => {
     const folder = cleanFolderName(v);
     if (!p.project) p.project = {};
     p.project.folder = folder;
@@ -6856,6 +7409,19 @@ function remoteMetaChanged(oldMeta, newMeta) {
   if (oldMeta.etag && newMeta.etag) return tag(oldMeta.etag) !== tag(newMeta.etag);
   return false;
 }
+const REMOTE_CHECK_SESSION_KEY = 'cp.remoteCheckedOnOpen';
+function remoteCheckDoneThisSession() {
+  try { return sessionStorage.getItem(REMOTE_CHECK_SESSION_KEY) === '1'; } catch (e) { return false; }
+}
+function markRemoteCheckDoneThisSession() {
+  try { sessionStorage.setItem(REMOTE_CHECK_SESSION_KEY, '1'); } catch (e) {}
+}
+// 首次打开网页只检查一次；刷新仍算同一会话；彻底关闭标签页/网页后再进会重新检查。
+function maybeCheckRemoteOnce(e, cache) {
+  if (!e || !cache || remoteCheckDoneThisSession()) return;
+  markRemoteCheckDoneThisSession();
+  checkRemoteFreshness(e, cache);
+}
 function checkRemoteFreshness(e, cache) {
   setTimeout(async () => {
     try {
@@ -6891,9 +7457,9 @@ async function loadRemoteEntry(e, opts) {
         renderAll(); triggerAutoSave(true);
         $('#projPicker').classList.remove('show');
         toast('⚡ 已从本地缓存载入：' + state.projectName + '（无需重复下载）');
+        // 首次打开网页做一次更新检查；刷新不重复检查，彻底关闭后重新进才会再查。
+        if (!opts.manual) maybeCheckRemoteOnce(e, cache);
         remoteBusy = false;
-        // 启动时不再自动弹「远程有更新」：部分 CDN 的 HEAD 校验头每次变化，
-        // 会把未改动文件误判成更新。需要检查更新时，用户点「拉取项目」即可。
         return true;
       }
     }
@@ -7047,6 +7613,7 @@ async function autoLoadManifest(opts) {
 
 // 手动从远程清单拉取 / 切换项目：未改动沿用缓存；取消不改变当前项目
 async function openRemotePicker() {
+  if (remoteBusy) { toast('正在检查远程更新，请稍候…'); return; }
   const remote = new URLSearchParams(location.search).get('project');
   if (remote) {
     await openRemoteProject(remote, null, false, { keepCurrent: true, alwaysPicker: true });
@@ -7889,12 +8456,30 @@ function bindEvents() {
     editingCard.videoUrl = ($('#info_videoUrl').value || '').trim();
     resetCiPlayer(editingCard);
   });
+  const commitInfoTime = which => {
+    if (!editingCard) return;
+    const sec = readTimeParts('info_video' + which);
+    if (which === 'Start') editingCard.videoStart = sec;
+    else editingCard.videoStop = sec;
+    setTimeParts('info_video' + which, sec);
+    resetCiPlayer(editingCard);
+  };
+  bindTimeParts('info_videoStart', () => commitInfoTime('Start'));
+  bindTimeParts('info_videoStop', () => commitInfoTime('Stop'));
+  [1, 2, 3].forEach(i => {
+    bindTimeParts('giftStart' + i);
+    bindTimeParts('giftStop' + i);
+  });
+  $('#btnMarkStart').addEventListener('click', () => markPreviewTime('start'));
+  $('#btnMarkStop').addEventListener('click', () => markPreviewTime('stop'));
   $('#btnCiVideo').addEventListener('click', () => {
     const u = ($('#info_videoUrl').value || '').trim() || (editingCard && editingCard.videoUrl) || '';
     if (!u) { toast('还没有填写视频链接'); return; }
     const emb = videoEmbed(u);
-    if (emb) { embedVideo(emb); toast('已在右侧载入视频预览'); }
-    else window.open(u, '_blank', 'noopener');
+    if (emb) {
+      embedVideo(emb, readTimeParts('info_videoStop'), readTimeParts('info_videoStart'));
+      toast('已从起点载入视频预览；播放到这里会按终点截停');
+    } else window.open(u, '_blank', 'noopener');
   });
 
   // 国旗多选：首次渲染旗标
@@ -8090,7 +8675,9 @@ function bindEvents() {
   });
   const btnPullProject = $('#btnPullProject');
   if (btnPullProject) btnPullProject.addEventListener('click', () => {
+    if (remoteBusy) { toast('正在检查远程更新，请稍候…'); return; }
     $('#settingsModal').classList.remove('show');
+    toast('🔎 正在检查远程更新…');
     openRemotePicker();
   });
   const btnPull = $('#btnPullOrig');
@@ -8314,6 +8901,36 @@ window.addEventListener('orientationchange', () => {
   rotateDismissed = false;
   setTimeout(checkOrientation, 400);
 });
+
+// 平板 / 手机：滚动到边缘时不把整页继续往外拉，避免触发浏览器下拉刷新/边缘手势
+function scrollableUnder(target) {
+  let el = target && target.nodeType === 1 ? target : (target && target.parentElement);
+  while (el && el !== document.body && el !== document.documentElement) {
+    const cs = getComputedStyle(el);
+    const oy = cs.overflowY;
+    if ((oy === 'auto' || oy === 'scroll') && el.scrollHeight > el.clientHeight + 1) return el;
+    el = el.parentElement;
+  }
+  return null;
+}
+let touchGuardY = 0;
+let touchGuardX = 0;
+document.addEventListener('touchstart', e => {
+  if (e.touches.length === 1) { touchGuardY = e.touches[0].clientY; touchGuardX = e.touches[0].clientX; }
+}, { passive: true });
+document.addEventListener('touchmove', e => {
+  if (e.touches.length !== 1) return;
+  const t = e.target && e.target.nodeType === 1 ? e.target : (e.target && e.target.parentElement);
+  if (t && t.closest && t.closest('input,textarea,select,[contenteditable="true"]')) return;
+  const sc = scrollableUnder(e.target);
+  if (!sc) return;
+  const dy = e.touches[0].clientY - touchGuardY;
+  const dx = e.touches[0].clientX - touchGuardX;
+  if (Math.abs(dx) > Math.abs(dy) * 1.25) return; // 横向手势不拦，交给内部横向列表
+  const atTop = sc.scrollTop <= 0;
+  const atBottom = sc.scrollTop + sc.clientHeight >= sc.scrollHeight - 1;
+  if ((atTop && dy > 0) || (atBottom && dy < 0)) e.preventDefault();
+}, { passive: false });
 initApp();
 setTimeout(preloadShotLib, 1200);
 </script>
